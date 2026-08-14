@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Produkte — CloudFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1D1D1F; --ink-soft:#6E6E73;
+    --bg:#FFFFFF; --bg-dim:#F5F5F7;
+    --blue:#0071E3; --blue-dark:#0059B3;
+    --line:rgba(0,0,0,0.08); --radius:20px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth; overflow-x:hidden;}
+  body{
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:980px; margin:0 auto; padding:0 24px;}
+  h1,h2,h3{font-weight:600; letter-spacing:-0.015em;}
+
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,255,255,0.8); backdrop-filter:saturate(180%) blur(20px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:52px;}
+  .brand{font-weight:600; font-size:0.98rem;}
+  .back-link{font-size:0.85rem; color:var(--ink-soft); display:flex; align-items:center; gap:6px;}
+  .back-link:hover{color:var(--ink);}
+
+  .hero{text-align:center; padding:70px 24px 20px;}
+  .hero h1{font-size:clamp(2.2rem,4.5vw,3rem); margin-bottom:14px;}
+  .hero p{color:var(--ink-soft); font-size:1.05rem; max-width:520px; margin:0 auto;}
+
+  .selector{padding:50px 0 20px;}
+  .selector-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+  @media (max-width:700px){ .selector-grid{grid-template-columns:1fr;} }
+  .selector-card{
+    border:2px solid var(--line); border-radius:24px; padding:34px 30px; cursor:pointer;
+    transition:border-color .2s, background .2s, transform .15s; background:#fff; text-align:left;
+  }
+  .selector-card:hover{transform:translateY(-2px);}
+  .selector-card.active{border-color:var(--blue); background:#F0F7FF;}
+  .selector-card .icon{
+    width:52px; height:52px; border-radius:14px; margin-bottom:18px;
+    background:var(--bg-dim); display:flex; align-items:center; justify-content:center; font-size:1.5rem;
+  }
+  .selector-card.active .icon{background:var(--blue); color:#fff;}
+  .selector-card h3{font-size:1.25rem; margin-bottom:8px;}
+  .selector-card p{color:var(--ink-soft); font-size:0.9rem; line-height:1.5;}
+  .selector-card .pick-label{
+    margin-top:16px; font-size:0.82rem; font-weight:600; color:var(--blue);
+    display:flex; align-items:center; gap:6px;
+  }
+
+  .product-detail{padding:50px 0 90px; display:none;}
+  .product-detail.visible{display:block;}
+  .detail-head{text-align:center; margin-bottom:44px;}
+  .detail-head h2{font-size:clamp(1.7rem,3vw,2.2rem); margin-bottom:10px;}
+  .detail-head p{color:var(--ink-soft); font-size:0.98rem;}
+
+  .plans{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media (max-width:800px){ .plans{grid-template-columns:1fr;} }
+  .plan{
+    border:1px solid var(--line); border-radius:24px; padding:32px 28px;
+    display:flex; flex-direction:column; background:#fff; min-width:0;
+  }
+  .plan.featured{background:var(--bg-dim);}
+  .plan-name-row{display:flex; align-items:center; gap:10px; margin-bottom:6px;}
+  .plan h3{font-size:1.3rem;}
+  .popular-pill{background:var(--blue); color:#fff; font-size:0.7rem; font-weight:700; padding:5px 12px; border-radius:980px;}
+  .plan .desc{font-size:0.88rem; color:var(--ink-soft); margin-bottom:22px;}
+  .plan .price-amount{font-size:2.4rem; font-weight:800; letter-spacing:-0.02em;}
+  .plan .price-unit{font-size:0.85rem; color:var(--ink-soft); margin-bottom:22px;}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    padding:12px 22px; border-radius:980px; font-weight:500; font-size:0.9rem;
+    cursor:pointer; border:none; width:100%; margin-bottom:22px; font-family:inherit;
+  }
+  .btn-secondary{background:var(--bg-dim); color:var(--ink);}
+  .btn-secondary:hover{background:#E8E8ED;}
+  .plan.featured .btn-secondary{background:var(--blue); color:#fff;}
+  .plan.featured .btn-secondary:hover{background:var(--blue-dark);}
+  .plan ul{list-style:none; display:flex; flex-direction:column; gap:12px;}
+  .plan li{font-size:0.88rem; display:flex; align-items:center; gap:9px;}
+  .plan li .li-icon{color:var(--ink-soft); width:18px; text-align:center; flex-shrink:0;}
+
+  .addon-note{
+    text-align:center; margin-top:36px; font-size:0.88rem; color:var(--ink-soft);
+    background:var(--bg-dim); padding:16px 20px; border-radius:14px;
+  }
+
+  footer{padding:36px 0; text-align:center; font-size:0.8rem; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">CloudFlow</div>
+    <a class="back-link" href="index.html">← Zur Startseite</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Unsere Produkte</h1>
+  <p>Wähl aus, wofür du dich interessierst — Chatbot oder Wissensdatenbank haben jeweils eigene Preise.</p>
+</section>
+
+<section class="selector">
+  <div class="wrap">
+    <div class="selector-grid">
+      <div class="selector-card active" id="cardChatbot" onclick="selectProduct('chatbot')">
+        <div class="icon">💬</div>
+        <h3>KI-Chatbot</h3>
+        <p>Ein persönlicher Chatbot für deine Website, der Kundenfragen automatisch beantwortet — inklusive Grundpaket an Wissensdatenbank.</p>
+        <div class="pick-label">Preise ansehen ↓</div>
+      </div>
+      <div class="selector-card" id="cardWissen" onclick="selectProduct('wissen')">
+        <div class="icon">📚</div>
+        <h3>Wissensdatenbank</h3>
+        <p>Erweitere die Dokumentenkapazität deines Chatbots — für Firmen mit vielen PDFs, FAQs oder Produktkatalogen.</p>
+        <div class="pick-label">Preise ansehen ↓</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHATBOT PRICING -->
+<section class="product-detail visible" id="detailChatbot">
+  <div class="wrap">
+    <div class="detail-head">
+      <h2>KI-Chatbot — Preise</h2>
+      <p>Einmal eingerichtet, beantwortet er Kundenfragen rund um die Uhr.</p>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <div class="plan-name-row"><h3>Basic</h3></div>
+        <div class="desc">Für den Einstieg</div>
+        <div class="price-amount">29,99€</div>
+        <div class="price-unit">pro Monat · bis zu 5 Dokumente</div>
+        <a class="btn btn-secondary" href="index.html#kontakt">Basic wählen</a>
+        <ul>
+          <li><span class="li-icon">💬</span>Bis zu 15 Standardfragen</li>
+          <li><span class="li-icon">📄</span>Einbindung auf einer Seite</li>
+          <li><span class="li-icon">🔁</span>1 Anpassungsrunde / Monat</li>
+        </ul>
+      </div>
+      <div class="plan featured">
+        <div class="plan-name-row"><h3>Standard</h3><span class="popular-pill">Beliebt</span></div>
+        <div class="desc">Der Alltagsbegleiter</div>
+        <div class="price-amount">49,49€</div>
+        <div class="price-unit">pro Monat · bis zu 15 Dokumente</div>
+        <a class="btn btn-secondary" href="index.html#kontakt">Standard wählen</a>
+        <ul>
+          <li><span class="li-icon">💬</span>Unbegrenzte Fragen zu deinem Business</li>
+          <li><span class="li-icon">✓</span>Alles aus Basic</li>
+          <li><span class="li-icon">📅</span>Termin-/Reservierungsanfragen</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <div class="plan-name-row"><h3>Premium</h3></div>
+        <div class="desc">Für mehrere Standorte</div>
+        <div class="price-amount">89,99€</div>
+        <div class="price-unit">pro Monat · bis zu 30 Dokumente</div>
+        <a class="btn btn-secondary" href="index.html#kontakt">Premium wählen</a>
+        <ul>
+          <li><span class="li-icon">✓</span>Alles aus Standard</li>
+          <li><span class="li-icon">🌍</span>Mehrsprachig (z. B. DE/EN)</li>
+          <li><span class="li-icon">🏢</span>Für mehrere Standorte geeignet</li>
+        </ul>
+      </div>
+    </div>
+    <p class="addon-note">💡 Jedes Chatbot-Paket enthält bereits eine Wissensdatenbank mit dem angegebenen Dokumenten-Limit. Brauchst du mehr Kapazität, schau dir die <a href="#" onclick="selectProduct('wissen'); return false;" style="color:var(--blue); font-weight:600;">Wissensdatenbank-Erweiterung</a> an.</p>
+  </div>
+</section>
+
+<!-- WISSENSDATENBANK PRICING -->
+<section class="product-detail" id="detailWissen">
+  <div class="wrap">
+    <div class="detail-head">
+      <h2>Wissensdatenbank — Erweiterung</h2>
+      <p>Zusätzliche Dokumentenkapazität für deinen bestehenden Chatbot.</p>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <div class="plan-name-row"><h3>Erweitert</h3></div>
+        <div class="desc">Für mehr Dokumente</div>
+        <div class="price-amount">+9€</div>
+        <div class="price-unit">pro Monat · je 10 zusätzliche Dokumente</div>
+        <a class="btn btn-secondary" href="index.html#kontakt">Dazubuchen</a>
+        <ul>
+          <li><span class="li-icon">📄</span>10 zusätzliche PDFs</li>
+          <li><span class="li-icon">🔁</span>Jederzeit dazubuchbar</li>
+          <li><span class="li-icon">✕</span>Jederzeit kündbar</li>
+        </ul>
+      </div>
+      <div class="plan featured">
+        <div class="plan-name-row"><h3>Groß</h3><span class="popular-pill">Beliebt</span></div>
+        <div class="desc">Für viele Dokumente</div>
+        <div class="price-amount">+29€</div>
+        <div class="price-unit">pro Monat · bis zu 50 zusätzliche Dokumente</div>
+        <a class="btn btn-secondary" href="index.html#kontakt">Dazubuchen</a>
+        <ul>
+          <li><span class="li-icon">📄</span>50 zusätzliche PDFs</li>
+          <li><span class="li-icon">⚡</span>Schnellere Verarbeitung</li>
+          <li><span class="li-icon">✕</span>Jederzeit kündbar</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <div class="plan-name-row"><h3>Enterprise</h3></div>
+        <div class="desc">Für sehr große Datenmengen</div>
+        <div class="price-amount">Auf Anfrage</div>
+        <div class="price-unit">individuelles Angebot</div>
+        <a class="btn btn-secondary" href="index.html#kontakt">Kontaktieren</a>
+        <ul>
+          <li><span class="li-icon">📄</span>Unbegrenzte Dokumente</li>
+          <li><span class="li-icon">🔍</span>Echte Vektorsuche für präzisere Antworten</li>
+          <li><span class="li-icon">⚙️</span>Individuelle Einrichtung</li>
+        </ul>
+      </div>
+    </div>
+    <p class="addon-note">💡 Diese Erweiterungen setzen ein bestehendes Chatbot-Paket voraus — die Wissensdatenbank funktioniert nicht eigenständig ohne Chatbot.</p>
+  </div>
+</section>
+
+<footer>© 2026 CloudFlow · KI-Chatbots für lokale Unternehmen</footer>
+
+<script>
+function selectProduct(which){
+  document.getElementById('cardChatbot').classList.toggle('active', which === 'chatbot');
+  document.getElementById('cardWissen').classList.toggle('active', which === 'wissen');
+  document.getElementById('detailChatbot').classList.toggle('visible', which === 'chatbot');
+  document.getElementById('detailWissen').classList.toggle('visible', which === 'wissen');
+  document.getElementById('detail' + (which === 'chatbot' ? 'Chatbot' : 'Wissen')).scrollIntoView({behavior:'smooth', block:'start'});
+}
+</script>
+
+</body>
+</html>
