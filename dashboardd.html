@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — CloudFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1D1D1F; --ink-soft:#6E6E73;
+    --bg:#FFFFFF; --bg-dim:#F5F5F7;
+    --blue:#0071E3; --blue-dark:#0059B3;
+    --green:#34C759; --line:rgba(0,0,0,0.08);
+    --radius:18px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Inter', -apple-system, "Segoe UI", sans-serif;
+    background:var(--bg-dim); color:var(--ink); line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  a{color:inherit; text-decoration:none;}
+
+  /* TOPBAR */
+  .topbar{
+    background:#fff; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 28px;
+  }
+  .topbar .brand{font-weight:700; font-size:0.98rem; display:flex; align-items:center; gap:8px;}
+  .brand-icon{
+    width:26px; height:26px; border-radius:7px; background:#fff; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-icon svg{width:15px; height:15px; color:#8E8E93;}
+  .topbar .who{font-size:0.85rem; color:var(--ink-soft); display:flex; align-items:center; gap:12px;}
+  .logout-btn{
+    background:var(--bg-dim); border:1px solid var(--line); border-radius:980px;
+    padding:7px 16px; font-size:0.8rem; font-weight:500; cursor:pointer; color:var(--ink); font-family:inherit;
+  }
+  .logout-btn:hover{background:#E8E8ED;}
+
+  /* AUTH SPLIT SCREENS */
+  .auth-screen{display:none; min-height:100vh;}
+  .auth-screen.active{display:grid; grid-template-columns:1fr 1fr;}
+  @media (max-width:800px){ .auth-screen.active{grid-template-columns:1fr;} .auth-left{display:none;} }
+
+  .auth-left{
+    background:linear-gradient(160deg, #14181D 0%, #1B2733 60%, #0F2E2C 100%);
+    color:#fff; padding:48px; display:flex; flex-direction:column; justify-content:space-between;
+    position:relative; overflow:hidden;
+  }
+  .auth-left::before{
+    content:""; position:absolute; top:-140px; right:-100px; width:340px; height:340px; border-radius:50%;
+    background:radial-gradient(circle, rgba(0,113,227,0.25), transparent 70%);
+  }
+  .auth-left > *{position:relative; z-index:1;}
+  .auth-logo-row{display:flex; align-items:center; gap:10px;}
+  .auth-logo-box{
+    width:38px; height:38px; border-radius:10px; background:#fff;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .auth-logo-box svg{width:20px; height:20px; color:#1D1D1F;}
+  .auth-logo-row .name{font-weight:700; font-size:1.02rem;}
+
+  .auth-tagline{font-size:clamp(1.6rem,3vw,2.1rem); font-weight:700; line-height:1.2; max-width:340px;}
+
+  .auth-testimonial{display:flex; align-items:center; gap:12px;}
+  .avatar-stack{display:flex;}
+  .avatar-stack span{
+    width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#0071E3,#42A5F5);
+    border:2px solid #1D1D1F; display:flex; align-items:center; justify-content:center;
+    font-size:0.72rem; font-weight:700; color:#fff; margin-left:-8px;
+  }
+  .avatar-stack span:first-child{margin-left:0;}
+  .auth-testimonial .txt{font-size:0.85rem; color:rgba(255,255,255,0.7);}
+  .auth-testimonial .txt strong{color:#fff;}
+
+  .auth-right{background:#fff; display:flex; align-items:center; justify-content:center; padding:40px 24px;}
+  .auth-form{width:100%; max-width:380px;}
+  .auth-form h1{font-size:1.5rem; margin-bottom:6px;}
+  .auth-form p.sub{color:var(--ink-soft); font-size:0.9rem; margin-bottom:28px;}
+  .auth-form label{font-size:0.8rem; font-weight:500; color:var(--ink-soft); display:block; margin-bottom:6px;}
+  .auth-form input{
+    width:100%; border:1px solid var(--line); background:var(--bg-dim); border-radius:12px;
+    padding:12px 14px; font-size:0.92rem; font-family:inherit; outline:none; margin-bottom:16px;
+  }
+  .auth-form input:focus{border-color:var(--blue); background:#fff;}
+  .auth-form button.primary{
+    width:100%; background:var(--blue); color:#fff; border:none; border-radius:12px;
+    padding:13px; font-weight:600; font-size:0.95rem; cursor:pointer; margin-top:6px;
+  }
+  .auth-form button.primary:hover{background:var(--blue-dark);}
+  .auth-switch{text-align:center; margin-top:22px; font-size:0.88rem; color:var(--ink-soft);}
+  .auth-switch a{color:var(--blue); font-weight:600; cursor:pointer;}
+  .login-hint{margin-top:18px; font-size:0.78rem; color:var(--ink-soft); background:var(--bg-dim); padding:12px 14px; border-radius:10px;}
+  .error-msg{color:#D70015; font-size:0.82rem; margin-top:-8px; margin-bottom:14px; display:none;}
+
+  .pw-wrap{position:relative;}
+  .pw-wrap input{padding-right:44px;}
+  .pw-toggle{
+    position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    background:none; border:none; cursor:pointer; font-size:0.78rem; font-weight:600;
+    color:var(--blue); padding:4px; width:auto;
+  }
+  .pw-hint{font-size:0.75rem; color:var(--ink-soft); margin-top:-10px; margin-bottom:16px;}
+  .pw-hint.ok{color:var(--green);}
+  .pw-hint.bad{color:#D70015;}
+
+  /* SHELL */
+  #appShell{display:none; min-height:100vh;}
+  .shell-inner{max-width:1100px; margin:0 auto; padding:32px 24px 60px;}
+  .page-title{font-size:1.7rem; margin-bottom:6px;}
+  .page-sub{color:var(--ink-soft); font-size:0.95rem; margin-bottom:32px;}
+
+  /* CARDS / GRID */
+  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:36px;}
+  .stat-card{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px;
+  }
+  .stat-card .label{font-size:0.78rem; color:var(--ink-soft); margin-bottom:8px;}
+  .stat-card .value{font-size:1.7rem; font-weight:700;}
+  .stat-card .value.green{color:var(--green);}
+
+  .panel{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:26px 26px 22px; margin-bottom:24px;
+  }
+  .panel h2{font-size:1.05rem; margin-bottom:16px;}
+
+  /* CUSTOMER: doc list */
+  .doc-row{
+    display:flex; align-items:center; justify-content:between; gap:12px;
+    padding:12px 0; border-bottom:1px solid var(--line); font-size:0.9rem;
+  }
+  .doc-row:last-child{border-bottom:none;}
+  .doc-row .doc-name{display:flex; align-items:center; gap:10px; flex:1;}
+  .doc-row .doc-icon{
+    width:32px; height:32px; border-radius:8px; background:var(--bg-dim);
+    display:flex; align-items:center; justify-content:center; font-size:0.95rem;
+  }
+  .doc-row .doc-remove{
+    background:none; border:none; color:var(--ink-soft); cursor:pointer; font-size:0.85rem; font-family:inherit;
+  }
+  .doc-row .doc-remove:hover{color:#D70015;}
+  .upload-zone{
+    border:1.5px dashed var(--line); border-radius:14px; padding:26px; text-align:center;
+    color:var(--ink-soft); font-size:0.88rem; margin-top:14px; cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  .upload-zone:hover{border-color:var(--blue); background:var(--bg-dim);}
+  .upload-zone input{display:none;}
+
+  .plan-badge{
+    display:inline-flex; align-items:center; gap:6px; background:var(--bg-dim);
+    padding:6px 14px; border-radius:980px; font-size:0.85rem; font-weight:600;
+  }
+  .plan-badge::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--green);}
+  .kv-row{display:flex; justify-content:space-between; padding:9px 0; font-size:0.88rem; border-bottom:1px solid var(--line);}
+  .kv-row:last-child{border-bottom:none;}
+  .kv-row .k{color:var(--ink-soft);}
+
+  /* ADMIN: customer table */
+  table{width:100%; border-collapse:collapse; font-size:0.88rem;}
+  th{text-align:left; color:var(--ink-soft); font-weight:500; font-size:0.78rem; padding:0 0 10px; text-transform:uppercase; letter-spacing:0.03em;}
+  td{padding:12px 0; border-top:1px solid var(--line);}
+  .status-pill{
+    display:inline-flex; align-items:center; gap:6px; font-size:0.8rem; font-weight:500;
+  }
+  .status-pill::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--green);}
+</style>
+</head>
+<body>
+
+<!-- SIGN IN SCREEN -->
+<div class="auth-screen active" id="signinScreen">
+  <div class="auth-left">
+    <div class="auth-logo-row">
+      <div class="auth-logo-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></div>
+      <span class="name">CloudFlow</span>
+    </div>
+    <div class="auth-tagline">KI-Chatbots, die für dein Business arbeiten.</div>
+    <div class="auth-testimonial">
+      <div class="avatar-stack"><span>CS</span><span>FH</span><span>PW</span></div>
+      <div class="txt"><strong>Lokale Unternehmen</strong> vertrauen bereits auf CloudFlow</div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-form">
+      <h1>Willkommen zurück</h1>
+      <p class="sub">Melde dich bei deinem CloudFlow-Konto an.</p>
+      <label>E-Mail</label>
+      <input type="email" id="signinEmail" placeholder="du@firma.at">
+      <label>Passwort</label>
+      <div class="pw-wrap">
+        <input type="password" id="signinPassword" placeholder="••••••••">
+        <button type="button" class="pw-toggle" onclick="togglePw('signinPassword', this)">Zeigen</button>
+      </div>
+      <div class="error-msg" id="signinError">Fehler</div>
+      <button class="primary" onclick="login()">Anmelden</button>
+      <div class="auth-switch">Kein Konto? <a onclick="showSignup()">Registrieren</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN UP SCREEN -->
+<div class="auth-screen" id="signupScreen">
+  <div class="auth-left">
+    <div class="auth-logo-row">
+      <div class="auth-logo-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></div>
+      <span class="name">CloudFlow</span>
+    </div>
+    <div class="auth-tagline">Starte in wenigen Minuten mit deinem eigenen Chatbot.</div>
+    <div class="auth-testimonial">
+      <div class="avatar-stack"><span>CS</span><span>FH</span><span>PW</span></div>
+      <div class="txt"><strong>Lokale Unternehmen</strong> vertrauen bereits auf CloudFlow</div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-form">
+      <h1>Konto erstellen</h1>
+      <p class="sub">Leg dir einen Zugang zu deinem CloudFlow-Dashboard an.</p>
+      <label>E-Mail</label>
+      <input type="email" id="signupEmail" placeholder="du@firma.at">
+      <label>Passwort</label>
+      <div class="pw-wrap">
+        <input type="password" id="signupPassword" placeholder="mind. 6 Zeichen, 1 Zahl, 1 Buchstabe" oninput="checkPwStrength()">
+        <button type="button" class="pw-toggle" onclick="togglePw('signupPassword', this)">Zeigen</button>
+      </div>
+      <div class="pw-hint" id="pwHint">Mind. 6 Zeichen, mind. 1 Zahl und 1 Buchstabe.</div>
+      <div class="error-msg" id="signupError">Fehler</div>
+      <button class="primary" onclick="signUp()">Konto erstellen</button>
+      <div class="auth-switch">Schon ein Konto? <a onclick="showSignin()">Anmelden</a></div>
+      <div class="login-hint" id="loginHint">
+        Nach der Registrierung bekommst du evtl. eine Bestätigungs-Mail — je nach Einstellung in deinem Supabase-Projekt.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="appShell">
+  <div class="topbar">
+    <div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>CloudFlow</div>
+    <div class="who">
+      <span id="whoLabel">—</span>
+      <button class="logout-btn" onclick="logout()">Abmelden</button>
+    </div>
+  </div>
+
+  <!-- CUSTOMER VIEW -->
+  <div class="shell-inner" id="customerView" style="display:none;">
+    <h1 class="page-title">Willkommen, <span id="custName">Kunde</span> 👋</h1>
+    <p class="page-sub">Hier verwaltest du deine Wissensdatenbank und siehst deinen Bot-Status.</p>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="label">Aktueller Plan</div><div class="value" id="planLabel">—</div></div>
+      <div class="stat-card"><div class="label">Status</div><div class="value green">Aktiv</div></div>
+      <div class="stat-card"><div class="label">Firma</div><div class="value" id="companyLabel" style="font-size:1.2rem;">—</div></div>
+      <div class="stat-card"><div class="label">Dokumente</div><div class="value" id="docCount">0</div></div>
+    </div>
+
+    <div class="panel">
+      <h2>Wissensdatenbank</h2>
+      <div id="docList"></div>
+      <div id="docListEmpty" style="color:var(--ink-soft); font-size:0.88rem; padding:8px 0;">Noch keine Dokumente hochgeladen.</div>
+      <label class="upload-zone" for="fileInput">
+        📤 PDF hierher ziehen oder klicken zum Hochladen<br>
+        <span style="font-size:0.78rem;">Der Chatbot nutzt diese Dokumente automatisch als Wissensquelle</span>
+        <input type="file" id="fileInput" accept="application/pdf" onchange="addDoc(this)">
+      </label>
+    </div>
+
+    <div class="panel">
+      <h2>Abonnement</h2>
+      <div class="kv-row"><span class="k">Paket</span><span class="plan-badge" id="planBadge">—</span></div>
+      <div class="kv-row"><span class="k">E-Mail</span><span id="emailKv">—</span></div>
+      <div class="kv-row"><span class="k">Konto erstellt</span><span id="createdKv">—</span></div>
+    </div>
+  </div>
+
+  <!-- ADMIN VIEW -->
+  <div class="shell-inner" id="adminView" style="display:none;">
+    <h1 class="page-title">Admin-Übersicht</h1>
+    <p class="page-sub">Alle Kunden, Umsatz und Aktivität auf einen Blick.</p>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="label">Kunden gesamt</div><div class="value" id="totalCustomers">—</div></div>
+      <div class="stat-card"><div class="label">MRR</div><div class="value" style="color:var(--ink-soft); font-size:1rem;">Noch nicht getrackt</div></div>
+      <div class="stat-card"><div class="label">Aktive Bots</div><div class="value" style="color:var(--ink-soft); font-size:1rem;">Noch nicht getrackt</div></div>
+      <div class="stat-card"><div class="label">Anfragen (Monat)</div><div class="value" style="color:var(--ink-soft); font-size:1rem;">Noch nicht getrackt</div></div>
+    </div>
+
+    <div class="panel">
+      <h2>Kunden</h2>
+      <table>
+        <thead>
+          <tr><th>Firma</th><th>E-Mail</th><th>Paket</th><th>Registriert am</th></tr>
+        </thead>
+        <tbody id="customerTableBody"></tbody>
+      </table>
+      <div id="customerTableEmpty" style="color:var(--ink-soft); font-size:0.88rem; padding:14px 0; display:none;">Noch keine Kunden registriert.</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://rkbockdrhxmpvxugkmrt.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrYm9ja2RyaHhtcHZ4dWdrbXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxOTgzNjIsImV4cCI6MjEwMjc3NDM2Mn0.0AEyPvayW8NKlriAGz3zvDVsz2itHeVLQUO3ea6MDOE';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentUser = null;
+
+function showSignin(){
+  document.getElementById('signupScreen').classList.remove('active');
+  document.getElementById('signinScreen').classList.add('active');
+}
+function showSignup(){
+  document.getElementById('signinScreen').classList.remove('active');
+  document.getElementById('signupScreen').classList.add('active');
+  document.getElementById('signupEmail').value = document.getElementById('signinEmail').value;
+}
+
+function togglePw(inputId, btn){
+  const input = document.getElementById(inputId);
+  const showing = input.type === 'text';
+  input.type = showing ? 'password' : 'text';
+  btn.textContent = showing ? 'Zeigen' : 'Verbergen';
+}
+
+function isPasswordValid(pw){
+  return pw.length >= 6 && /[0-9]/.test(pw) && /[A-Za-z]/.test(pw);
+}
+
+function checkPwStrength(){
+  const pw = document.getElementById('signupPassword').value;
+  const hint = document.getElementById('pwHint');
+  if(pw.length === 0){
+    hint.textContent = 'Mind. 6 Zeichen, mind. 1 Zahl und 1 Buchstabe.';
+    hint.className = 'pw-hint';
+  } else if(isPasswordValid(pw)){
+    hint.textContent = '✓ Passwort ist stark genug.';
+    hint.className = 'pw-hint ok';
+  } else {
+    hint.textContent = '✕ Noch nicht gültig — mind. 6 Zeichen, 1 Zahl und 1 Buchstabe.';
+    hint.className = 'pw-hint bad';
+  }
+}
+
+async function signUp(){
+  const errorEl = document.getElementById('signupError');
+  errorEl.style.display = 'none';
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value.trim();
+
+  if(!email || !password){
+    errorEl.textContent = 'Bitte E-Mail und Passwort eingeben.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if(!isPasswordValid(password)){
+    errorEl.textContent = 'Passwort muss mind. 6 Zeichen, 1 Zahl und 1 Buchstaben enthalten.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const { data, error } = await sb.auth.signUp({ email, password });
+  if(error){
+    errorEl.textContent = error.message;
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  if(data.session){
+    await enterApp(data.user);
+  } else {
+    document.getElementById('loginHint').textContent = '✓ Konto erstellt! Falls eine Bestätigungs-Mail nötig ist, prüf dein Postfach — sonst kannst du dich jetzt direkt anmelden.';
+  }
+}
+
+async function login(){
+  const errorEl = document.getElementById('signinError');
+  errorEl.style.display = 'none';
+  const email = document.getElementById('signinEmail').value.trim();
+  const password = document.getElementById('signinPassword').value.trim();
+  if(!email || !password){
+    errorEl.textContent = 'Bitte E-Mail und Passwort eingeben.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if(error){
+    errorEl.textContent = error.message;
+    errorEl.style.display = 'block';
+    return;
+  }
+  await enterApp(data.user);
+}
+
+async function logout(){
+  await sb.auth.signOut();
+  currentUser = null;
+  document.getElementById('appShell').style.display = 'none';
+  showSignin();
+  document.getElementById('signinEmail').value = '';
+  document.getElementById('signinPassword').value = '';
+}
+
+async function enterApp(user){
+  currentUser = user;
+  document.getElementById('signinScreen').classList.remove('active');
+  document.getElementById('signupScreen').classList.remove('active');
+  document.getElementById('appShell').style.display = 'block';
+
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
+  const isAdmin = profile?.is_admin;
+
+  document.getElementById('whoLabel').textContent = (isAdmin ? '👑 ' : '') + user.email;
+
+  if(isAdmin){
+    document.getElementById('adminView').style.display = 'block';
+    document.getElementById('customerView').style.display = 'none';
+    loadAdminData();
+  } else {
+    document.getElementById('customerView').style.display = 'block';
+    document.getElementById('adminView').style.display = 'none';
+    document.getElementById('companyLabel').textContent = profile?.company_name || user.email.split('@')[0];
+    document.getElementById('planLabel').textContent = profile?.plan || 'Standard';
+    document.getElementById('planBadge').textContent = profile?.plan || 'Standard';
+    document.getElementById('emailKv').textContent = user.email;
+    document.getElementById('createdKv').textContent = profile?.created_at ? new Date(profile.created_at).toLocaleDateString('de-AT') : '—';
+    loadDocs();
+  }
+}
+
+async function loadDocs(){
+  const { data, error } = await sb.storage.from('pdfs').list(currentUser.id);
+  const listEl = document.getElementById('docList');
+  const emptyEl = document.getElementById('docListEmpty');
+  listEl.innerHTML = '';
+
+  if(error || !data || data.length === 0){
+    emptyEl.style.display = 'block';
+    document.getElementById('docCount').textContent = 0;
+    return;
+  }
+  emptyEl.style.display = 'none';
+  document.getElementById('docCount').textContent = data.length;
+
+  data.forEach(file => {
+    const row = document.createElement('div');
+    row.className = 'doc-row';
+    row.innerHTML = '<div class="doc-name"><span class="doc-icon">📄</span> ' + file.name + '</div><button class="doc-remove" onclick="removeDoc(\'' + file.name.replace(/'/g,"\\'") + '\')">Entfernen</button>';
+    listEl.appendChild(row);
+  });
+}
+
+async function addDoc(input){
+  if(!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const path = currentUser.id + '/' + file.name;
+  const { error } = await sb.storage.from('pdfs').upload(path, file, { upsert: true });
+  if(error){ alert('Upload fehlgeschlagen: ' + error.message); return; }
+  input.value = '';
+  loadDocs();
+}
+
+async function removeDoc(fileName){
+  const path = currentUser.id + '/' + fileName;
+  const { error } = await sb.storage.from('pdfs').remove([path]);
+  if(error){ alert('Löschen fehlgeschlagen: ' + error.message); return; }
+  loadDocs();
+}
+
+async function loadAdminData(){
+  const { data, error } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+  const body = document.getElementById('customerTableBody');
+  const emptyEl = document.getElementById('customerTableEmpty');
+  body.innerHTML = '';
+
+  if(error || !data || data.length === 0){
+    emptyEl.style.display = 'block';
+    document.getElementById('totalCustomers').textContent = 0;
+    return;
+  }
+  emptyEl.style.display = 'none';
+  document.getElementById('totalCustomers').textContent = data.length;
+
+  data.forEach(p => {
+    const tr = document.createElement('tr');
+    const created = p.created_at ? new Date(p.created_at).toLocaleDateString('de-AT') : '—';
+    tr.innerHTML = '<td>' + (p.company_name || '—') + '</td><td>' + p.email + '</td><td>' + (p.plan || 'Standard') + '</td><td>' + created + '</td>';
+    body.appendChild(tr);
+  });
+}
+
+// Beim Laden prüfen, ob schon eine Session besteht (z. B. nach Neuladen der Seite)
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if(session){ await enterApp(session.user); }
+})();
+</script>
+
+</body>
+</html>
