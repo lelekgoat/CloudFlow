@@ -41,7 +41,12 @@
     border-bottom:1px solid var(--line);
   }
   nav .wrap{display:flex; align-items:center; justify-content:space-between; height:52px;}
-  .brand{font-weight:600; font-size:0.98rem; letter-spacing:-0.01em;}
+  .brand{font-weight:600; font-size:0.98rem; letter-spacing:-0.01em; display:flex; align-items:center; gap:8px;}
+  .brand-icon{
+    width:28px; height:28px; border-radius:8px; background:#fff; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-icon svg{width:16px; height:16px; color:#8E8E93;}
   nav ul{display:flex; gap:28px; list-style:none; font-size:0.82rem; color:var(--ink-soft);}
   nav ul a:hover{color:var(--ink);}
   .nav-cta{
@@ -49,6 +54,26 @@
     font-size:0.8rem; font-weight:500;
   }
   @media (max-width:700px){ nav ul{display:none;} }
+
+  .has-dropdown{position:relative;}
+  .dropdown-panel{
+    position:absolute; top:100%; left:50%; transform:translateX(-50%) translateY(6px);
+    opacity:0; pointer-events:none; transition:opacity .18s ease, transform .18s ease;
+    background:#fff; border:1px solid var(--line); border-radius:16px;
+    box-shadow:0 20px 44px -16px rgba(0,0,0,0.2); padding:8px; width:290px; z-index:60;
+    margin-top:8px;
+  }
+  .has-dropdown:hover .dropdown-panel{opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0);}
+  .dropdown-item{
+    display:flex; gap:12px; padding:12px; border-radius:10px; align-items:flex-start; text-align:left;
+  }
+  .dropdown-item:hover{background:var(--bg-dim);}
+  .dropdown-item .dd-icon{
+    width:34px; height:34px; border-radius:9px; background:var(--bg-dim);
+    display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0;
+  }
+  .dropdown-item strong{font-size:0.86rem; display:block; margin-bottom:2px;}
+  .dropdown-item p{font-size:0.78rem; color:var(--ink-soft); line-height:1.4; margin:0;}
 
   /* HERO */
   .hero{
@@ -149,10 +174,11 @@
   .chat-hero .close-btn:hover{background:var(--bg-dim);}
   .chat-hero .logo-circle{
     width:64px; height:64px; border-radius:50%; margin:0 auto 12px;
-    background:linear-gradient(135deg,#0071E3,#42A5F5);
-    display:flex; align-items:center; justify-content:center; font-size:1.8rem;
-    box-shadow:0 8px 20px -6px rgba(0,113,227,0.45);
+    background:#fff; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 20px -6px rgba(0,0,0,0.12);
   }
+  .chat-hero .logo-circle svg{width:30px; height:30px; color:#8E8E93;}
   .chat-hero h3{font-size:1.15rem; margin-bottom:4px;}
   .chat-hero .status-inline{font-size:0.75rem; color:#1A9F5C; display:inline-flex; align-items:center; gap:5px;}
   .chat-hero .status-inline::before{content:""; width:6px; height:6px; border-radius:50%; background:#1A9F5C;}
@@ -196,6 +222,72 @@
   }
   .step h3{font-size:1.1rem; margin-bottom:8px;}
   .step p{color:var(--ink-soft); font-size:0.92rem;}
+
+  /* SOLUTIONS OVERVIEW (ersetzt Preistabelle) */
+  .solutions-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media (max-width:700px){ .solutions-grid{grid-template-columns:1fr;} }
+  .solution-card{
+    border:1px solid var(--line); border-radius:var(--radius); padding:34px 30px;
+    background:#fff; transition:border-color .2s, transform .2s;
+  }
+  .solution-card:hover{border-color:var(--blue); transform:translateY(-2px);}
+  .solution-card .icon{
+    width:52px; height:52px; border-radius:14px; margin-bottom:20px;
+    background:var(--bg-dim); display:flex; align-items:center; justify-content:center; font-size:1.5rem;
+  }
+  .solution-card h3{font-size:1.2rem; margin-bottom:10px;}
+  .solution-card p{color:var(--ink-soft); font-size:0.92rem; margin-bottom:18px;}
+  .solution-card .learn-more{font-size:0.85rem; font-weight:600; color:var(--blue); display:inline-flex; align-items:center; gap:5px;}
+
+  /* PRODUCT SHOWCASE (ausführlich, alternierend) */
+  .showcase{padding:20px 0;}
+  .showcase-card{
+    background:linear-gradient(135deg, #F0F7FF 0%, #FAFBFC 100%);
+    border:1px solid var(--line); border-radius:28px;
+    padding:48px; margin-bottom:24px;
+  }
+  .showcase-grid{display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center;}
+  .showcase-card.reverse .showcase-grid{direction:rtl;}
+  .showcase-card.reverse .showcase-text{direction:ltr;}
+  .showcase-card.reverse .showcase-visual{direction:ltr;}
+  @media (max-width:800px){
+    .showcase-grid{grid-template-columns:1fr;}
+    .showcase-card.reverse .showcase-grid{direction:ltr;}
+    .showcase-card{padding:32px 24px;}
+  }
+  .showcase-eyebrow{font-size:0.8rem; font-weight:700; color:var(--blue); margin-bottom:12px;}
+  .showcase-text h3{font-size:clamp(1.5rem,2.6vw,1.9rem); margin-bottom:16px; line-height:1.2;}
+  .showcase-text p{color:var(--ink-soft); font-size:0.98rem; margin-bottom:26px; line-height:1.6;}
+
+  /* Chat mockup visual */
+  .mock-chat{
+    background:#fff; border-radius:20px; box-shadow:0 20px 50px -20px rgba(0,0,0,0.18);
+    border:1px solid var(--line); overflow:hidden; max-width:340px; margin:0 auto;
+  }
+  .mock-chat-head{background:var(--ink); color:#fff; padding:14px 16px; display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:600;}
+  .mock-chat-head .dot{width:7px; height:7px; border-radius:50%; background:#34C759;}
+  .mock-chat-body{padding:16px; display:flex; flex-direction:column; gap:10px;}
+  .mock-bubble{max-width:80%; padding:9px 13px; border-radius:14px; font-size:0.85rem; line-height:1.4;}
+  .mock-bubble.bot{background:var(--bg-dim); align-self:flex-start; border-bottom-left-radius:4px;}
+  .mock-bubble.user{background:var(--blue); color:#fff; align-self:flex-end; border-bottom-right-radius:4px;}
+
+  /* PDF mockup visual */
+  .mock-pdf{
+    background:#fff; border-radius:20px; box-shadow:0 20px 50px -20px rgba(0,0,0,0.18);
+    border:1px solid var(--line); padding:24px; max-width:340px; margin:0 auto;
+  }
+  .mock-pdf-row{display:flex; align-items:center; gap:12px; padding:12px; border-radius:12px; background:var(--bg-dim); margin-bottom:10px;}
+  .mock-pdf-row .file-icon{width:36px; height:36px; border-radius:9px; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; flex-shrink:0;}
+  .mock-pdf-row .file-name{font-size:0.85rem; font-weight:500;}
+  .mock-pdf-answer{background:#F0F7FF; border:1px solid rgba(0,113,227,0.15); border-radius:12px; padding:12px 14px; font-size:0.83rem; color:var(--ink); margin-top:14px;}
+  .mock-pdf-answer strong{color:var(--blue);}
+
+  .badge-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:36px;}
+  .badge-item{
+    display:flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--line);
+    border-radius:980px; padding:9px 16px; font-size:0.85rem; font-weight:500;
+  }
+  .badge-item .check{color:var(--blue); font-weight:700;}
 
   /* PREISE */
   .pricing-headline{
@@ -299,10 +391,28 @@
   form textarea{resize:vertical; min-height:100px;}
   form button{margin-top:6px;}
 
-  footer{
-    padding:36px 0; text-align:center; font-size:0.8rem; color:var(--ink-soft);
-    border-top:1px solid var(--line);
+  footer{background:var(--bg-dim); padding:64px 0 0; font-size:0.87rem;}
+  .footer-grid{display:grid; grid-template-columns:1.3fr 1fr 1fr 1fr; gap:32px; padding-bottom:44px;}
+  @media (max-width:800px){ .footer-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:520px){ .footer-grid{grid-template-columns:1fr;} }
+  .footer-tagline{font-size:1.3rem; font-weight:700; line-height:1.25; margin-bottom:20px;}
+  .footer-social{display:flex; gap:10px; margin-bottom:26px;}
+  .footer-social a{
+    width:36px; height:36px; border-radius:50%; background:var(--ink); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:0.85rem;
   }
+  .footer-social a:hover{background:var(--blue);}
+  .footer-newsletter{display:flex; align-items:center; gap:8px; font-weight:600; font-size:0.88rem;}
+  .footer-col h4{font-size:0.82rem; font-weight:700; margin-bottom:16px; letter-spacing:0.01em;}
+  .footer-col ul{list-style:none; display:flex; flex-direction:column; gap:11px;}
+  .footer-col a{color:var(--ink-soft); font-size:0.87rem;}
+  .footer-col a:hover{color:var(--ink);}
+  .footer-bottom{
+    border-top:1px solid var(--line); padding:22px 0;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+  }
+  .footer-bottom .brand{font-weight:700; font-size:1rem;}
+  .footer-bottom .copyright{color:var(--ink-soft); font-size:0.82rem;}
 
   /* TRIAL CTA BANNER */
   .trial-section{padding:70px 0;}
@@ -330,10 +440,12 @@
   .trial-banner > *{position:relative; z-index:1;}
   .trial-icon{
     width:56px; height:56px; border-radius:16px; margin:0 auto 22px;
-    background:var(--blue); display:flex; align-items:center; justify-content:center;
-    font-size:1.5rem; box-shadow:0 10px 26px -8px rgba(0,113,227,0.5);
+    background:#fff; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 26px -8px rgba(0,0,0,0.12);
     transform:rotate(-4deg);
   }
+  .trial-icon svg{width:26px; height:26px; color:#8E8E93;}
   .trial-banner h2{
     font-size:clamp(1.7rem, 3.2vw, 2.3rem); font-weight:700; margin-bottom:12px; color:var(--ink);
   }
@@ -359,11 +471,23 @@
 
 <nav>
   <div class="wrap">
-    <div class="brand">CloudFlow</div>
+    <div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>CloudFlow</div>
     <ul>
-      <li><a href="produkte.html" target="_blank">Produkte</a></li>
+      <li class="has-dropdown">
+        <a href="produkte.html" target="_blank">Produkte</a>
+        <div class="dropdown-panel">
+          <a class="dropdown-item" href="produkte.html#chatbot" target="_blank">
+            <span class="dd-icon">💬</span>
+            <div><strong>KI-Chatbot</strong><p>Beantwortet Kundenfragen automatisch, rund um die Uhr.</p></div>
+          </a>
+          <a class="dropdown-item" href="produkte.html#wissen" target="_blank">
+            <span class="dd-icon">📚</span>
+            <div><strong>Wissensdatenbank</strong><p>PDF hochladen, Fragen dazu automatisch beantworten.</p></div>
+          </a>
+        </div>
+      </li>
       <li><a href="#ablauf">Ablauf</a></li>
-      <li><a href="#preise">Preise</a></li>
+      <li><a href="#preise">Lösungen</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#kontakt">Kontakt</a></li>
       <li><a href="dashboard.html">Login</a></li>
@@ -406,70 +530,92 @@
   </div>
 </section>
 
+<section class="showcase">
+  <div class="wrap">
+
+    <!-- CHATBOT SHOWCASE -->
+    <div class="showcase-card">
+      <div class="showcase-grid">
+        <div class="showcase-text">
+          <div class="showcase-eyebrow">KI-CHATBOT</div>
+          <h3>Automatisiere deinen Kundenservice</h3>
+          <p>Die meisten Anfragen sind wiederkehrend — Öffnungszeiten, Preise, Reservierungswünsche. Dein CloudFlow-Chatbot beantwortet sie automatisch, rund um die Uhr, während du dich um dein Business kümmerst.</p>
+          <a class="btn btn-primary" href="produkte.html#chatbot" target="_blank">KI-Chatbot entdecken →</a>
+          <div class="badge-row">
+            <div class="badge-item"><span class="check">✓</span> 24/7 verfügbar</div>
+            <div class="badge-item"><span class="check">✓</span> Ohne Wartezeit</div>
+            <div class="badge-item"><span class="check">✓</span> In Tagen live</div>
+          </div>
+        </div>
+        <div class="showcase-visual">
+          <div class="mock-chat">
+            <div class="mock-chat-head"><span class="dot"></span> CloudFlow Chatbot</div>
+            <div class="mock-chat-body">
+              <div class="mock-bubble bot">Hallo! Wie kann ich dir helfen?</div>
+              <div class="mock-bubble user">Habt ihr am Sonntag offen?</div>
+              <div class="mock-bubble bot">Ja, sonntags von 9:00 bis 15:00 Uhr 😊</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WISSENSDATENBANK SHOWCASE -->
+    <div class="showcase-card reverse">
+      <div class="showcase-grid">
+        <div class="showcase-text">
+          <div class="showcase-eyebrow">WISSENSDATENBANK</div>
+          <h3>Deine Dokumente, sofort durchsuchbar</h3>
+          <p>Lade ein PDF hoch — FAQ, Preisliste, Handbuch, was auch immer — und lass Fragen dazu automatisch beantworten. Eigenständig nutzbar oder kombiniert mit deinem Chatbot.</p>
+          <a class="btn btn-primary" href="produkte.html#wissen" target="_blank">Wissensdatenbank entdecken →</a>
+          <div class="badge-row">
+            <div class="badge-item"><span class="check">✓</span> PDF-Upload</div>
+            <div class="badge-item"><span class="check">✓</span> Sofort einsatzbereit</div>
+            <div class="badge-item"><span class="check">✓</span> Sicher gespeichert</div>
+          </div>
+        </div>
+        <div class="showcase-visual">
+          <div class="mock-pdf">
+            <div class="mock-pdf-row">
+              <span class="file-icon">PDF</span>
+              <span class="file-name">Garantiebedingungen.pdf</span>
+            </div>
+            <div class="mock-pdf-answer">
+              <strong>Frage:</strong> Wie lange gilt die Garantie?<br>
+              <strong>Antwort:</strong> Laut Dokument beträgt die Garantiezeit 24 Monate.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <section id="preise">
   <div class="wrap">
-    <div class="eyebrow">Preise</div>
-    <h2 class="pricing-headline">Schluss mit <span class="strike">verpasstem</span> Kundenkontakt.</h2>
+    <div class="eyebrow">Lösungen</div>
+    <h2 class="section-title">Zwei Bausteine, ein Ziel</h2>
+    <p class="section-sub">Wähl, was zu deinem Business passt — die passenden Preise findest du im Detail auf der Produkte-Seite.</p>
 
-    <div class="billing-toggle">
-      <span>Monatlich</span>
-      <button class="switch" id="billingSwitch" aria-label="Abrechnung umschalten"><span class="thumb"></span></button>
-      <span>Jährliche Abrechnung · <span class="save-text">20% sparen</span></span>
-    </div>
-
-    <div class="plans">
-      <div class="plan" data-monthly="29,99" data-yearly="287" data-setup="49">
-        <div class="plan-name-row"><h3>Basic</h3></div>
-        <div class="desc">Für den Einstieg</div>
-        <div class="price-row">
-          <span class="price-amount">29,99€</span>
-          <span class="price-meta"><span class="unit-label">pro Monat</span><br><span class="billing-label">monatlich abgerechnet</span></span>
-        </div>
-        <div class="setup-note" id="setupNote0" data-fee-text="+ 49€ einmalige Einrichtung">+ 49€ einmalige Einrichtung</div>
-        <a class="btn btn-secondary" href="#kontakt">Basic wählen</a>
-        <ul>
-          <li><span class="li-icon">💬</span>Bis zu 15 Standardfragen</li>
-          <li><span class="li-icon">📄</span>Einbindung auf einer Seite</li>
-          <li><span class="li-icon">🔁</span>1 Anpassungsrunde / Monat</li>
-        </ul>
+    <div class="solutions-grid">
+      <div class="solution-card">
+        <div class="icon">💬</div>
+        <h3>KI-Chatbot</h3>
+        <p>Beantwortet Kundenfragen automatisch, rund um die Uhr — von Öffnungszeiten bis Reservierungswünschen. In wenigen Tagen live auf deiner Website.</p>
+        <a class="learn-more" href="produkte.html#chatbot" target="_blank">Preise ansehen →</a>
       </div>
-
-      <div class="plan featured" data-monthly="49,49" data-yearly="475" data-setup="89">
-        <div class="plan-name-row"><h3>Standard</h3><span class="popular-pill">Beliebt</span></div>
-        <div class="desc">Der Alltagsbegleiter</div>
-        <div class="price-row">
-          <span class="price-amount">49,49€</span>
-          <span class="price-meta"><span class="unit-label">pro Monat</span><br><span class="billing-label">monatlich abgerechnet</span></span>
-        </div>
-        <div class="setup-note" id="setupNote1" data-fee-text="+ 89€ einmalige Einrichtung">+ 89€ einmalige Einrichtung</div>
-        <a class="btn btn-secondary" href="#kontakt">Standard wählen</a>
-        <ul>
-          <li><span class="li-icon">💬</span>Unbegrenzte Fragen zu deinem Business</li>
-          <li><span class="li-icon">✓</span>Alles aus Basic</li>
-          <li><span class="li-icon">📅</span>Termin-/Reservierungsanfragen</li>
-          <li><span class="li-icon">🔁</span>Laufende Anpassungen</li>
-        </ul>
-      </div>
-
-      <div class="plan" data-monthly="89,99" data-yearly="863" data-setup="149">
-        <div class="plan-name-row"><h3>Premium</h3></div>
-        <div class="desc">Für mehrere Standorte</div>
-        <div class="price-row">
-          <span class="price-amount">89,99€</span>
-          <span class="price-meta"><span class="unit-label">pro Monat</span><br><span class="billing-label">monatlich abgerechnet</span></span>
-        </div>
-        <div class="setup-note" id="setupNote2" data-fee-text="+ 149€ einmalige Einrichtung">+ 149€ einmalige Einrichtung</div>
-        <a class="btn btn-secondary" href="#kontakt">Premium wählen</a>
-        <ul>
-          <li><span class="li-icon">✓</span>Alles aus Standard</li>
-          <li><span class="li-icon">🌍</span>Mehrsprachig (z. B. DE/EN)</li>
-          <li><span class="li-icon">🏢</span>Für mehrere Standorte geeignet</li>
-          <li><span class="li-icon">⚙️</span>Priorisierter Support</li>
-        </ul>
+      <div class="solution-card">
+        <div class="icon">📚</div>
+        <h3>Wissensdatenbank</h3>
+        <p>Lade ein PDF hoch, lass Fragen dazu automatisch beantworten — eigenständig nutzbar oder zusammen mit dem Chatbot.</p>
+        <a class="learn-more" href="produkte.html#wissen" target="_blank">Preise ansehen →</a>
       </div>
     </div>
 
-    <p class="cancel-note">Bei jährlicher Zahlung entfällt die Einrichtungsgebühr. Jederzeit kündbar. Zahlungen sind <u>nicht erstattungsfähig</u>.</p>
+    <div style="text-align:center; margin-top:40px;">
+      <a class="btn btn-primary" href="produkte.html" target="_blank">Alle Preise im Detail ansehen</a>
+    </div>
   </div>
 </section>
 
@@ -550,7 +696,7 @@
 <section class="trial-section">
   <div class="wrap">
     <div class="trial-banner">
-      <div class="trial-icon">☁️</div>
+      <div class="trial-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></div>
       <h2>Bereit für deinen eigenen Chatbot?</h2>
       <p>Starte unverbindlich mit einer kostenlosen Testphase — kein Risiko, jederzeit kündbar.</p>
       <button class="trial-cta-btn" onclick="document.getElementById('kontakt').scrollIntoView({behavior:'smooth'})">
@@ -582,13 +728,60 @@
   </div>
 </section>
 
-<footer>© 2026 CloudFlow · KI-Chatbots für lokale Unternehmen</footer>
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-tagline">Mehr Zeit für dein Business.</div>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram">📷</a>
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="X">✕</a>
+        </div>
+        <a class="footer-newsletter" href="#kontakt">✉️ Zum Newsletter anmelden</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Unternehmen</h4>
+        <ul>
+          <li><a href="#ablauf">Über uns</a></li>
+          <li><a href="#kontakt">Kontakt</a></li>
+          <li><a href="#">Impressum</a></li>
+          <li><a href="#">Datenschutz</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Produkte</h4>
+        <ul>
+          <li><a href="produkte.html#chatbot" target="_blank">KI-Chatbot</a></li>
+          <li><a href="produkte.html#wissen" target="_blank">Wissensdatenbank</a></li>
+          <li><a href="produkte.html" target="_blank">Alle Preise</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Mehr erfahren</h4>
+        <ul>
+          <li><a href="#ablauf">So funktioniert's</a></li>
+          <li><a href="#faq">Häufige Fragen</a></li>
+          <li><a href="dashboard.html">Kunden-Login</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>CloudFlow</div>
+      <div class="copyright">© 2026 CloudFlow. Alle Rechte vorbehalten.</div>
+    </div>
+  </div>
+</footer>
 
 <!-- Floating Chat Widget -->
 <div class="chat-panel" id="chatPanel">
   <div class="chat-hero">
     <button class="close-btn" onclick="toggleChat()" aria-label="Chat schließen">✕</button>
-    <div class="logo-circle">☁️</div>
+    <div class="logo-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></div>
     <h3>CloudFlow Chatbot</h3>
     <span class="status-inline">Online</span>
   </div>
@@ -667,34 +860,6 @@ document.querySelectorAll('.chip').forEach(chip => {
 document.querySelectorAll('.faq-item').forEach(item => {
   item.querySelector('.faq-q').addEventListener('click', () => {
     item.classList.toggle('open');
-  });
-});
-
-// Preis-Umschalter (Monatlich / Jährlich)
-const billingSwitch = document.getElementById('billingSwitch');
-billingSwitch.addEventListener('click', () => {
-  const isYearly = billingSwitch.classList.toggle('on');
-  document.querySelectorAll('.plan').forEach(plan => {
-    const amountEl = plan.querySelector('.price-amount');
-    const unitEl = plan.querySelector('.price-meta .unit-label');
-    const metaEl = plan.querySelector('.price-meta .billing-label');
-    const setupEl = plan.querySelector('.setup-note');
-    const raw = isYearly ? plan.dataset.yearly : plan.dataset.monthly;
-    amountEl.style.opacity = 0;
-    setTimeout(() => {
-      amountEl.textContent = raw + '€';
-      unitEl.textContent = isYearly ? 'pro Jahr' : 'pro Monat';
-      metaEl.textContent = isYearly ? 'jährlich abgerechnet' : 'monatlich abgerechnet';
-      amountEl.style.opacity = 1;
-    }, 120);
-    if(setupEl){
-      setupEl.style.opacity = 0;
-      setTimeout(() => {
-        setupEl.textContent = isYearly ? '✓ Kostenlose Einrichtung inklusive' : setupEl.dataset.feeText;
-        setupEl.classList.toggle('free', isYearly);
-        setupEl.style.opacity = 1;
-      }, 120);
-    }
   });
 });
 
