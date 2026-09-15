@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI-Chatbots für dein Business</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1D1D1F;
+    --ink-soft:#6E6E73;
+    --bg:#FFFFFF;
+    --bg-dim:#F5F5F7;
+    --blue:#0071E3;
+    --blue-dark:#0059B3;
+    --line:rgba(0,0,0,0.08);
+    --radius:20px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; font-family:inherit;}
+  html{scroll-behavior:smooth; overflow-x:hidden;}
+  body{
+    font-family:'General Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-feature-settings: "ss01" on, "ss02" on, "cv01" on, "cv11" on;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:980px; margin:0 auto; padding:0 24px;}
+  h1,h2,h3{font-weight:600; letter-spacing:-0.015em;}
+
+  /* NAV */
+  nav{
+    position:fixed; top:20px; left:50%; transform:translateX(-50%);
+    z-index:200; width:auto; max-width:calc(100% - 40px);
+  }
+  nav .wrap{
+    display:flex; align-items:center; gap:36px; height:56px;
+    background:rgba(9,23,46,0.78);
+    backdrop-filter:saturate(180%) blur(20px);
+    border-radius:980px;
+    padding:0 10px 0 22px;
+    box-shadow:0 12px 32px -10px rgba(0,32,80,0.4);
+    max-width:none; width:auto;
+  }
+  .brand{font-weight:600; font-size:0.98rem; letter-spacing:-0.01em; display:flex; align-items:center; gap:8px; color:#fff;}
+  .brand-icon{
+    width:28px; height:28px; border-radius:8px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.18);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-icon svg{width:16px; height:16px; color:#fff;}
+  nav ul{display:flex; gap:24px; list-style:none; font-size:0.85rem; color:rgba(255,255,255,0.85); white-space:nowrap;}
+  nav ul li{display:flex; align-items:center; gap:7px;}
+  nav ul li::before{content:""; width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,0.4); flex-shrink:0;}
+  nav ul a{color:inherit;}
+  nav ul a:hover{color:#fff;}
+  .nav-cta{
+    background:#fff; color:#1D1D1F; padding:9px 20px; border-radius:980px;
+    font-size:0.8rem; font-weight:600; white-space:nowrap;
+  }
+  .nav-cta:hover{background:#F0F0F2;}
+  @media (max-width:900px){ nav ul{display:none;} nav .wrap{gap:16px;} }
+
+  /* Platz oben lassen, da nav jetzt schwebt statt im Fluss zu liegen */
+  body{padding-top:0;}
+  .hero{padding-top:150px;}
+
+  .has-dropdown{position:relative;}
+  .dropdown-panel{
+    position:absolute; top:100%; left:0; transform:translateY(10px);
+    opacity:0; pointer-events:none; transition:opacity .18s ease, transform .18s ease;
+    background:#fff; border:1px solid var(--line); border-radius:16px;
+    box-shadow:0 20px 44px -16px rgba(0,0,0,0.3); padding:8px; width:290px; z-index:60;
+    margin-top:8px;
+  }
+  .has-dropdown:hover .dropdown-panel{opacity:1; pointer-events:auto; transform:translateY(0);}
+  .dropdown-item{
+    display:flex; gap:12px; padding:12px; border-radius:10px; align-items:flex-start; text-align:left;
+  }
+  .dropdown-item:hover{background:var(--bg-dim);}
+  .dropdown-item .dd-icon{
+    width:34px; height:34px; border-radius:9px; background:var(--bg-dim);
+    display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0;
+  }
+  .dropdown-item strong{font-size:0.86rem; display:block; margin-bottom:2px; color:var(--ink);}
+  .dropdown-item p{font-size:0.78rem; color:var(--ink-soft); line-height:1.4; margin:0;}
+
+  /* HERO */
+  .hero{
+    text-align:center;
+    padding:150px 24px 90px;
+    background:linear-gradient(180deg, #FBFBFD 0%, #FFFFFF 100%);
+  }
+  .hero h1{
+    font-size:clamp(2.6rem, 6vw, 4.4rem);
+    line-height:1.05;
+    margin-bottom:18px;
+  }
+  .hero h1 span{
+    background:linear-gradient(90deg,#0071E3,#42A5F5);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p{
+    font-size:clamp(1.1rem, 2vw, 1.4rem);
+    color:var(--ink-soft);
+    max-width:620px; margin:0 auto 36px;
+    font-weight:400;
+  }
+  .hero-actions{display:flex; gap:14px; justify-content:center; flex-wrap:wrap;}
+  .btn{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:13px 26px; border-radius:980px; font-weight:500; font-size:0.98rem;
+    cursor:pointer; border:none; transition:transform .15s, opacity .15s;
+  }
+  .btn-primary{background:var(--blue); color:#fff;}
+  .btn-primary:hover{background:var(--blue-dark);}
+  .btn-secondary{background:var(--bg-dim); color:var(--ink);}
+  .btn-secondary:hover{background:#E8E8ED;}
+  .btn:active{transform:scale(0.97);}
+
+  /* SECTION SHARED */
+  section{padding:90px 0;}
+  .eyebrow{
+    text-align:center; font-size:0.85rem; font-weight:600; color:var(--blue);
+    margin-bottom:10px;
+  }
+  .section-title{text-align:center; font-size:clamp(1.9rem,3.4vw,2.6rem); margin-bottom:14px;}
+  .section-sub{text-align:center; color:var(--ink-soft); font-size:1.05rem; max-width:560px; margin:0 auto 56px;}
+
+  /* CHAT WIDGET (floating) */
+  .chat-fab{
+    position:fixed; bottom:24px; right:24px; z-index:200;
+    width:58px; height:58px; border-radius:50%;
+    background:var(--blue); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 30px -6px rgba(0,113,227,0.55);
+    transition:transform .2s;
+    font-size:1.5rem;
+  }
+  .chat-fab:hover{transform:scale(1.06);}
+  .chat-fab .icon-close{display:none;}
+  .chat-fab.open .icon-chat{display:none;}
+  .chat-fab.open .icon-close{display:block;}
+
+  .chat-panel{
+    position:fixed; bottom:94px; right:24px; z-index:199;
+    width:360px; max-width:calc(100vw - 32px);
+    background:#fff; border-radius:var(--radius);
+    box-shadow:0 24px 60px -16px rgba(0,0,0,0.28);
+    overflow:hidden;
+    border:1px solid var(--line);
+    opacity:0; transform:translateY(16px) scale(0.97);
+    pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+  }
+  .chat-panel.open{
+    opacity:1; transform:translateY(0) scale(1);
+    pointer-events:auto;
+  }
+  .chat-head{
+    display:flex; align-items:center; gap:10px;
+    padding:16px 20px; border-bottom:1px solid var(--line);
+  }
+  .chat-head .avatar{
+    width:34px; height:34px; border-radius:50%;
+    background:linear-gradient(135deg,#0071E3,#42A5F5);
+    display:flex; align-items:center; justify-content:center; font-size:1rem;
+  }
+  .chat-head .who{font-weight:600; font-size:0.92rem;}
+  .chat-head .status{font-size:0.75rem; color:#34C759; display:flex; align-items:center; gap:5px;}
+  .chat-head .status::before{content:""; width:6px; height:6px; border-radius:50%; background:#34C759;}
+
+  .chat-hero{
+    position:relative;
+    background:linear-gradient(180deg, #E9F2FF 0%, #FFFFFF 100%);
+    padding:26px 20px 20px; text-align:center;
+  }
+  .chat-hero .close-btn{
+    position:absolute; top:14px; left:14px;
+    width:30px; height:30px; border-radius:50%; background:#fff;
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:0.9rem; color:var(--ink-soft);
+  }
+  .chat-hero .close-btn:hover{background:var(--bg-dim);}
+  .chat-hero .logo-circle{
+    width:64px; height:64px; border-radius:50%; margin:0 auto 12px;
+    background:#fff; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 20px -6px rgba(0,0,0,0.12);
+  }
+  .chat-hero .logo-circle svg{width:30px; height:30px; color:#8E8E93;}
+  .chat-hero h3{font-size:1.15rem; margin-bottom:4px;}
+  .chat-hero .status-inline{font-size:0.75rem; color:#1A9F5C; display:inline-flex; align-items:center; gap:5px;}
+  .chat-hero .status-inline::before{content:""; width:6px; height:6px; border-radius:50%; background:#1A9F5C;}
+  #chatLog{
+    height:260px; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:12px;
+  }
+  .msg{max-width:78%; padding:10px 14px; border-radius:16px; font-size:0.9rem; line-height:1.45;}
+  .msg.bot{background:var(--bg-dim); align-self:flex-start; border-bottom-left-radius:5px;}
+  .msg.user{background:var(--blue); color:#fff; align-self:flex-end; border-bottom-right-radius:5px;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; padding:0 20px 16px;}
+  .chip{
+    background:var(--bg-dim); border:1px solid var(--line); border-radius:980px;
+    padding:7px 14px; font-size:0.8rem; cursor:pointer; transition:background .15s; color:var(--ink);
+  }
+  .chip:hover{background:#E8E8ED;}
+  .chat-input{display:flex; gap:10px; padding:16px 18px; border-top:1px solid var(--line);}
+  .chat-input input{
+    flex:1; border:1px solid var(--line); background:var(--bg-dim); border-radius:980px;
+    padding:11px 16px; font-size:0.9rem; font-family:inherit; outline:none;
+  }
+  .chat-input input:focus{border-color:var(--blue); background:#fff;}
+  .chat-input button{
+    background:var(--blue); color:#fff; border:none; border-radius:980px;
+    padding:0 20px; font-weight:500; cursor:pointer; font-size:0.85rem;
+  }
+  .typing{display:flex; gap:4px; align-self:flex-start; padding:10px 14px; background:var(--bg-dim); border-radius:16px; border-bottom-left-radius:5px;}
+  .typing span{width:6px; height:6px; border-radius:50%; background:#A1A1A6; animation:bounce 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:.15s;} .typing span:nth-child(3){animation-delay:.3s;}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0); opacity:.5;} 30%{transform:translateY(-4px); opacity:1;}}
+
+  /* ABLAUF */
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  @media (max-width:760px){ .steps{grid-template-columns:1fr;} }
+  .step{
+    background:var(--bg-dim); border-radius:var(--radius); padding:32px 26px;
+  }
+  .step .num{
+    width:34px; height:34px; border-radius:50%; background:var(--ink); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:600;
+    margin-bottom:18px;
+  }
+  .step h3{font-size:1.1rem; margin-bottom:8px;}
+  .step p{color:var(--ink-soft); font-size:0.92rem;}
+
+  /* SOLUTIONS OVERVIEW (ersetzt Preistabelle) */
+  .solutions-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media (max-width:700px){ .solutions-grid{grid-template-columns:1fr;} }
+  .solution-card{
+    border:1px solid var(--line); border-radius:var(--radius); padding:34px 30px;
+    background:#fff; transition:border-color .2s, transform .2s;
+  }
+  .solution-card:hover{border-color:var(--blue); transform:translateY(-2px);}
+  .solution-card .icon{
+    width:52px; height:52px; border-radius:14px; margin-bottom:20px;
+    background:var(--bg-dim); display:flex; align-items:center; justify-content:center; font-size:1.5rem;
+  }
+  .solution-card h3{font-size:1.2rem; margin-bottom:10px;}
+  .solution-card p{color:var(--ink-soft); font-size:0.92rem; margin-bottom:18px;}
+  .solution-card .learn-more{font-size:0.85rem; font-weight:600; color:var(--blue); display:inline-flex; align-items:center; gap:5px;}
+
+  /* PRODUCT SHOWCASE (ausführlich, alternierend) */
+  .showcase{padding:20px 0;}
+  .showcase-card{
+    background:linear-gradient(135deg, #F0F7FF 0%, #FAFBFC 100%);
+    border:1px solid var(--line); border-radius:28px;
+    padding:48px; margin-bottom:24px;
+  }
+  .showcase-grid{display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center;}
+  .showcase-card.reverse .showcase-grid{direction:rtl;}
+  .showcase-card.reverse .showcase-text{direction:ltr;}
+  .showcase-card.reverse .showcase-visual{direction:ltr;}
+  @media (max-width:800px){
+    .showcase-grid{grid-template-columns:1fr;}
+    .showcase-card.reverse .showcase-grid{direction:ltr;}
+    .showcase-card{padding:32px 24px;}
+  }
+  .showcase-eyebrow{font-size:0.8rem; font-weight:700; color:var(--blue); margin-bottom:12px;}
+  .showcase-text h3{font-size:clamp(1.5rem,2.6vw,1.9rem); margin-bottom:16px; line-height:1.2;}
+  .showcase-text p{color:var(--ink-soft); font-size:0.98rem; margin-bottom:26px; line-height:1.6;}
+
+  /* Chat mockup visual */
+  .mock-chat{
+    background:#fff; border-radius:20px; box-shadow:0 20px 50px -20px rgba(0,0,0,0.18);
+    border:1px solid var(--line); overflow:hidden; max-width:340px; margin:0 auto;
+  }
+  .mock-chat-head{background:var(--ink); color:#fff; padding:14px 16px; display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:600;}
+  .mock-chat-head .dot{width:7px; height:7px; border-radius:50%; background:#34C759;}
+  .mock-chat-body{padding:16px; display:flex; flex-direction:column; gap:10px;}
+  .mock-bubble{max-width:80%; padding:9px 13px; border-radius:14px; font-size:0.85rem; line-height:1.4;}
+  .mock-bubble.bot{background:var(--bg-dim); align-self:flex-start; border-bottom-left-radius:4px;}
+  .mock-bubble.user{background:var(--blue); color:#fff; align-self:flex-end; border-bottom-right-radius:4px;}
+
+  /* PDF mockup visual */
+  .mock-pdf{
+    background:#fff; border-radius:20px; box-shadow:0 20px 50px -20px rgba(0,0,0,0.18);
+    border:1px solid var(--line); padding:24px; max-width:340px; margin:0 auto;
+  }
+  .mock-pdf-row{display:flex; align-items:center; gap:12px; padding:12px; border-radius:12px; background:var(--bg-dim); margin-bottom:10px;}
+  .mock-pdf-row .file-icon{width:36px; height:36px; border-radius:9px; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; flex-shrink:0;}
+  .mock-pdf-row .file-name{font-size:0.85rem; font-weight:500;}
+  .mock-pdf-answer{background:#F0F7FF; border:1px solid rgba(0,113,227,0.15); border-radius:12px; padding:12px 14px; font-size:0.83rem; color:var(--ink); margin-top:14px;}
+  .mock-pdf-answer strong{color:var(--blue);}
+
+  .badge-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:36px;}
+  .badge-item{
+    display:flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--line);
+    border-radius:980px; padding:9px 16px; font-size:0.85rem; font-weight:500;
+  }
+  .badge-item .check{color:var(--blue); font-weight:700;}
+
+  /* PREISE */
+  .pricing-headline{
+    text-align:center; font-family:'General Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:clamp(1.8rem, 3.6vw, 2.7rem); font-weight:700; margin-bottom:28px; color:var(--ink); letter-spacing:-0.02em;
+  }
+  .pricing-headline .strike{position:relative; color:#B0B0B5;}
+  .pricing-headline .strike::after{
+    content:""; position:absolute; left:-2%; right:-2%; top:52%; height:2px; background:#E0453C; transform:rotate(-2deg);
+  }
+
+  .billing-toggle{display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:52px; font-size:0.95rem; color:var(--ink-soft);}
+  .switch{
+    position:relative; width:46px; height:26px; border-radius:980px; background:#DADADE;
+    border:none; cursor:pointer; transition:background .2s; flex-shrink:0;
+  }
+  .switch.on{background:var(--blue);}
+  .switch .thumb{
+    position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#fff;
+    box-shadow:0 1px 3px rgba(0,0,0,0.25); transition:transform .2s;
+  }
+  .switch.on .thumb{transform:translateX(20px);}
+  .save-text{color:var(--blue); font-weight:600;}
+
+  .plans{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; min-width:0;}
+  @media (max-width:800px){ .plans{grid-template-columns:1fr;} }
+  .plan{
+    border:1px solid var(--line); border-radius:24px; padding:36px 30px;
+    display:flex; flex-direction:column; background:#fff; min-width:0;
+  }
+  .plan.featured{background:var(--bg-dim); border-color:var(--line);}
+  .plan-name-row{display:flex; align-items:center; gap:10px; margin-bottom:6px;}
+  .plan h3{font-size:1.5rem;}
+  .popular-pill{
+    background:var(--blue); color:#fff; font-size:0.72rem; font-weight:700;
+    padding:5px 13px; border-radius:980px;
+  }
+  .plan .desc{font-size:0.9rem; color:var(--ink-soft); margin-bottom:26px;}
+  .plan .price-row{display:flex; align-items:baseline; gap:10px; margin-bottom:24px;}
+  .plan .price-amount{font-size:3rem; font-weight:800; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; display:inline-block; width:6.2ch; text-align:left;}
+  .plan .price-meta{font-size:0.85rem; color:var(--ink-soft); line-height:1.3;}
+  .plan .btn{width:100%; justify-content:center; margin-bottom:26px;}
+  .plan.featured .btn-secondary{background:var(--blue); color:#fff;}
+  .plan.featured .btn-secondary:hover{background:var(--blue-dark);}
+  .plan ul{list-style:none; display:flex; flex-direction:column; gap:14px;}
+  .plan li{font-size:0.9rem; display:flex; align-items:center; gap:10px;}
+  .plan li .li-icon{color:var(--ink-soft); font-size:1rem; width:20px; text-align:center; flex-shrink:0;}
+  .cancel-note{text-align:center; color:var(--ink-soft); font-size:0.88rem; margin-top:40px;}
+  .cancel-note u{text-decoration-color:var(--ink-soft);}
+  .setup-note{font-size:0.8rem; color:var(--ink-soft); margin-top:-16px; margin-bottom:22px; transition:opacity .15s; font-weight:500;}
+  .setup-note.free{color:var(--green, #34C759); font-weight:600;}
+
+  /* FAQ */
+  .faq-section{background:var(--bg-dim);}
+
+  /* TESTIMONIALS */
+  .testimonial-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media (max-width:850px){ .testimonial-grid{grid-template-columns:1fr;} }
+  .testimonial-card{
+    background:#fff; border:1px solid var(--line); border-radius:20px; padding:28px 26px;
+    display:flex; flex-direction:column;
+  }
+  .testimonial-stars{color:#FFB400; font-size:1rem; letter-spacing:2px; margin-bottom:14px;}
+  .testimonial-quote{font-size:0.95rem; line-height:1.55; color:var(--ink); margin-bottom:24px; flex:1;}
+  .testimonial-person{display:flex; align-items:center; gap:12px;}
+  .testimonial-avatar{
+    width:42px; height:42px; border-radius:50%; flex-shrink:0;
+    background:linear-gradient(135deg,#0071E3,#42A5F5);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:600; font-size:0.95rem;
+  }
+  .testimonial-name{font-weight:600; font-size:0.9rem;}
+  .testimonial-role{font-size:0.8rem; color:var(--ink-soft);}
+  .testimonial-note{
+    text-align:center; font-size:0.8rem; color:var(--ink-soft); margin-top:28px;
+  }
+  .faq-list{max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:1px;}
+  .faq-item{background:#fff; border-radius:14px; margin-bottom:10px; overflow:hidden; border:1px solid var(--line);}
+  .faq-q{
+    padding:20px 24px; font-weight:500; font-size:0.98rem; cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .faq-q .icon{transition:transform .25s; color:var(--ink-soft); font-size:1.1rem;}
+  .faq-item.open .faq-q .icon{transform:rotate(45deg);}
+  .faq-a{
+    max-height:0; overflow:hidden; transition:max-height .3s ease, padding .3s ease;
+    padding:0 24px; color:var(--ink-soft); font-size:0.9rem;
+  }
+  .faq-item.open .faq-a{max-height:200px; padding:0 24px 20px;}
+
+  /* CONTACT */
+  .contact-box{
+    max-width:560px; margin:0 auto; text-align:center;
+  }
+  form{display:flex; flex-direction:column; gap:12px; margin-top:32px; text-align:left;}
+  form input, form textarea{
+    border:1px solid var(--line); background:var(--bg-dim); border-radius:14px;
+    padding:14px 16px; font-family:inherit; font-size:0.92rem; outline:none;
+  }
+  form input:focus, form textarea:focus{border-color:var(--blue); background:#fff;}
+  form textarea{resize:vertical; min-height:100px;}
+  form button{margin-top:6px;}
+
+  footer{background:var(--bg-dim); padding:64px 0 0; font-size:0.87rem;}
+  .footer-grid{display:grid; grid-template-columns:1.3fr 1fr 1fr 1fr; gap:32px; padding-bottom:44px;}
+  @media (max-width:800px){ .footer-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:520px){ .footer-grid{grid-template-columns:1fr;} }
+  .footer-tagline{font-size:1.3rem; font-weight:700; line-height:1.25; margin-bottom:20px;}
+  .footer-social{display:flex; gap:10px; margin-bottom:26px;}
+  .footer-social a{
+    width:36px; height:36px; border-radius:50%; background:var(--ink); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:0.85rem;
+  }
+  .footer-social a:hover{background:var(--blue);}
+  .footer-newsletter{display:flex; align-items:center; gap:8px; font-weight:600; font-size:0.88rem;}
+  .footer-col h4{font-size:0.82rem; font-weight:700; margin-bottom:16px; letter-spacing:0.01em;}
+  .footer-col ul{list-style:none; display:flex; flex-direction:column; gap:11px;}
+  .footer-col a{color:var(--ink-soft); font-size:0.87rem;}
+  .footer-col a:hover{color:var(--ink);}
+  .footer-bottom{
+    border-top:1px solid var(--line); padding:22px 0;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+  }
+  .footer-bottom .brand{font-weight:700; font-size:1rem;}
+  .footer-bottom .copyright{color:var(--ink-soft); font-size:0.82rem;}
+
+  /* TRIAL CTA BANNER */
+  .trial-section{padding:70px 0;}
+  .trial-banner{
+    position:relative;
+    background:linear-gradient(135deg, #F0F7FF 0%, #FFFFFF 55%, #F5F5F7 100%);
+    border:1px solid var(--line);
+    border-radius:28px;
+    padding:56px 40px;
+    text-align:center;
+    overflow:hidden;
+  }
+  .trial-banner::before{
+    content:"";
+    position:absolute; top:-120px; right:-100px;
+    width:320px; height:320px; border-radius:50%;
+    background:radial-gradient(circle, rgba(0,113,227,0.14), transparent 70%);
+  }
+  .trial-banner::after{
+    content:"";
+    position:absolute; bottom:-140px; left:-80px;
+    width:280px; height:280px; border-radius:50%;
+    background:radial-gradient(circle, rgba(0,113,227,0.08), transparent 70%);
+  }
+  .trial-banner > *{position:relative; z-index:1;}
+  .trial-icon{
+    width:56px; height:56px; border-radius:16px; margin:0 auto 22px;
+    background:#fff; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 26px -8px rgba(0,0,0,0.12);
+    transform:rotate(-4deg);
+  }
+  .trial-icon svg{width:26px; height:26px; color:#8E8E93;}
+  .trial-banner h2{
+    font-size:clamp(1.7rem, 3.2vw, 2.3rem); font-weight:700; margin-bottom:12px; color:var(--ink);
+  }
+  .trial-banner p{font-size:1rem; color:var(--ink-soft); margin-bottom:30px;}
+  .trial-cta-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--ink); color:#fff; border:none; border-radius:980px;
+    padding:15px 32px; font-size:0.98rem; font-weight:600; font-family:inherit;
+    cursor:pointer; transition:transform .15s, background .15s;
+  }
+  .trial-cta-btn:hover{background:#000; transform:translateY(-1px);}
+  .trial-checks{
+    display:flex; justify-content:center; gap:12px; margin-top:26px; flex-wrap:wrap;
+  }
+  .trial-checks .check-item{
+    display:flex; align-items:center; gap:7px; font-size:0.85rem; font-weight:500; color:var(--ink);
+    background:#fff; border:1px solid var(--line); padding:8px 16px; border-radius:980px;
+  }
+  .trial-checks .check-item::before{content:"✓"; color:var(--blue); font-weight:700;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>CloudFlow</div>
+    <ul>
+      <li><a href="produkte.html" target="_blank">Produkte</a></li>
+      <li><a href="#preise">Preise</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+      <li><a href="dashboard.html" target="_blank">Login</a></li>
+    </ul>
+    <a class="nav-cta" href="#kontakt">Anfragen</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>KI-Chatbots,<br><span>die für dich arbeiten.</span></h1>
+  <p>Dein persönlicher Chatbot beantwortet Kundenfragen rund um die Uhr — freundlich, schnell, immer erreichbar. Ganz ohne technisches Vorwissen für dich.</p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="#kontakt">Kostenlose Beratung</a>
+    <button class="btn btn-secondary" onclick="openChat()">Chat ausprobieren</button>
+  </div>
+</section>
+
+<section id="ablauf">
+  <div class="wrap">
+    <div class="eyebrow">Ablauf</div>
+    <h2 class="section-title">In drei Schritten startklar</h2>
+    <p class="section-sub">Kein technisches Vorwissen nötig — du musst nur dein Business kennen.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Kurzes Gespräch</h3>
+        <p>Wir besprechen dein Business — Öffnungszeiten, Angebot, häufige Fragen, deinen Ton.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>Bot wird gebaut</h3>
+        <p>Innerhalb weniger Tage bekommst du einen fertigen, getesteten Chatbot — individuell für dich.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Live auf deiner Website</h3>
+        <p>Ich binde den Bot direkt ein. Du siehst sofort, wie er mit echten Besuchern chattet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="preise">
+  <div class="wrap">
+    <div class="eyebrow">Lösungen</div>
+    <h2 class="section-title">Zwei Bausteine, ein Ziel</h2>
+    <p class="section-sub">Wähl, was zu deinem Business passt — die passenden Preise findest du im Detail auf der Produkte-Seite.</p>
+
+    <div class="solutions-grid">
+      <div class="solution-card">
+        <div class="icon">💬</div>
+        <h3>KI-Chatbot</h3>
+        <p>Beantwortet Kundenfragen automatisch, rund um die Uhr — von Öffnungszeiten bis Reservierungswünschen. In wenigen Tagen live auf deiner Website.</p>
+        <a class="learn-more" href="produkte.html#chatbot" target="_blank">Preise ansehen →</a>
+      </div>
+      <div class="solution-card">
+        <div class="icon">📚</div>
+        <h3>Wissensdatenbank</h3>
+        <p>Lade ein PDF hoch, lass Fragen dazu automatisch beantworten — eigenständig nutzbar oder zusammen mit dem Chatbot.</p>
+        <a class="learn-more" href="produkte.html#wissen" target="_blank">Preise ansehen →</a>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:40px;">
+      <a class="btn btn-primary" href="produkte.html" target="_blank">Alle Preise im Detail ansehen</a>
+    </div>
+  </div>
+</section>
+
+<section class="faq-section" id="faq">
+  <div class="wrap">
+    <div class="eyebrow">FAQ</div>
+    <h2 class="section-title">Häufige Fragen</h2>
+    <p class="section-sub">Alles, was du vorher wissen solltest.</p>
+    <div class="faq-list" id="faqList">
+      <div class="faq-item">
+        <div class="faq-q"><span>Brauche ich technisches Wissen?</span><span class="icon">+</span></div>
+        <div class="faq-a">Nein. Du musst nur dein Business kennen — den Rest übernehme ich, von der Einrichtung bis zur Einbindung auf deiner Website.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Wie lange dauert die Einrichtung?</span><span class="icon">+</span></div>
+        <div class="faq-a">Je nach Paket meist wenige Tage bis eine Woche, ab unserem ersten Gespräch.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Was kostet der laufende Betrieb?</span><span class="icon">+</span></div>
+        <div class="faq-a">Alles ist im monatlichen Preis enthalten — keine versteckten Zusatzkosten. Bei jährlicher Zahlung sparst du 20%, jederzeit kündbar.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Kann der Bot auch Termine entgegennehmen?</span><span class="icon">+</span></div>
+        <div class="faq-a">Ja, ab dem Standard-Paket kann der Bot Reservierungs- und Terminwünsche strukturiert aufnehmen.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Kann ich den Bot später ändern lassen?</span><span class="icon">+</span></div>
+        <div class="faq-a">Klar — Öffnungszeiten, Preise oder neue Infos lassen sich jederzeit nachpflegen, je nach Paket inklusive oder gegen kleine Zusatzkosten.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trial-section">
+  <div class="wrap">
+    <div class="trial-banner">
+      <div class="trial-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></div>
+      <h2>Bereit für deinen eigenen Chatbot?</h2>
+      <p>Starte unverbindlich mit einer kostenlosen Testphase — kein Risiko, jederzeit kündbar.</p>
+      <button class="trial-cta-btn" onclick="document.getElementById('kontakt').scrollIntoView({behavior:'smooth'})">
+        Kostenlos starten <span>→</span>
+      </button>
+      <div class="trial-checks">
+        <div class="check-item">14 Tage testen</div>
+        <div class="check-item">Unverbindlich</div>
+        <div class="check-item">Jederzeit kündbar</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kontakt">
+  <div class="wrap">
+    <div class="contact-box">
+      <div class="eyebrow">Kontakt</div>
+      <h2 class="section-title">Lass uns reden</h2>
+      <p class="section-sub" style="margin-bottom:0;">Schreib mir kurz, worum's geht — Antwort meist innerhalb von 24 Stunden.</p>
+      <form onsubmit="return false;">
+        <input type="text" placeholder="Name" required>
+        <input type="text" placeholder="Business / Website">
+        <input type="email" placeholder="E-Mail" required>
+        <textarea placeholder="Kurz worum es geht …"></textarea>
+        <button class="btn btn-primary" type="submit">Nachricht senden</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-tagline">Mehr Zeit für dein Business.</div>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram">📷</a>
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="X">✕</a>
+        </div>
+        <a class="footer-newsletter" href="#kontakt">✉️ Zum Newsletter anmelden</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Unternehmen</h4>
+        <ul>
+          <li><a href="#ablauf">Über uns</a></li>
+          <li><a href="#kontakt">Kontakt</a></li>
+          <li><a href="#">Impressum</a></li>
+          <li><a href="#">Datenschutz</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Produkte</h4>
+        <ul>
+          <li><a href="produkte.html#chatbot" target="_blank">KI-Chatbot</a></li>
+          <li><a href="produkte.html#wissen" target="_blank">Wissensdatenbank</a></li>
+          <li><a href="produkte.html" target="_blank">Alle Preise</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Mehr erfahren</h4>
+        <ul>
+          <li><a href="#ablauf">So funktioniert's</a></li>
+          <li><a href="#faq">Häufige Fragen</a></li>
+          <li><a href="dashboard.html">Kunden-Login</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>CloudFlow</div>
+      <div class="copyright">© 2026 CloudFlow. Alle Rechte vorbehalten.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating Chat Widget -->
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-hero">
+    <button class="close-btn" onclick="toggleChat()" aria-label="Chat schließen">✕</button>
+    <div class="logo-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></div>
+    <h3>CloudFlow Chatbot</h3>
+    <span class="status-inline">Online</span>
+  </div>
+  <div id="chatLog">
+    <div class="msg bot">Hallo und willkommen bei CloudFlow 👋<br><br>Gerne beraten wir dich zu unseren Chatbots, Preisen oder wie du startest.</div>
+  </div>
+  <div class="chips">
+    <div class="chip" data-q="Was kostet das?">Preise</div>
+    <div class="chip" data-q="Wie läuft der Ablauf ab?">Ablauf</div>
+    <div class="chip" data-q="Brauche ich technisches Wissen?">Technik nötig?</div>
+  </div>
+  <div class="chat-input">
+    <input type="text" id="chatInput" placeholder="Nachricht schreiben …">
+    <button id="chatSend">Senden</button>
+  </div>
+</div>
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" aria-label="Chat öffnen">
+  <span class="icon-chat">💬</span>
+  <span class="icon-close">✕</span>
+</button>
+
+<script>
+const CLOUDFLOW_FUNCTION_URL = 'https://fdpkszhxiftsusvsvmev.supabase.co/functions/v1/chat';
+const CLOUDFLOW_COMPANY_ID = 'c69028c3-6a21-4abc-a8d4-8c44f3af0e80';
+const CLOUDFLOW_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkcGtzemh4aWZ0c3VzdnN2bWV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5Nzc1NzcsImV4cCI6MjEwNDU1MzU3N30.aZDp857JxHhNjFKXX3qQUm2MI4xI8LcPxep20-z_BoI';
+
+let chatHistory = [];
+
+async function botReply(text){
+  try{
+    const res = await fetch(CLOUDFLOW_FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + CLOUDFLOW_ANON_KEY,
+        'apikey': CLOUDFLOW_ANON_KEY
+      },
+      body: JSON.stringify({
+        company_id: CLOUDFLOW_COMPANY_ID,
+        message: text,
+        history: chatHistory
+      })
+    });
+    const data = await res.json();
+    if(data.reply){
+      chatHistory.push({ role: 'user', content: text });
+      chatHistory.push({ role: 'assistant', content: data.reply });
+      return data.reply;
+    }
+    return 'Entschuldigung, da ist etwas schiefgelaufen. Versuch es gleich nochmal.';
+  } catch(e){
+    return 'Der Chatbot ist gerade nicht erreichbar. Versuch es in ein paar Sekunden nochmal.';
+  }
+}
+
+const log = document.getElementById('chatLog');
+const input = document.getElementById('chatInput');
+
+function addMsg(text, who){
+  const div = document.createElement('div');
+  div.className = 'msg ' + who;
+  div.textContent = text;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function send(text){
+  if(!text.trim()) return;
+  addMsg(text, 'user');
+  input.value = '';
+  const typing = document.createElement('div');
+  typing.className = 'typing';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  log.appendChild(typing);
+  log.scrollTop = log.scrollHeight;
+
+  const reply = await botReply(text);
+  typing.remove();
+  addMsg(reply, 'bot');
+}
+
+document.getElementById('chatSend').addEventListener('click', () => send(input.value));
+input.addEventListener('keydown', e => { if(e.key === 'Enter') send(input.value); });
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => send(chip.dataset.q));
+});
+
+document.querySelectorAll('.faq-item').forEach(item => {
+  item.querySelector('.faq-q').addEventListener('click', () => {
+    item.classList.toggle('open');
+  });
+});
+
+// Floating Chat Widget öffnen/schließen
+const chatPanel = document.getElementById('chatPanel');
+const chatFab = document.getElementById('chatFab');
+
+function toggleChat(){
+  chatPanel.classList.toggle('open');
+  chatFab.classList.toggle('open');
+}
+function openChat(){
+  chatPanel.classList.add('open');
+  chatFab.classList.add('open');
+}
+</script>
+
+</body>
+</html>
