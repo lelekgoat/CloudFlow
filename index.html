@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KI-Chatbots für dein Business</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700,800&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#1D1D1F;
@@ -18,10 +17,10 @@
     --line:rgba(0,0,0,0.08);
     --radius:20px;
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
+  *{box-sizing:border-box; margin:0; padding:0; font-family:inherit;}
   html{scroll-behavior:smooth; overflow-x:hidden;}
   body{
-    font-family:'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+    font-family:'General Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-feature-settings: "ss01" on, "ss02" on, "cv01" on, "cv11" on;
     background:var(--bg);
     color:var(--ink);
@@ -35,35 +34,49 @@
 
   /* NAV */
   nav{
-    position:sticky; top:0; z-index:50;
-    background:rgba(255,255,255,0.8);
-    backdrop-filter:saturate(180%) blur(20px);
-    border-bottom:1px solid var(--line);
+    position:fixed; top:20px; left:50%; transform:translateX(-50%);
+    z-index:200; width:auto; max-width:calc(100% - 40px);
   }
-  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:52px;}
-  .brand{font-weight:600; font-size:0.98rem; letter-spacing:-0.01em; display:flex; align-items:center; gap:8px;}
+  nav .wrap{
+    display:flex; align-items:center; gap:36px; height:56px;
+    background:rgba(9,23,46,0.78);
+    backdrop-filter:saturate(180%) blur(20px);
+    border-radius:980px;
+    padding:0 10px 0 22px;
+    box-shadow:0 12px 32px -10px rgba(0,32,80,0.4);
+    max-width:none; width:auto;
+  }
+  .brand{font-weight:600; font-size:0.98rem; letter-spacing:-0.01em; display:flex; align-items:center; gap:8px; color:#fff;}
   .brand-icon{
-    width:28px; height:28px; border-radius:8px; background:#fff; border:1px solid var(--line);
+    width:28px; height:28px; border-radius:8px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.18);
     display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
-  .brand-icon svg{width:16px; height:16px; color:#8E8E93;}
-  nav ul{display:flex; gap:28px; list-style:none; font-size:0.82rem; color:var(--ink-soft);}
-  nav ul a:hover{color:var(--ink);}
+  .brand-icon svg{width:16px; height:16px; color:#fff;}
+  nav ul{display:flex; gap:24px; list-style:none; font-size:0.85rem; color:rgba(255,255,255,0.85); white-space:nowrap;}
+  nav ul li{display:flex; align-items:center; gap:7px;}
+  nav ul li::before{content:""; width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,0.4); flex-shrink:0;}
+  nav ul a{color:inherit;}
+  nav ul a:hover{color:#fff;}
   .nav-cta{
-    background:var(--ink); color:#fff; padding:7px 16px; border-radius:980px;
-    font-size:0.8rem; font-weight:500;
+    background:#fff; color:#1D1D1F; padding:9px 20px; border-radius:980px;
+    font-size:0.8rem; font-weight:600; white-space:nowrap;
   }
-  @media (max-width:700px){ nav ul{display:none;} }
+  .nav-cta:hover{background:#F0F0F2;}
+  @media (max-width:900px){ nav ul{display:none;} nav .wrap{gap:16px;} }
+
+  /* Platz oben lassen, da nav jetzt schwebt statt im Fluss zu liegen */
+  body{padding-top:0;}
+  .hero{padding-top:150px;}
 
   .has-dropdown{position:relative;}
   .dropdown-panel{
-    position:absolute; top:100%; left:50%; transform:translateX(-50%) translateY(6px);
+    position:absolute; top:100%; left:0; transform:translateY(10px);
     opacity:0; pointer-events:none; transition:opacity .18s ease, transform .18s ease;
     background:#fff; border:1px solid var(--line); border-radius:16px;
-    box-shadow:0 20px 44px -16px rgba(0,0,0,0.2); padding:8px; width:290px; z-index:60;
+    box-shadow:0 20px 44px -16px rgba(0,0,0,0.3); padding:8px; width:290px; z-index:60;
     margin-top:8px;
   }
-  .has-dropdown:hover .dropdown-panel{opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0);}
+  .has-dropdown:hover .dropdown-panel{opacity:1; pointer-events:auto; transform:translateY(0);}
   .dropdown-item{
     display:flex; gap:12px; padding:12px; border-radius:10px; align-items:flex-start; text-align:left;
   }
@@ -72,13 +85,13 @@
     width:34px; height:34px; border-radius:9px; background:var(--bg-dim);
     display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0;
   }
-  .dropdown-item strong{font-size:0.86rem; display:block; margin-bottom:2px;}
+  .dropdown-item strong{font-size:0.86rem; display:block; margin-bottom:2px; color:var(--ink);}
   .dropdown-item p{font-size:0.78rem; color:var(--ink-soft); line-height:1.4; margin:0;}
 
   /* HERO */
   .hero{
     text-align:center;
-    padding:120px 24px 90px;
+    padding:150px 24px 90px;
     background:linear-gradient(180deg, #FBFBFD 0%, #FFFFFF 100%);
   }
   .hero h1{
@@ -291,7 +304,7 @@
 
   /* PREISE */
   .pricing-headline{
-    text-align:center; font-family:'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    text-align:center; font-family:'General Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size:clamp(1.8rem, 3.6vw, 2.7rem); font-weight:700; margin-bottom:28px; color:var(--ink); letter-spacing:-0.02em;
   }
   .pricing-headline .strike{position:relative; color:#B0B0B5;}
@@ -473,24 +486,10 @@
   <div class="wrap">
     <div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>CloudFlow</div>
     <ul>
-      <li class="has-dropdown">
-        <a href="produkte.html" target="_blank">Produkte</a>
-        <div class="dropdown-panel">
-          <a class="dropdown-item" href="produkte.html#chatbot" target="_blank">
-            <span class="dd-icon">💬</span>
-            <div><strong>KI-Chatbot</strong><p>Beantwortet Kundenfragen automatisch, rund um die Uhr.</p></div>
-          </a>
-          <a class="dropdown-item" href="produkte.html#wissen" target="_blank">
-            <span class="dd-icon">📚</span>
-            <div><strong>Wissensdatenbank</strong><p>PDF hochladen, Fragen dazu automatisch beantworten.</p></div>
-          </a>
-        </div>
-      </li>
-      <li><a href="#ablauf">Ablauf</a></li>
-      <li><a href="#preise">Lösungen</a></li>
-      <li><a href="#faq">FAQ</a></li>
+      <li><a href="produkte.html" target="_blank">Produkte</a></li>
+      <li><a href="#preise">Preise</a></li>
       <li><a href="#kontakt">Kontakt</a></li>
-      <li><a href="dashboard.html">Login</a></li>
+      <li><a href="dashboard.html" target="_blank">Login</a></li>
     </ul>
     <a class="nav-cta" href="#kontakt">Anfragen</a>
   </div>
@@ -527,68 +526,6 @@
         <p>Ich binde den Bot direkt ein. Du siehst sofort, wie er mit echten Besuchern chattet.</p>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="showcase">
-  <div class="wrap">
-
-    <!-- CHATBOT SHOWCASE -->
-    <div class="showcase-card">
-      <div class="showcase-grid">
-        <div class="showcase-text">
-          <div class="showcase-eyebrow">KI-CHATBOT</div>
-          <h3>Automatisiere deinen Kundenservice</h3>
-          <p>Die meisten Anfragen sind wiederkehrend — Öffnungszeiten, Preise, Reservierungswünsche. Dein CloudFlow-Chatbot beantwortet sie automatisch, rund um die Uhr, während du dich um dein Business kümmerst.</p>
-          <a class="btn btn-primary" href="produkte.html#chatbot" target="_blank">KI-Chatbot entdecken →</a>
-          <div class="badge-row">
-            <div class="badge-item"><span class="check">✓</span> 24/7 verfügbar</div>
-            <div class="badge-item"><span class="check">✓</span> Ohne Wartezeit</div>
-            <div class="badge-item"><span class="check">✓</span> In Tagen live</div>
-          </div>
-        </div>
-        <div class="showcase-visual">
-          <div class="mock-chat">
-            <div class="mock-chat-head"><span class="dot"></span> CloudFlow Chatbot</div>
-            <div class="mock-chat-body">
-              <div class="mock-bubble bot">Hallo! Wie kann ich dir helfen?</div>
-              <div class="mock-bubble user">Habt ihr am Sonntag offen?</div>
-              <div class="mock-bubble bot">Ja, sonntags von 9:00 bis 15:00 Uhr 😊</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WISSENSDATENBANK SHOWCASE -->
-    <div class="showcase-card reverse">
-      <div class="showcase-grid">
-        <div class="showcase-text">
-          <div class="showcase-eyebrow">WISSENSDATENBANK</div>
-          <h3>Deine Dokumente, sofort durchsuchbar</h3>
-          <p>Lade ein PDF hoch — FAQ, Preisliste, Handbuch, was auch immer — und lass Fragen dazu automatisch beantworten. Eigenständig nutzbar oder kombiniert mit deinem Chatbot.</p>
-          <a class="btn btn-primary" href="produkte.html#wissen" target="_blank">Wissensdatenbank entdecken →</a>
-          <div class="badge-row">
-            <div class="badge-item"><span class="check">✓</span> PDF-Upload</div>
-            <div class="badge-item"><span class="check">✓</span> Sofort einsatzbereit</div>
-            <div class="badge-item"><span class="check">✓</span> Sicher gespeichert</div>
-          </div>
-        </div>
-        <div class="showcase-visual">
-          <div class="mock-pdf">
-            <div class="mock-pdf-row">
-              <span class="file-icon">PDF</span>
-              <span class="file-name">Garantiebedingungen.pdf</span>
-            </div>
-            <div class="mock-pdf-answer">
-              <strong>Frage:</strong> Wie lange gilt die Garantie?<br>
-              <strong>Antwort:</strong> Laut Dokument beträgt die Garantiezeit 24 Monate.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
 </section>
 
@@ -646,50 +583,6 @@
         <div class="faq-a">Klar — Öffnungszeiten, Preise oder neue Infos lassen sich jederzeit nachpflegen, je nach Paket inklusive oder gegen kleine Zusatzkosten.</div>
       </div>
     </div>
-  </div>
-</section>
-
-<section id="bewertungen">
-  <div class="wrap">
-    <div class="eyebrow">Kundenstimmen</div>
-    <h2 class="section-title">Was Kunden sagen</h2>
-    <p class="section-sub">Platzhalter-Beispiele — hier stehen bald echte Bewertungen deiner Kunden.</p>
-    <div class="testimonial-grid">
-      <div class="testimonial-card">
-        <div class="testimonial-stars">★★★★★</div>
-        <div class="testimonial-quote">„Der Chatbot beantwortet die immer gleichen Fragen unserer Gäste jetzt automatisch — wir sparen uns dadurch täglich einiges an Telefonzeit."</div>
-        <div class="testimonial-person">
-          <div class="testimonial-avatar">CS</div>
-          <div>
-            <div class="testimonial-name">Café Sonnenblick</div>
-            <div class="testimonial-role">Gastronomie, Wien</div>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-card">
-        <div class="testimonial-stars">★★★★★</div>
-        <div class="testimonial-quote">„Einrichtung war unkompliziert und schnell erledigt. Unsere Kundinnen bekommen jetzt auch außerhalb der Öffnungszeiten sofort eine Antwort."</div>
-        <div class="testimonial-person">
-          <div class="testimonial-avatar">FH</div>
-          <div>
-            <div class="testimonial-name">Friseur Huber</div>
-            <div class="testimonial-role">Friseursalon, Wien</div>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-card">
-        <div class="testimonial-stars">★★★★★</div>
-        <div class="testimonial-quote">„Persönlicher Support und faire Preise — genau das, was wir als kleine Praxis gesucht haben, statt einer teuren Agentur-Lösung."</div>
-        <div class="testimonial-person">
-          <div class="testimonial-avatar">PW</div>
-          <div>
-            <div class="testimonial-name">Physio Wien</div>
-            <div class="testimonial-role">Physiotherapie, Wien</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p class="testimonial-note">⚠️ Nur zur Layout-Vorschau — vor Veröffentlichung durch echte Kundenzitate ersetzen.</p>
   </div>
 </section>
 
