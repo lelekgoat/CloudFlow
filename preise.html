@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preise — CloudFlow</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1D1D1F; --ink-soft:#6E6E73;
+    --bg:#FFFFFF; --bg-dim:#F5F5F7;
+    --blue:#0071E3; --blue-dark:#0059B3;
+    --line:rgba(0,0,0,0.08); --radius:20px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; font-family:inherit;}
+  html{scroll-behavior:smooth; overflow-x:hidden;}
+  body{
+    font-family:'General Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:980px; margin:0 auto; padding:0 24px;}
+  h1,h2,h3{font-weight:600; letter-spacing:-0.015em;}
+
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,255,255,0.8); backdrop-filter:saturate(180%) blur(20px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:52px;}
+  .brand{font-weight:600; font-size:0.98rem; display:flex; align-items:center; gap:8px;}
+  .brand-icon{
+    width:26px; height:26px; border-radius:7px; background:#fff; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-icon svg{width:15px; height:15px; color:#8E8E93;}
+  nav ul{display:flex; gap:26px; list-style:none; font-size:0.85rem; color:var(--ink-soft);}
+  nav ul a:hover{color:var(--ink);}
+  .nav-cta{
+    background:var(--ink); color:#fff; padding:8px 18px; border-radius:980px;
+    font-size:0.8rem; font-weight:500;
+  }
+  @media (max-width:700px){ nav ul{display:none;} }
+
+  .hero{text-align:center; padding:70px 24px 20px;}
+  .hero h1{font-size:clamp(2.2rem,4.5vw,3rem); margin-bottom:14px;}
+  .hero p{color:var(--ink-soft); font-size:1.05rem; max-width:520px; margin:0 auto;}
+
+  .product-block{padding:56px 0;}
+  .product-block:not(:last-of-type){border-bottom:1px solid var(--line);}
+  .block-head{text-align:center; margin-bottom:12px;}
+  .block-head .icon-row{display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:12px;}
+  .block-head .icon-box{
+    width:36px; height:36px; border-radius:10px; background:var(--bg-dim);
+    display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+  }
+  .block-head h2{font-size:clamp(1.5rem,3vw,2rem);}
+  .block-head p{color:var(--ink-soft); font-size:0.95rem; max-width:480px; margin:8px auto 0;}
+
+  .billing-toggle{display:flex; align-items:center; justify-content:center; gap:10px; margin:28px 0 36px; font-size:0.9rem; color:var(--ink-soft);}
+  .switch{
+    position:relative; width:44px; height:25px; border-radius:980px; background:#DADADE;
+    border:none; cursor:pointer; transition:background .2s; flex-shrink:0;
+  }
+  .switch.on{background:var(--blue);}
+  .switch .thumb{
+    position:absolute; top:3px; left:3px; width:19px; height:19px; border-radius:50%; background:#fff;
+    box-shadow:0 1px 3px rgba(0,0,0,0.25); transition:transform .2s;
+  }
+  .switch.on .thumb{transform:translateX(19px);}
+  .save-text{color:var(--blue); font-weight:600;}
+
+  .plans{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media (max-width:800px){ .plans{grid-template-columns:1fr;} }
+  .plan{
+    border:1px solid var(--line); border-radius:24px; padding:32px 28px;
+    display:flex; flex-direction:column; background:#fff; min-width:0;
+  }
+  .plan.featured{background:var(--bg-dim);}
+  .plan-name-row{display:flex; align-items:center; gap:10px; margin-bottom:6px;}
+  .plan h3{font-size:1.3rem;}
+  .popular-pill{background:var(--blue); color:#fff; font-size:0.7rem; font-weight:700; padding:5px 12px; border-radius:980px;}
+  .plan .desc{font-size:0.88rem; color:var(--ink-soft); margin-bottom:22px;}
+  .plan .price-amount{font-size:2.4rem; font-weight:800; letter-spacing:-0.02em; transition:opacity .15s;}
+  .plan .price-unit{font-size:0.85rem; color:var(--ink-soft); margin-bottom:22px;}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    padding:12px 22px; border-radius:980px; font-weight:500; font-size:0.9rem;
+    cursor:pointer; border:none; width:100%; margin-bottom:22px; font-family:inherit;
+  }
+  .btn-secondary{background:var(--bg-dim); color:var(--ink);}
+  .btn-secondary:hover{background:#E8E8ED;}
+  .plan.featured .btn-secondary{background:var(--blue); color:#fff;}
+  .plan.featured .btn-secondary:hover{background:var(--blue-dark);}
+  .plan ul{list-style:none; display:flex; flex-direction:column; gap:12px;}
+  .plan li{font-size:0.88rem; display:flex; align-items:center; gap:9px;}
+  .plan li .li-icon{color:var(--ink-soft); width:18px; text-align:center; flex-shrink:0;}
+
+  .addon-note{
+    text-align:center; margin-top:30px; font-size:0.86rem; color:var(--ink-soft);
+    background:var(--bg-dim); padding:14px 20px; border-radius:14px; max-width:640px; margin-left:auto; margin-right:auto;
+  }
+
+  footer{padding:36px 0; text-align:center; font-size:0.8rem; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>CloudFlow</div>
+    <ul>
+      <li><a href="produkte.html" target="_blank">Produkte</a></li>
+      <li><a href="preise.html">Preise</a></li>
+      <li><a href="kontakt.html" target="_blank">Kontakt</a></li>
+      <li><a href="dashboard.html" target="_blank">Login</a></li>
+    </ul>
+    <a class="nav-cta" href="kontakt.html" target="_blank">Anfragen</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Transparent & fair</h1>
+  <p>Zwei Produkte, klare Preise — keine versteckten Kosten, jederzeit kündbar.</p>
+</section>
+
+<!-- KI-CHATBOT -->
+<section class="product-block">
+  <div class="wrap">
+    <div class="block-head">
+      <div class="icon-row"><div class="icon-box">💬</div></div>
+      <h2>KI-Chatbot</h2>
+      <p>Einmal eingerichtet, beantwortet er Kundenfragen rund um die Uhr.</p>
+    </div>
+
+    <div class="billing-toggle">
+      <span>Monatlich</span>
+      <button class="switch" id="switchChatbot" onclick="toggleBilling('switchChatbot','chatbotPlans')" aria-label="Abrechnung umschalten"><span class="thumb"></span></button>
+      <span>Jährlich · <span class="save-text">20% sparen</span></span>
+    </div>
+
+    <div class="plans" id="chatbotPlans">
+      <div class="plan" data-monthly="29,99" data-yearly="287">
+        <div class="plan-name-row"><h3>Basic</h3></div>
+        <div class="desc">Für den Einstieg</div>
+        <div class="price-amount">29,99€</div>
+        <div class="price-unit"><span class="unit-label">pro Monat</span> · bis zu 5 Dokumente</div>
+        <a class="btn btn-secondary" href="kontakt.html">Basic wählen</a>
+        <ul>
+          <li><span class="li-icon">💬</span>Bis zu 15 Standardfragen</li>
+          <li><span class="li-icon">📄</span>Einbindung auf einer Seite</li>
+          <li><span class="li-icon">🔁</span>1 Anpassungsrunde / Monat</li>
+        </ul>
+      </div>
+      <div class="plan featured" data-monthly="49,49" data-yearly="475">
+        <div class="plan-name-row"><h3>Standard</h3><span class="popular-pill">Beliebt</span></div>
+        <div class="desc">Der Alltagsbegleiter</div>
+        <div class="price-amount">49,49€</div>
+        <div class="price-unit"><span class="unit-label">pro Monat</span> · bis zu 15 Dokumente</div>
+        <a class="btn btn-secondary" href="kontakt.html">Standard wählen</a>
+        <ul>
+          <li><span class="li-icon">💬</span>Unbegrenzte Fragen zu deinem Business</li>
+          <li><span class="li-icon">✓</span>Alles aus Basic</li>
+          <li><span class="li-icon">📅</span>Termin-/Reservierungsanfragen</li>
+        </ul>
+      </div>
+      <div class="plan" data-monthly="89,99" data-yearly="863">
+        <div class="plan-name-row"><h3>Premium</h3></div>
+        <div class="desc">Für mehrere Standorte</div>
+        <div class="price-amount">89,99€</div>
+        <div class="price-unit"><span class="unit-label">pro Monat</span> · bis zu 30 Dokumente</div>
+        <a class="btn btn-secondary" href="kontakt.html">Premium wählen</a>
+        <ul>
+          <li><span class="li-icon">✓</span>Alles aus Standard</li>
+          <li><span class="li-icon">🌍</span>Mehrsprachig (z. B. DE/EN)</li>
+          <li><span class="li-icon">🏢</span>Für mehrere Standorte geeignet</li>
+        </ul>
+      </div>
+    </div>
+    <p class="addon-note">💡 Jedes Chatbot-Paket enthält bereits eine Wissensdatenbank mit dem angegebenen Dokumenten-Limit.</p>
+  </div>
+</section>
+
+<!-- WISSENSDATENBANK -->
+<section class="product-block">
+  <div class="wrap">
+    <div class="block-head">
+      <div class="icon-row"><div class="icon-box">📚</div></div>
+      <h2>Wissensdatenbank</h2>
+      <p>Lade ein PDF hoch, lass Fragen dazu automatisch beantworten. Eigenständig nutzbar, auch ohne Chatbot-Paket.</p>
+    </div>
+
+    <div class="billing-toggle">
+      <span>Monatlich</span>
+      <button class="switch" id="switchWissen" onclick="toggleBilling('switchWissen','wissenPlans')" aria-label="Abrechnung umschalten"><span class="thumb"></span></button>
+      <span>Jährlich · <span class="save-text">20% sparen</span></span>
+    </div>
+
+    <div class="plans" id="wissenPlans">
+      <div class="plan" data-monthly="14,99" data-yearly="144">
+        <div class="plan-name-row"><h3>Basic</h3></div>
+        <div class="desc">Für einzelne Dokumente</div>
+        <div class="price-amount">14,99€</div>
+        <div class="price-unit"><span class="unit-label">pro Monat</span> · bis zu 3 Dokumente</div>
+        <a class="btn btn-secondary" href="kontakt.html">Basic wählen</a>
+        <ul>
+          <li><span class="li-icon">📄</span>Bis zu 3 PDFs</li>
+          <li><span class="li-icon">💬</span>Automatische Antworten aus dem Dokument</li>
+          <li><span class="li-icon">🔁</span>Jederzeit kündbar</li>
+        </ul>
+      </div>
+      <div class="plan featured" data-monthly="24,99" data-yearly="240">
+        <div class="plan-name-row"><h3>Standard</h3><span class="popular-pill">Beliebt</span></div>
+        <div class="desc">Für mehrere Dokumente</div>
+        <div class="price-amount">24,99€</div>
+        <div class="price-unit"><span class="unit-label">pro Monat</span> · bis zu 10 Dokumente</div>
+        <a class="btn btn-secondary" href="kontakt.html">Standard wählen</a>
+        <ul>
+          <li><span class="li-icon">📄</span>Bis zu 10 PDFs</li>
+          <li><span class="li-icon">⚡</span>Schnellere Verarbeitung</li>
+          <li><span class="li-icon">🔁</span>Jederzeit kündbar</li>
+        </ul>
+      </div>
+      <div class="plan" data-monthly="44,99" data-yearly="432">
+        <div class="plan-name-row"><h3>Premium</h3></div>
+        <div class="desc">Für große Dokumentenmengen</div>
+        <div class="price-amount">44,99€</div>
+        <div class="price-unit"><span class="unit-label">pro Monat</span> · bis zu 25 Dokumente</div>
+        <a class="btn btn-secondary" href="kontakt.html">Premium wählen</a>
+        <ul>
+          <li><span class="li-icon">📄</span>Bis zu 25 PDFs</li>
+          <li><span class="li-icon">🌍</span>Mehrsprachig (z. B. DE/EN)</li>
+          <li><span class="li-icon">🔁</span>Jederzeit kündbar</li>
+        </ul>
+      </div>
+    </div>
+    <p class="addon-note">💡 Eigenständiges Produkt — funktioniert unabhängig vom Chatbot.</p>
+  </div>
+</section>
+
+<footer>© 2026 CloudFlow · KI-Chatbots für lokale Unternehmen</footer>
+
+<script>
+function toggleBilling(switchId, plansId){
+  const btn = document.getElementById(switchId);
+  const isYearly = btn.classList.toggle('on');
+  const container = document.getElementById(plansId);
+
+  container.querySelectorAll('.plan').forEach(plan => {
+    const amountEl = plan.querySelector('.price-amount');
+    const unitLabelEl = plan.querySelector('.unit-label');
+    const raw = isYearly ? plan.dataset.yearly : plan.dataset.monthly;
+    amountEl.style.opacity = 0;
+    setTimeout(() => {
+      amountEl.textContent = raw + '€';
+      unitLabelEl.textContent = isYearly ? 'pro Jahr' : 'pro Monat';
+      amountEl.style.opacity = 1;
+    }, 120);
+  });
+}
+</script>
+
+</body>
+</html>
