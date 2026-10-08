@@ -2,8 +2,8 @@
   'use strict';
 
   // ---------- Konfiguration ----------
-  var FUNCTION_URL = 'https://fdpkszhxiftsusvsvmev.supabase.co/functions/v1/chat';
-  var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkcGtzemh4aWZ0c3VzdnN2bWV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5Nzc1NzcsImV4cCI6MjEwNDU1MzU3N30.aZDp857JxHhNjFKXX3qQUm2MI4xI8LcPxep20-z_BoI';
+  var FUNCTION_URL = 'https://rkbockdrhxmpvxugkmrt.supabase.co/functions/v1/chat';
+  var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrYm9ja2RyaHhtcHZ4dWdrbXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxOTgzNjIsImV4cCI6MjEwMjc3NDM2Mn0.0AEyPvayW8NKlriAGz3zvDVsz2itHeVLQUO3ea6MDOE';
 
   // ---------- Eigene Kunden-ID aus dem <script>-Tag auslesen ----------
   var currentScript = document.currentScript || (function(){
