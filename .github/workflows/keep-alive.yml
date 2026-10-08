@@ -1,0 +1,22 @@
+name: Supabase Keep-Alive
+
+# Schickt täglich eine kleine Datenbank-Abfrage an Supabase,
+# damit das Gratis-Projekt nicht wegen Inaktivität pausiert wird.
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # täglich um 06:00 UTC
+  workflow_dispatch:       # zusätzlich manuell startbar (Actions-Tab -> Run workflow)
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Datenbank anpingen
+        env:
+          KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkcGtzemh4aWZ0c3VzdnN2bWV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5Nzc1NzcsImV4cCI6MjEwNDU1MzU3N30.aZDp857JxHhNjFKXX3qQUm2MI4xI8LcPxep20-z_BoI
+        run: |
+          curl -sS --fail \
+            "https://fdpkszhxiftsusvsvmev.supabase.co/rest/v1/profiles?select=id&limit=1" \
+            -H "apikey: $KEY" \
+            -H "Authorization: Bearer $KEY"

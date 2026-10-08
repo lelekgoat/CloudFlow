@@ -205,36 +205,12 @@
 </nav>
 
 <section class="hero">
-  <h1>Unsere Produkte</h1>
-  <p>Wähl aus, wofür du dich interessierst — Chatbot oder Wissensdatenbank haben jeweils eigene Preise.</p>
+  <h1>Der CloudFlow Chatbot</h1>
+  <p>Ein persönlicher Chatbot für deine Website — inklusive integrierter Wissensdatenbank, die automatisch aus deinen hochgeladenen PDFs lernt.</p>
 </section>
 
-<section class="selector">
-  <div class="wrap">
-    <div class="selector-grid">
-      <div class="selector-card active" id="cardChatbot" onclick="selectProduct('chatbot')">
-        <div class="icon">💬</div>
-        <h3>KI-Chatbot</h3>
-        <p>Ein persönlicher Chatbot für deine Website, der Kundenfragen automatisch beantwortet — inklusive Grundpaket an Wissensdatenbank.</p>
-        <div class="pick-label">Preise ansehen ↓</div>
-      </div>
-      <div class="selector-card" id="cardWissen" onclick="selectProduct('wissen')">
-        <div class="icon">📚</div>
-        <h3>Wissensdatenbank</h3>
-        <p>Erweitere die Dokumentenkapazität deines Chatbots — für Firmen mit vielen PDFs, FAQs oder Produktkatalogen.</p>
-        <div class="pick-label">Preise ansehen ↓</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CHATBOT PRICING -->
 <section class="product-detail visible" id="detailChatbot">
   <div class="wrap">
-    <div class="detail-head">
-      <h2>KI-Chatbot</h2>
-      <p>Einmal eingerichtet, beantwortet er Kundenfragen rund um die Uhr.</p>
-    </div>
 
     <div class="showcase-card">
       <div class="showcase-grid">
@@ -260,26 +236,11 @@
       </div>
     </div>
 
-    <div style="text-align:center; margin-top:8px;">
-      <a class="btn btn-secondary" href="preise.html" target="_blank" style="background:var(--blue); color:#fff; display:inline-flex; width:auto; padding:14px 30px;">Preise anschauen →</a>
-    </div>
-
-  </div>
-</section>
-
-<!-- WISSENSDATENBANK PRICING -->
-<section class="product-detail" id="detailWissen">
-  <div class="wrap">
-    <div class="detail-head">
-      <h2>Wissensdatenbank</h2>
-      <p>Lade ein PDF hoch, lass Fragen dazu automatisch beantworten. Eigenständig nutzbar, auch ohne Chatbot-Paket.</p>
-    </div>
-
     <div class="showcase-card">
       <div class="showcase-grid">
         <div class="showcase-text">
-          <h3>Deine Dokumente, sofort durchsuchbar</h3>
-          <p>Lade ein PDF hoch — FAQ, Preisliste, Handbuch, was auch immer — und lass Fragen dazu automatisch beantworten. Eigenständig nutzbar oder kombiniert mit deinem Chatbot.</p>
+          <h3>Integrierte Wissensdatenbank</h3>
+          <p>Lade PDFs hoch — FAQ, Preisliste, Handbuch — dein Chatbot nutzt sie automatisch als Wissensquelle. Kein separates Produkt, einfach im Preis enthalten.</p>
           <div class="badge-row">
             <div class="badge-item"><span class="check">✓</span> PDF-Upload</div>
             <div class="badge-item"><span class="check">✓</span> Sofort einsatzbereit</div>
@@ -301,7 +262,6 @@
       </div>
     </div>
 
-
     <div class="kb-demo">
       <div class="kb-demo-label">LIVE-DEMO</div>
       <h3>Probier's direkt aus</h3>
@@ -316,7 +276,7 @@
       </div>
     </div>
 
-    <div style="text-align:center; margin-top:32px;">
+    <div style="text-align:center; margin-top:8px;">
       <a class="btn btn-secondary" href="preise.html" target="_blank" style="background:var(--blue); color:#fff; display:inline-flex; width:auto; padding:14px 30px;">Preise anschauen →</a>
     </div>
 
@@ -326,38 +286,7 @@
 <footer>© 2026 CloudFlow · KI-Chatbots für lokale Unternehmen</footer>
 
 <script>
-function selectProduct(which){
-  document.getElementById('cardChatbot').classList.toggle('active', which === 'chatbot');
-  document.getElementById('cardWissen').classList.toggle('active', which === 'wissen');
-  document.getElementById('detailChatbot').classList.toggle('visible', which === 'chatbot');
-  document.getElementById('detailWissen').classList.toggle('visible', which === 'wissen');
-  document.getElementById('detail' + (which === 'chatbot' ? 'Chatbot' : 'Wissen')).scrollIntoView({behavior:'smooth', block:'start'});
-}
-
-function toggleBilling(switchId, sectionId){
-  const btn = document.getElementById(switchId);
-  const isYearly = btn.classList.toggle('on');
-  const section = document.getElementById(sectionId);
-
-  section.querySelectorAll('.plan').forEach(plan => {
-    const amountEl = plan.querySelector('.price-amount');
-    const unitLabelEl = plan.querySelector('.unit-label');
-    const raw = isYearly ? plan.dataset.yearly : plan.dataset.monthly;
-    amountEl.style.opacity = 0;
-    setTimeout(() => {
-      amountEl.textContent = raw + '€';
-      unitLabelEl.textContent = isYearly ? 'pro Jahr' : 'pro Monat';
-      amountEl.style.opacity = 1;
-    }, 120);
-  });
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  const hash = window.location.hash.replace('#','');
-  if(hash === 'wissen'){ selectProduct('wissen'); }
-});
-
-// Wissensdatenbank Live-Demo (nutzt dieselbe Edge Function wie der Chatbot, ohne Chatverlauf)
+// Live-Demo (nutzt dieselbe Edge Function wie der Chatbot, ohne Chatverlauf)
 const KB_FUNCTION_URL = 'https://fdpkszhxiftsusvsvmev.supabase.co/functions/v1/chat';
 const KB_COMPANY_ID = 'c69028c3-6a21-4abc-a8d4-8c44f3af0e80';
 const KB_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkcGtzemh4aWZ0c3VzdnN2bWV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5Nzc1NzcsImV4cCI6MjEwNDU1MzU3N30.aZDp857JxHhNjFKXX3qQUm2MI4xI8LcPxep20-z_BoI';

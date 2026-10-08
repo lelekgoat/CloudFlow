@@ -26,8 +26,8 @@
 
   var styleEl = document.createElement('style');
   styleEl.textContent = `
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    *{box-sizing:border-box; margin:0; padding:0; font-family:'Inter', -apple-system, "Segoe UI", sans-serif;}
+    @import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap');
+    *{box-sizing:border-box; margin:0; padding:0; font-family:'General Sans', -apple-system, "Segoe UI", sans-serif;}
     .cf-fab{
       position:fixed; bottom:24px; right:24px; z-index:2147483000;
       width:58px; height:58px; border-radius:50%;
