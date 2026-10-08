@@ -145,11 +145,32 @@
   }
   .doc-row .doc-remove:hover{color:#D70015;}
   .upload-zone{
-    border:1.5px dashed var(--line); border-radius:14px; padding:26px; text-align:center;
-    color:var(--ink-soft); font-size:0.88rem; margin-top:14px; cursor:pointer; transition:border-color .15s, background .15s;
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    border:1.5px dashed rgba(0,0,0,0.16); border-radius:16px; padding:34px 24px; text-align:center;
+    background:var(--bg-dim); margin-top:16px; cursor:pointer;
+    transition:border-color .2s, background .2s, transform .2s, box-shadow .2s;
   }
-  .upload-zone:hover{border-color:var(--blue); background:var(--bg-dim);}
   .upload-zone input{display:none;}
+  .upload-zone .uz-icon{
+    width:52px; height:52px; border-radius:14px; background:#fff; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; color:var(--blue); margin-bottom:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.05); transition:transform .2s, background .2s, color .2s;
+  }
+  .upload-zone .uz-icon svg{width:24px; height:24px;}
+  .upload-zone .uz-title{font-size:0.95rem; font-weight:600; color:var(--ink);}
+  .upload-zone .uz-title span{color:var(--blue);}
+  .upload-zone .uz-sub{font-size:0.82rem; color:var(--ink-soft);}
+  .upload-zone .uz-chip{
+    margin-top:12px; font-size:0.72rem; font-weight:600; letter-spacing:0.03em; color:var(--ink-soft);
+    background:#fff; border:1px solid var(--line); border-radius:980px; padding:4px 12px;
+  }
+  .upload-zone:hover, .upload-zone.dragover{border-color:var(--blue); background:#F0F7FF;}
+  .upload-zone:hover .uz-icon{transform:translateY(-2px);}
+  .upload-zone.dragover{border-style:solid; transform:scale(1.01); box-shadow:0 0 0 4px rgba(0,113,227,0.12);}
+  .upload-zone.dragover .uz-icon{background:var(--blue); color:#fff; border-color:var(--blue); transform:translateY(-4px);}
+  .upload-zone.uploading{pointer-events:none; opacity:0.75;}
+  .upload-zone.uploading .uz-icon svg{animation:uz-spin 0.9s linear infinite;}
+  @keyframes uz-spin{to{transform:rotate(360deg);}}
 
   .plan-badge{
     display:inline-flex; align-items:center; gap:6px; background:var(--bg-dim);
@@ -264,9 +285,11 @@
       <h2>Dokumente</h2>
       <div id="docList"></div>
       <div id="docListEmpty" style="color:var(--ink-soft); font-size:0.88rem; padding:8px 0;">Noch keine Dokumente hochgeladen.</div>
-      <label class="upload-zone" for="fileInput">
-        📤 PDF hierher ziehen oder klicken zum Hochladen<br>
-        <span style="font-size:0.78rem;">Der Chatbot nutzt diese Dokumente automatisch als Wissensquelle</span>
+      <label class="upload-zone" id="uploadZone" for="fileInput">
+        <span class="uz-icon" id="uzIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg></span>
+        <span class="uz-title" id="uzTitle">PDF hierher ziehen oder <span>Datei auswählen</span></span>
+        <span class="uz-sub">Der Chatbot nutzt diese Dokumente automatisch als Wissensquelle</span>
+        <span class="uz-chip">NUR PDF</span>
         <input type="file" id="fileInput" accept="application/pdf" onchange="addDoc(this)">
       </label>
     </div>
@@ -473,13 +496,48 @@ async function extractPdfText(file){
   return text;
 }
 
+const UZ_ICON_UPLOAD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>';
+const UZ_ICON_SPINNER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.2-8.55"/></svg>';
+const UZ_TITLE_DEFAULT = 'PDF hierher ziehen oder <span>Datei auswählen</span>';
+
+function setUploading(on){
+  document.getElementById('uploadZone').classList.toggle('uploading', on);
+  document.getElementById('uzIcon').innerHTML = on ? UZ_ICON_SPINNER : UZ_ICON_UPLOAD;
+  document.getElementById('uzTitle').innerHTML = on ? 'Wird hochgeladen …' : UZ_TITLE_DEFAULT;
+}
+
+(function initUploadZone(){
+  const zone = document.getElementById('uploadZone');
+  ['dragenter','dragover'].forEach(ev => zone.addEventListener(ev, e => {
+    e.preventDefault(); zone.classList.add('dragover');
+  }));
+  ['dragleave','drop'].forEach(ev => zone.addEventListener(ev, e => {
+    e.preventDefault(); zone.classList.remove('dragover');
+  }));
+  zone.addEventListener('drop', e => {
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if(!file) return;
+    if(file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')){
+      alert('Bitte nur PDF-Dateien hochladen.'); return;
+    }
+    uploadFile(file);
+  });
+  // Verhindert, dass der Browser die PDF öffnet, wenn man knapp daneben loslässt
+  ['dragover','drop'].forEach(ev => window.addEventListener(ev, e => e.preventDefault()));
+})();
+
 async function addDoc(input){
   if(!input.files || !input.files[0]) return;
-  const file = input.files[0];
+  await uploadFile(input.files[0]);
+  input.value = '';
+}
+
+async function uploadFile(file){
   const path = currentUser.id + '/' + file.name;
+  setUploading(true);
 
   const { error: uploadError } = await sb.storage.from('pdfs').upload(path, file, { upsert: true });
-  if(uploadError){ alert('Upload fehlgeschlagen: ' + uploadError.message); return; }
+  if(uploadError){ setUploading(false); alert('Upload fehlgeschlagen: ' + uploadError.message); return; }
 
   let text = '';
   try{
@@ -496,7 +554,7 @@ async function addDoc(input){
     if(docError){ alert('Text konnte nicht gespeichert werden: ' + docError.message); }
   }
 
-  input.value = '';
+  setUploading(false);
   loadDocs();
 }
 
