@@ -3,212 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard — CloudFlow</title>
-<link rel="preconnect" href="https://api.fontshare.com">
-<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700,800&display=swap" rel="stylesheet">
+<title>Login & Dashboard — CloudFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 <style>
-  :root{
-    --ink:#1D1D1F; --ink-soft:#6E6E73;
-    --bg:#FFFFFF; --bg-dim:#F5F5F7;
-    --blue:#0071E3; --blue-dark:#0059B3;
-    --green:#34C759; --line:rgba(0,0,0,0.08);
-    --radius:18px;
-  }
-  *{box-sizing:border-box; margin:0; padding:0; font-family:inherit;}
-  body{
-    font-family:'General Sans', -apple-system, "Segoe UI", sans-serif;
-    background:var(--bg-dim); color:var(--ink); line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    min-height:100vh;
-  }
-  a{color:inherit; text-decoration:none;}
+  /* Dashboard-spezifisch – Farben, Schrift, Logo und Buttons kommen aus style.css */
+  :root{ --green:#1A9F5C; --red:#C8102E; }
+  body{background:linear-gradient(180deg,#EAF4FF 0%,#F7FBFF 100%); min-height:100vh;}
+  button,input{font-family:inherit;}
 
-  /* TOPBAR */
-  .topbar{
-    background:#fff; border-bottom:1px solid var(--line);
-    display:flex; align-items:center; justify-content:space-between;
-    padding:14px 28px;
-  }
-  .topbar .brand{font-weight:700; font-size:0.98rem; display:flex; align-items:center; gap:8px;}
-  .brand-icon{
-    width:26px; height:26px; border-radius:7px; background:#fff; border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center; flex-shrink:0;
-  }
-  .brand-icon svg{width:15px; height:15px; color:#8E8E93;}
-  .topbar .who{font-size:0.85rem; color:var(--ink-soft); display:flex; align-items:center; gap:12px;}
-  .logout-btn{
-    background:var(--bg-dim); border:1px solid var(--line); border-radius:980px;
-    padding:7px 16px; font-size:0.8rem; font-weight:500; cursor:pointer; color:var(--ink); font-family:inherit;
-  }
-  .logout-btn:hover{background:#E8E8ED;}
-
-  /* AUTH SPLIT SCREENS */
+  /* ---------- Login / Registrierung ---------- */
   .auth-screen{display:none; min-height:100vh;}
-  .auth-screen.active{display:grid; grid-template-columns:1fr 1fr;}
-  @media (max-width:800px){ .auth-screen.active{grid-template-columns:1fr;} .auth-left{display:none;} }
+  .auth-screen.active{display:grid; grid-template-columns:1.05fr 1fr;}
+  @media (max-width:860px){ .auth-screen.active{grid-template-columns:1fr;} .auth-left{display:none;} }
 
   .auth-left{
-    background:linear-gradient(160deg, #14181D 0%, #1B2733 60%, #0F2E2C 100%);
-    color:#fff; padding:48px; display:flex; flex-direction:column; justify-content:space-between;
-    position:relative; overflow:hidden;
+    position:relative; overflow:hidden; padding:44px 56px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    background:linear-gradient(180deg,#7DB9FF 0%,#B4D8FF 45%,#E6F2FF 80%,#F6FAFF 100%);
+    color:var(--navy);
   }
-  .auth-left::before{
-    content:""; position:absolute; top:-140px; right:-100px; width:340px; height:340px; border-radius:50%;
-    background:radial-gradient(circle, rgba(0,113,227,0.25), transparent 70%);
-  }
-  .auth-left > *{position:relative; z-index:1;}
-  .auth-logo-row{display:flex; align-items:center; gap:10px;}
-  .auth-logo-box{
-    width:38px; height:38px; border-radius:10px; background:#fff;
-    display:flex; align-items:center; justify-content:center; flex-shrink:0;
-  }
-  .auth-logo-box svg{width:20px; height:20px; color:#1D1D1F;}
-  .auth-logo-row .name{font-weight:700; font-size:1.02rem;}
-
-  .auth-tagline{font-size:clamp(1.6rem,3vw,2.1rem); font-weight:700; line-height:1.2; max-width:340px;}
-
-  .auth-testimonial{display:flex; align-items:center; gap:12px;}
-  .avatar-stack{display:flex;}
-  .avatar-stack span{
-    width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#0071E3,#42A5F5);
-    border:2px solid #1D1D1F; display:flex; align-items:center; justify-content:center;
-    font-size:0.72rem; font-weight:700; color:#fff; margin-left:-8px;
-  }
-  .avatar-stack span:first-child{margin-left:0;}
-  .auth-testimonial .txt{font-size:0.85rem; color:rgba(255,255,255,0.7);}
-  .auth-testimonial .txt strong{color:#fff;}
+  .auth-left > *:not(.blob){position:relative; z-index:1;}
+  .auth-left .logo{font-size:1.55rem;}
+  .auth-tagline{font-size:clamp(2rem,3.6vw,3rem); font-weight:700; line-height:1.15; letter-spacing:-0.015em; max-width:460px;}
+  .auth-tagline span{background:linear-gradient(transparent 62%, rgba(255,255,255,0.7) 62%); padding:0 4px;}
+  .auth-points{list-style:none; display:grid; gap:12px; font-weight:600; color:#0B2A57;}
+  .auth-points li{display:flex; gap:12px; align-items:center;}
+  .auth-points li::before{content:"✓"; width:24px; height:24px; background:var(--navy); color:#fff; font-size:0.8rem; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .back-link{font-weight:700; font-size:0.92rem; color:var(--navy); border-bottom:2px solid rgba(9,23,46,0.35); justify-self:start; display:inline-block; padding-bottom:2px;}
+  .back-link:hover{border-bottom-color:var(--navy);}
 
   .auth-right{background:#fff; display:flex; align-items:center; justify-content:center; padding:40px 24px;}
-  .auth-form{width:100%; max-width:380px;}
-  .auth-form h1{font-size:1.5rem; margin-bottom:6px;}
-  .auth-form p.sub{color:var(--ink-soft); font-size:0.9rem; margin-bottom:28px;}
-  .auth-form label{font-size:0.8rem; font-weight:500; color:var(--ink-soft); display:block; margin-bottom:6px;}
+  .auth-form{width:100%; max-width:400px;}
+  .auth-form .mobile-logo{display:none; margin-bottom:28px;}
+  @media (max-width:860px){ .auth-form .mobile-logo{display:flex;} }
+  .auth-form h1{font-size:2rem; font-weight:700; color:var(--navy); margin-bottom:8px; letter-spacing:-0.01em;}
+  .auth-form h1 span{background:linear-gradient(transparent 62%, var(--mark) 62%); padding:0 4px; margin:0 -4px;}
+  .auth-form p.sub{color:var(--ink-soft); margin-bottom:28px;}
+  .auth-form label{font-size:0.82rem; font-weight:700; color:var(--navy); display:block; margin-bottom:6px; letter-spacing:0.02em;}
   .auth-form input{
-    width:100%; border:1px solid var(--line); background:var(--bg-dim); border-radius:12px;
-    padding:12px 14px; font-size:0.92rem; font-family:inherit; outline:none; margin-bottom:16px;
+    width:100%; border:1px solid rgba(9,23,46,0.22); background:#fff; border-radius:0;
+    padding:13px 14px; font-size:0.95rem; outline:none; margin-bottom:16px; color:var(--ink);
   }
-  .auth-form input:focus{border-color:var(--blue); background:#fff;}
+  .auth-form input:focus{border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,113,227,0.14);}
   .auth-form button.primary{
-    width:100%; background:var(--blue); color:#fff; border:none; border-radius:12px;
-    padding:13px; font-weight:600; font-size:0.95rem; cursor:pointer; margin-top:6px;
+    width:100%; background:var(--navy); color:#fff; border:none; border-radius:0;
+    padding:15px; font-weight:700; font-size:1rem; cursor:pointer; margin-top:6px; transition:background .2s;
   }
-  .auth-form button.primary:hover{background:var(--blue-dark);}
-  .auth-switch{text-align:center; margin-top:22px; font-size:0.88rem; color:var(--ink-soft);}
-  .auth-switch a{color:var(--blue); font-weight:600; cursor:pointer;}
-  .login-hint{margin-top:18px; font-size:0.78rem; color:var(--ink-soft); background:var(--bg-dim); padding:12px 14px; border-radius:10px;}
-  .error-msg{color:#D70015; font-size:0.82rem; margin-top:-8px; margin-bottom:14px; display:none;}
+  .auth-form button.primary:hover{background:var(--blue);}
+  .auth-switch{text-align:center; margin-top:22px; font-size:0.92rem; color:var(--ink-soft);}
+  .auth-switch a{color:var(--blue); font-weight:700; cursor:pointer; border-bottom:2px solid var(--blue); padding-bottom:1px;}
+  .login-hint{margin-top:18px; font-size:0.8rem; color:var(--ink-soft); background:#EEF6FF; border-left:4px solid var(--blue); padding:12px 14px;}
+  .error-msg{color:var(--red); font-size:0.85rem; font-weight:600; margin-top:-8px; margin-bottom:14px; display:none;}
 
   .pw-wrap{position:relative;}
-  .pw-wrap input{padding-right:44px;}
+  .pw-wrap input{padding-right:84px;}
   .pw-toggle{
-    position:absolute; right:12px; top:50%; transform:translateY(-50%);
-    background:none; border:none; cursor:pointer; font-size:0.78rem; font-weight:600;
-    color:var(--blue); padding:4px; width:auto;
+    position:absolute; right:10px; top:13px; background:none; border:none; cursor:pointer;
+    font-size:0.8rem; font-weight:700; color:var(--blue); padding:2px 4px; width:auto;
   }
-  .pw-hint{font-size:0.75rem; color:var(--ink-soft); margin-top:-10px; margin-bottom:16px;}
+  .pw-hint{font-size:0.78rem; color:var(--ink-soft); margin-top:-10px; margin-bottom:16px;}
   .pw-hint.ok{color:var(--green);}
-  .pw-hint.bad{color:#D70015;}
+  .pw-hint.bad{color:var(--red);}
 
-  /* SHELL */
+  /* ---------- App ---------- */
   #appShell{display:none; min-height:100vh;}
-  .shell-inner{max-width:1100px; margin:0 auto; padding:32px 24px 60px;}
-  .page-title{font-size:1.7rem; margin-bottom:6px;}
-  .page-sub{color:var(--ink-soft); font-size:0.95rem; margin-bottom:32px;}
-
-  /* CARDS / GRID */
-  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:36px;}
-  .stat-card{
-    background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px;
+  #appShell .head-in{height:76px;}
+  .who{margin-left:auto; display:flex; align-items:center; gap:18px; font-size:0.9rem; color:var(--ink-soft); font-weight:600;}
+  .logout-btn{
+    background:var(--navy); color:#fff; border:none; padding:10px 22px; font-weight:700; font-size:0.9rem; cursor:pointer; transition:background .2s;
   }
-  .stat-card .label{font-size:0.78rem; color:var(--ink-soft); margin-bottom:8px;}
-  .stat-card .value{font-size:1.7rem; font-weight:700;}
+  .logout-btn:hover{background:var(--blue);}
+  @media (max-width:640px){ #whoLabel{display:none;} }
+
+  .shell-inner{max-width:1100px; margin:0 auto; padding:48px 28px 80px;}
+  .page-title{font-size:clamp(1.9rem,3.4vw,2.6rem); font-weight:700; color:var(--navy); margin-bottom:10px; letter-spacing:-0.01em;}
+  .page-title .m{background:linear-gradient(transparent 62%, var(--mark) 62%); padding:0 4px; margin:0 -4px;}
+  .page-sub{color:var(--ink-soft); font-size:1.05rem; margin-bottom:34px;}
+
+  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:18px; margin-bottom:34px;}
+  .stat-card{background:#fff; border:1px solid var(--line); border-top:4px solid var(--navy); padding:20px 22px;}
+  .stat-card:nth-child(even){border-top-color:var(--blue);}
+  .stat-card .label{font-size:0.78rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;}
+  .stat-card .value{font-size:1.8rem; font-weight:800; color:var(--navy);}
   .stat-card .value.green{color:var(--green);}
+  .stat-card .value.muted{color:var(--ink-soft); font-size:1rem; font-weight:600;}
 
-  .panel{
-    background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:26px 26px 22px; margin-bottom:24px;
-  }
-  .panel h2{font-size:1.05rem; margin-bottom:16px;}
+  .panel{background:#fff; border:1px solid var(--line); border-top:4px solid var(--navy); padding:28px 28px 24px; margin-bottom:26px;}
+  .panel h2{font-size:1.3rem; font-weight:700; color:var(--navy); margin-bottom:6px;}
+  .panel h2 span{background:linear-gradient(transparent 62%, var(--mark) 62%); padding:0 4px; margin:0 -4px;}
+  .panel .panel-sub{color:var(--ink-soft); font-size:0.92rem; margin-bottom:16px;}
 
-  /* CUSTOMER: doc list */
-  .doc-row{
-    display:flex; align-items:center; justify-content:between; gap:12px;
-    padding:12px 0; border-bottom:1px solid var(--line); font-size:0.9rem;
-  }
+  .doc-row{display:flex; align-items:center; gap:12px; padding:13px 0; border-bottom:1px solid var(--line); font-size:0.95rem;}
   .doc-row:last-child{border-bottom:none;}
-  .doc-row .doc-name{display:flex; align-items:center; gap:10px; flex:1;}
-  .doc-row .doc-icon{
-    width:32px; height:32px; border-radius:8px; background:var(--bg-dim);
-    display:flex; align-items:center; justify-content:center; font-size:0.95rem;
-  }
-  .doc-row .doc-remove{
-    background:none; border:none; color:var(--ink-soft); cursor:pointer; font-size:0.85rem; font-family:inherit;
-  }
-  .doc-row .doc-remove:hover{color:#D70015;}
+  .doc-row .doc-name{display:flex; align-items:center; gap:12px; flex:1; font-weight:600; word-break:break-all;}
+  .doc-row .doc-icon{background:var(--navy); color:#fff; font-size:0.68rem; font-weight:800; padding:5px 7px; flex-shrink:0;}
+  .doc-row .doc-remove{background:none; border:none; color:var(--ink-soft); cursor:pointer; font-size:0.88rem; font-weight:600;}
+  .doc-row .doc-remove:hover{color:var(--red);}
+  .empty-note{color:var(--ink-soft); font-size:0.92rem; padding:8px 0;}
+
   .upload-zone{
     display:flex; flex-direction:column; align-items:center; gap:4px;
-    border:1.5px dashed rgba(0,0,0,0.16); border-radius:16px; padding:34px 24px; text-align:center;
-    background:var(--bg-dim); margin-top:16px; cursor:pointer;
-    transition:border-color .2s, background .2s, transform .2s, box-shadow .2s;
+    border:2px dashed rgba(0,113,227,0.45); padding:36px 24px; text-align:center;
+    background:#F3F9FF; margin-top:18px; cursor:pointer;
+    transition:border-color .2s, background .2s, box-shadow .2s;
   }
   .upload-zone input{display:none;}
-  .upload-zone .uz-icon{
-    width:52px; height:52px; border-radius:14px; background:#fff; border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center; color:var(--blue); margin-bottom:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.05); transition:transform .2s, background .2s, color .2s;
-  }
+  .upload-zone .uz-icon{width:54px; height:54px; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; margin-bottom:10px; transition:transform .2s, background .2s;}
   .upload-zone .uz-icon svg{width:24px; height:24px;}
-  .upload-zone .uz-title{font-size:0.95rem; font-weight:600; color:var(--ink);}
-  .upload-zone .uz-title span{color:var(--blue);}
-  .upload-zone .uz-sub{font-size:0.82rem; color:var(--ink-soft);}
-  .upload-zone .uz-chip{
-    margin-top:12px; font-size:0.72rem; font-weight:600; letter-spacing:0.03em; color:var(--ink-soft);
-    background:#fff; border:1px solid var(--line); border-radius:980px; padding:4px 12px;
-  }
-  .upload-zone:hover, .upload-zone.dragover{border-color:var(--blue); background:#F0F7FF;}
+  .upload-zone .uz-title{font-size:1rem; font-weight:700; color:var(--navy);}
+  .upload-zone .uz-title span{color:var(--blue); border-bottom:2px solid var(--blue);}
+  .upload-zone .uz-sub{font-size:0.88rem; color:var(--ink-soft);}
+  .upload-zone .uz-chip{margin-top:12px; font-size:0.72rem; font-weight:800; letter-spacing:0.08em; color:var(--navy); background:#fff; border:1px solid var(--line); padding:4px 12px;}
+  .upload-zone:hover, .upload-zone.dragover{border-color:var(--blue); background:#E6F2FF;}
   .upload-zone:hover .uz-icon{transform:translateY(-2px);}
-  .upload-zone.dragover{border-style:solid; transform:scale(1.01); box-shadow:0 0 0 4px rgba(0,113,227,0.12);}
-  .upload-zone.dragover .uz-icon{background:var(--blue); color:#fff; border-color:var(--blue); transform:translateY(-4px);}
+  .upload-zone.dragover{border-style:solid; box-shadow:0 0 0 4px rgba(0,113,227,0.14);}
+  .upload-zone.dragover .uz-icon{background:var(--blue); transform:translateY(-4px);}
   .upload-zone.uploading{pointer-events:none; opacity:0.75;}
   .upload-zone.uploading .uz-icon svg{animation:uz-spin 0.9s linear infinite;}
   @keyframes uz-spin{to{transform:rotate(360deg);}}
 
-  .plan-badge{
-    display:inline-flex; align-items:center; gap:6px; background:var(--bg-dim);
-    padding:6px 14px; border-radius:980px; font-size:0.85rem; font-weight:600;
-  }
-  .plan-badge::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--green);}
-  .kv-row{display:flex; justify-content:space-between; padding:9px 0; font-size:0.88rem; border-bottom:1px solid var(--line);}
+  .plan-badge{display:inline-flex; align-items:center; gap:8px; background:var(--navy); color:#fff; padding:5px 14px; font-size:0.85rem; font-weight:700;}
+  .kv-row{display:flex; justify-content:space-between; align-items:center; padding:12px 0; font-size:0.95rem; border-bottom:1px solid var(--line);}
   .kv-row:last-child{border-bottom:none;}
-  .kv-row .k{color:var(--ink-soft);}
+  .kv-row .k{color:var(--ink-soft); font-weight:600;}
 
-  /* ADMIN: customer table */
-  table{width:100%; border-collapse:collapse; font-size:0.88rem;}
-  th{text-align:left; color:var(--ink-soft); font-weight:500; font-size:0.78rem; padding:0 0 10px; text-transform:uppercase; letter-spacing:0.03em;}
-  td{padding:12px 0; border-top:1px solid var(--line);}
-  .status-pill{
-    display:inline-flex; align-items:center; gap:6px; font-size:0.8rem; font-weight:500;
-  }
-  .status-pill::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--green);}
+  .table-wrap{overflow-x:auto;}
+  table{width:100%; border-collapse:collapse; font-size:0.93rem;}
+  th{text-align:left; color:var(--ink-soft); font-weight:700; font-size:0.76rem; padding:0 12px 10px 0; text-transform:uppercase; letter-spacing:0.08em;}
+  td{padding:13px 12px 13px 0; border-top:1px solid var(--line);}
 </style>
 </head>
 <body>
 
-<!-- SIGN IN SCREEN -->
+<!-- signinScreen -->
 <div class="auth-screen active" id="signinScreen">
   <div class="auth-left">
-    <div class="auth-logo-row">
-      <div class="auth-logo-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></div>
-      <span class="name">CloudFlow</span>
-    </div>
-    <div class="auth-tagline">KI-Chatbots, die für dein Business arbeiten.</div>
-    <div class="auth-testimonial">
-      <div class="avatar-stack"><span>CS</span><span>FH</span><span>PW</span></div>
-      <div class="txt"><strong>Lokale Unternehmen</strong> vertrauen bereits auf CloudFlow</div>
+    <div class="blob" style="width:520px;height:400px;left:-140px;top:-120px;background:#3E98FF;opacity:.55;"></div>
+    <div class="blob" style="width:480px;height:380px;right:-160px;bottom:-120px;background:#fff;opacity:.9;"></div>
+    <a class="logo" href="index.html"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></a>
+    <div class="auth-tagline">Dein Chatbot <span>wartet</span> auf dich.</div>
+    <div style="display:grid;gap:22px;">
+      <ul class="auth-points">
+        <li>Chatbot für deine Website</li>
+        <li>Antwortet aus deinen PDFs</li>
+        <li>Rund um die Uhr erreichbar</li>
+      </ul>
+      <a class="back-link" href="index.html">← Zurück zur Website</a>
     </div>
   </div>
   <div class="auth-right">
     <div class="auth-form">
-      <h1>Willkommen zurück</h1>
+      <a class="logo mobile-logo" href="index.html"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></a>
+      <h1><span>Willkommen zurück</span></h1>
       <p class="sub">Melde dich bei deinem CloudFlow-Konto an.</p>
       <label>E-Mail</label>
       <input type="email" id="signinEmail" placeholder="du@firma.at">
@@ -224,22 +173,26 @@
   </div>
 </div>
 
-<!-- SIGN UP SCREEN -->
+<!-- signupScreen -->
 <div class="auth-screen" id="signupScreen">
   <div class="auth-left">
-    <div class="auth-logo-row">
-      <div class="auth-logo-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></div>
-      <span class="name">CloudFlow</span>
-    </div>
-    <div class="auth-tagline">Starte in wenigen Minuten mit deinem eigenen Chatbot.</div>
-    <div class="auth-testimonial">
-      <div class="avatar-stack"><span>CS</span><span>FH</span><span>PW</span></div>
-      <div class="txt"><strong>Lokale Unternehmen</strong> vertrauen bereits auf CloudFlow</div>
+    <div class="blob" style="width:520px;height:400px;left:-140px;top:-120px;background:#3E98FF;opacity:.55;"></div>
+    <div class="blob" style="width:480px;height:380px;right:-160px;bottom:-120px;background:#fff;opacity:.9;"></div>
+    <a class="logo" href="index.html"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></a>
+    <div class="auth-tagline">Starte in wenigen Minuten mit deinem <span>Chatbot</span>.</div>
+    <div style="display:grid;gap:22px;">
+      <ul class="auth-points">
+        <li>Chatbot für deine Website</li>
+        <li>Antwortet aus deinen PDFs</li>
+        <li>Rund um die Uhr erreichbar</li>
+      </ul>
+      <a class="back-link" href="index.html">← Zurück zur Website</a>
     </div>
   </div>
   <div class="auth-right">
     <div class="auth-form">
-      <h1>Konto erstellen</h1>
+      <a class="logo mobile-logo" href="index.html"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></a>
+      <h1><span>Konto erstellen</span></h1>
       <p class="sub">Leg dir einen Zugang zu deinem CloudFlow-Dashboard an.</p>
       <label>E-Mail</label>
       <input type="email" id="signupEmail" placeholder="du@firma.at">
@@ -253,76 +206,81 @@
       <button class="primary" onclick="signUp()">Konto erstellen</button>
       <div class="auth-switch">Schon ein Konto? <a onclick="showSignin()">Anmelden</a></div>
       <div class="login-hint" id="loginHint">
-        Nach der Registrierung bekommst du evtl. eine Bestätigungs-Mail — je nach Einstellung in deinem Supabase-Projekt.
+        Nach der Registrierung bekommst du evtl. eine Bestätigungs-Mail — bitte prüf dein Postfach.
       </div>
     </div>
   </div>
 </div>
 
-<!-- APP SHELL -->
+<!-- APP -->
 <div id="appShell">
-  <div class="topbar">
-    <div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>CloudFlow</div>
-    <div class="who">
-      <span id="whoLabel">—</span>
-      <button class="logout-btn" onclick="logout()">Abmelden</button>
+  <header>
+    <div class="wrap head-in">
+      <a class="logo" href="index.html"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></a>
+      <div class="who">
+        <span id="whoLabel">—</span>
+        <button class="logout-btn" onclick="logout()">Abmelden</button>
+      </div>
     </div>
-  </div>
+  </header>
 
-  <!-- CUSTOMER VIEW -->
+  <!-- KUNDEN-ANSICHT -->
   <div class="shell-inner" id="customerView" style="display:none;">
-    <h1 class="page-title">Willkommen, <span id="custName">Kunde</span> 👋</h1>
-    <p class="page-sub">Hier verwaltest du die Dokumente deines Chatbots und siehst deinen Bot-Status.</p>
+    <h1 class="page-title">Willkommen, <span class="m" id="custName">Kunde</span></h1>
+    <p class="page-sub">Hier verwaltest du die Dokumente deines Chatbots und siehst deinen Status.</p>
 
     <div class="stat-grid">
       <div class="stat-card"><div class="label">Aktueller Plan</div><div class="value" id="planLabel">—</div></div>
       <div class="stat-card"><div class="label">Status</div><div class="value green">Aktiv</div></div>
-      <div class="stat-card"><div class="label">Firma</div><div class="value" id="companyLabel" style="font-size:1.2rem;">—</div></div>
+      <div class="stat-card"><div class="label">Firma</div><div class="value" id="companyLabel" style="font-size:1.25rem;">—</div></div>
       <div class="stat-card"><div class="label">Dokumente</div><div class="value" id="docCount">0</div></div>
     </div>
 
     <div class="panel">
-      <h2>Dokumente</h2>
+      <h2><span>Dokumente</span></h2>
+      <p class="panel-sub">Dein Chatbot beantwortet Fragen auf Basis dieser PDFs.</p>
       <div id="docList"></div>
-      <div id="docListEmpty" style="color:var(--ink-soft); font-size:0.88rem; padding:8px 0;">Noch keine Dokumente hochgeladen.</div>
+      <div id="docListEmpty" class="empty-note">Noch keine Dokumente hochgeladen.</div>
       <label class="upload-zone" id="uploadZone" for="fileInput">
         <span class="uz-icon" id="uzIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg></span>
         <span class="uz-title" id="uzTitle">PDF hierher ziehen oder <span>Datei auswählen</span></span>
-        <span class="uz-sub">Der Chatbot nutzt diese Dokumente automatisch als Wissensquelle</span>
+        <span class="uz-sub">Dein Chatbot nutzt hochgeladene Dokumente automatisch für seine Antworten</span>
         <span class="uz-chip">NUR PDF</span>
         <input type="file" id="fileInput" accept="application/pdf" onchange="addDoc(this)">
       </label>
     </div>
 
     <div class="panel">
-      <h2>Abonnement</h2>
+      <h2><span>Abonnement</span></h2>
       <div class="kv-row"><span class="k">Paket</span><span class="plan-badge" id="planBadge">—</span></div>
       <div class="kv-row"><span class="k">E-Mail</span><span id="emailKv">—</span></div>
       <div class="kv-row"><span class="k">Konto erstellt</span><span id="createdKv">—</span></div>
     </div>
   </div>
 
-  <!-- ADMIN VIEW -->
+  <!-- ADMIN-ANSICHT -->
   <div class="shell-inner" id="adminView" style="display:none;">
-    <h1 class="page-title">Admin-Übersicht</h1>
-    <p class="page-sub">Alle Kunden, Umsatz und Aktivität auf einen Blick.</p>
+    <h1 class="page-title"><span class="m">Admin-Übersicht</span></h1>
+    <p class="page-sub">Alle Kunden und Aktivität auf einen Blick.</p>
 
     <div class="stat-grid">
       <div class="stat-card"><div class="label">Kunden gesamt</div><div class="value" id="totalCustomers">—</div></div>
-      <div class="stat-card"><div class="label">MRR</div><div class="value" style="color:var(--ink-soft); font-size:1rem;">Noch nicht getrackt</div></div>
-      <div class="stat-card"><div class="label">Aktive Bots</div><div class="value" style="color:var(--ink-soft); font-size:1rem;">Noch nicht getrackt</div></div>
-      <div class="stat-card"><div class="label">Anfragen (Monat)</div><div class="value" style="color:var(--ink-soft); font-size:1rem;">Noch nicht getrackt</div></div>
+      <div class="stat-card"><div class="label">MRR</div><div class="value muted">Noch nicht getrackt</div></div>
+      <div class="stat-card"><div class="label">Aktive Chatbots</div><div class="value muted">Noch nicht getrackt</div></div>
+      <div class="stat-card"><div class="label">Anfragen (Monat)</div><div class="value muted">Noch nicht getrackt</div></div>
     </div>
 
     <div class="panel">
-      <h2>Kunden</h2>
+      <h2><span>Kunden</span></h2>
+      <div class="table-wrap">
       <table>
         <thead>
           <tr><th>Firma</th><th>E-Mail</th><th>Paket</th><th>Registriert am</th></tr>
         </thead>
         <tbody id="customerTableBody"></tbody>
       </table>
-      <div id="customerTableEmpty" style="color:var(--ink-soft); font-size:0.88rem; padding:14px 0; display:none;">Noch keine Kunden registriert.</div>
+      </div>
+      <div id="customerTableEmpty" class="empty-note" style="display:none;">Noch keine Kunden registriert.</div>
     </div>
   </div>
 </div>
@@ -444,7 +402,7 @@ async function enterApp(user){
   const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
   const isAdmin = profile?.is_admin;
 
-  document.getElementById('whoLabel').textContent = (isAdmin ? '👑 ' : '') + user.email;
+  document.getElementById('whoLabel').textContent = (isAdmin ? 'Admin · ' : '') + user.email;
 
   if(isAdmin){
     document.getElementById('adminView').style.display = 'block';
@@ -454,6 +412,7 @@ async function enterApp(user){
     document.getElementById('customerView').style.display = 'block';
     document.getElementById('adminView').style.display = 'none';
     document.getElementById('companyLabel').textContent = profile?.company_name || user.email.split('@')[0];
+    document.getElementById('custName').textContent = profile?.company_name || user.email.split('@')[0];
     document.getElementById('planLabel').textContent = profile?.plan || 'Standard';
     document.getElementById('planBadge').textContent = profile?.plan || 'Standard';
     document.getElementById('emailKv').textContent = user.email;
@@ -479,7 +438,7 @@ async function loadDocs(){
   data.forEach(file => {
     const row = document.createElement('div');
     row.className = 'doc-row';
-    row.innerHTML = '<div class="doc-name"><span class="doc-icon">📄</span> ' + file.name + '</div><button class="doc-remove" onclick="removeDoc(\'' + file.name.replace(/'/g,"\\'") + '\')">Entfernen</button>';
+    row.innerHTML = '<div class="doc-name"><span class="doc-icon">PDF</span> ' + file.name + '</div><button class="doc-remove" onclick="removeDoc(\'' + file.name.replace(/'/g,"\\'") + '\')">Entfernen</button>';
     listEl.appendChild(row);
   });
 }

@@ -36,7 +36,7 @@
   <div class="blob" style="width:700px;height:300px;left:25%;bottom:-170px;background:#EAF4FF;"></div>
   <div class="wrap">
     <h1>Der CloudFlow Chatbot</h1>
-    <p class="lead">Ein persönlicher Chatbot für deine Website — inklusive integrierter Wissensdatenbank, die automatisch aus deinen hochgeladenen PDFs lernt.</p>
+    <p class="lead">Ein persönlicher Chatbot für deine Website — er lernt aus deinen hochgeladenen PDFs und beantwortet Kundenfragen rund um die Uhr.</p>
   </div>
 </section>
 
@@ -61,8 +61,8 @@
 
     <div class="show-card">
       <div>
-        <h3>Integrierte Wissensdatenbank</h3>
-        <p>Lade PDFs hoch — FAQ, Preisliste, Handbuch — dein Chatbot nutzt sie automatisch als Wissensquelle. Kein separates Produkt, einfach im Preis enthalten.</p>
+        <h3>Kennt dein Unternehmen</h3>
+        <p>Lade PDFs hoch — FAQ, Preisliste, Speisekarte — und dein Chatbot antwortet auf Basis deiner Dokumente. Einfach im Preis enthalten.</p>
         <div class="badges"><span>PDF-Upload</span><span>Sofort einsatzbereit</span><span>Sicher gespeichert</span></div>
       </div>
       <div class="pdf-mock">
@@ -76,10 +76,10 @@
       <div style="position:relative;z-index:1;">
         <div class="lbl">LIVE-DEMO</div>
         <h3>Probier's direkt aus</h3>
-        <p>Stell eine Frage — die Antwort kommt aus einem echten hochgeladenen Dokument.</p>
+        <p>Stell eine Frage — die Antwort kommt vom echten Chatbot.</p>
         <div class="kb-row">
           <input type="text" id="kbInput" placeholder="z. B. Wie sind eure Bürozeiten?">
-          <button id="kbAsk" onclick="askKnowledgeBase()">Fragen</button>
+          <button id="kbAsk" onclick="askChatbot()">Fragen</button>
         </div>
         <div class="kb-answer" id="kbAnswer">
           <div class="label">ANTWORT</div>
@@ -118,7 +118,7 @@ const KB_FUNCTION_URL = 'https://rkbockdrhxmpvxugkmrt.supabase.co/functions/v1/c
 const KB_COMPANY_ID = '8995e595-bb45-4753-a4f6-ff74e80cf74e';
 const KB_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrYm9ja2RyaHhtcHZ4dWdrbXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxOTgzNjIsImV4cCI6MjEwMjc3NDM2Mn0.0AEyPvayW8NKlriAGz3zvDVsz2itHeVLQUO3ea6MDOE';
 
-async function askKnowledgeBase(){
+async function askChatbot(){
   const input = document.getElementById('kbInput');
   const btn = document.getElementById('kbAsk');
   const answerBox = document.getElementById('kbAnswer');
@@ -140,7 +140,7 @@ async function askKnowledgeBase(){
   answerBox.classList.add('visible');
   btn.disabled = false; btn.textContent = 'Fragen';
 }
-document.getElementById('kbInput')?.addEventListener('keydown', e => { if(e.key === 'Enter') askKnowledgeBase(); });
+document.getElementById('kbInput')?.addEventListener('keydown', e => { if(e.key === 'Enter') askChatbot(); });
 </script>
 </body>
 </html>
