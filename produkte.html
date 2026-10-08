@@ -4,286 +4,113 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Produkte — CloudFlow</title>
-<link rel="preconnect" href="https://api.fontshare.com">
-<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700,800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#1D1D1F; --ink-soft:#6E6E73;
-    --bg:#FFFFFF; --bg-dim:#F5F5F7;
-    --blue:#0071E3; --blue-dark:#0059B3;
-    --line:rgba(0,0,0,0.08); --radius:20px;
-  }
-  *{box-sizing:border-box; margin:0; padding:0; font-family:inherit;}
-  html{scroll-behavior:smooth; overflow-x:hidden;}
-  body{
-    font-family:'General Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background:var(--bg); color:var(--ink); line-height:1.5;
-    -webkit-font-smoothing:antialiased; overflow-x:hidden;
-  }
-  a{color:inherit; text-decoration:none;}
-  .wrap{max-width:980px; margin:0 auto; padding:0 24px;}
-  h1,h2,h3{font-weight:600; letter-spacing:-0.015em;}
-
-  nav{
-    position:sticky; top:0; z-index:50;
-    background:rgba(255,255,255,0.8); backdrop-filter:saturate(180%) blur(20px);
-    border-bottom:1px solid var(--line);
-  }
-  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:52px;}
-  .brand{font-weight:600; font-size:0.98rem; display:flex; align-items:center; gap:8px;}
-  .brand-icon{
-    width:26px; height:26px; border-radius:7px; background:#fff; border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center; flex-shrink:0;
-  }
-  .brand-icon svg{width:15px; height:15px; color:#8E8E93;}
-  .back-link{font-size:0.85rem; color:var(--ink-soft); display:flex; align-items:center; gap:6px;}
-  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:52px;}
-  nav ul{display:flex; gap:26px; list-style:none; font-size:0.85rem; color:var(--ink-soft);}
-  nav ul a:hover{color:var(--ink);}
-  .nav-cta{background:var(--ink); color:#fff; padding:8px 18px; border-radius:980px; font-size:0.8rem; font-weight:500;}
-  @media (max-width:700px){ nav ul{display:none;} }
-  .back-link:hover{color:var(--ink);}
-
-  .hero{text-align:center; padding:70px 24px 20px;}
-  .hero h1{font-size:clamp(2.2rem,4.5vw,3rem); margin-bottom:14px;}
-  .hero p{color:var(--ink-soft); font-size:1.05rem; max-width:520px; margin:0 auto;}
-
-  .selector{padding:50px 0 20px;}
-  .selector-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
-  @media (max-width:700px){ .selector-grid{grid-template-columns:1fr;} }
-  .selector-card{
-    border:2px solid var(--line); border-radius:24px; padding:34px 30px; cursor:pointer;
-    transition:border-color .2s, background .2s, transform .15s; background:#fff; text-align:left;
-  }
-  .selector-card:hover{transform:translateY(-2px);}
-  .selector-card.active{border-color:var(--blue); background:#F0F7FF;}
-  .selector-card .icon{
-    width:52px; height:52px; border-radius:14px; margin-bottom:18px;
-    background:var(--bg-dim); display:flex; align-items:center; justify-content:center; font-size:1.5rem;
-  }
-  .selector-card.active .icon{background:var(--blue); color:#fff;}
-  .selector-card h3{font-size:1.25rem; margin-bottom:8px;}
-  .selector-card p{color:var(--ink-soft); font-size:0.9rem; line-height:1.5;}
-  .selector-card .pick-label{
-    margin-top:16px; font-size:0.82rem; font-weight:600; color:var(--blue);
-    display:flex; align-items:center; gap:6px;
-  }
-
-  .product-detail{padding:50px 0 90px; display:none;}
-  .product-detail.visible{display:block;}
-  .detail-head{text-align:center; margin-bottom:44px;}
-  .detail-head h2{font-size:clamp(1.7rem,3vw,2.2rem); margin-bottom:10px;}
-  .detail-head p{color:var(--ink-soft); font-size:0.98rem;}
-
-  /* PRODUCT SHOWCASE (Bild-Mockup pro Produkt) */
-  .showcase-card{
-    background:linear-gradient(135deg, #F0F7FF 0%, #FAFBFC 100%);
-    border:1px solid var(--line); border-radius:28px;
-    padding:44px; margin-bottom:44px;
-  }
-  .showcase-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center;}
-  @media (max-width:800px){
-    .showcase-grid{grid-template-columns:1fr;}
-    .showcase-card{padding:28px 22px;}
-  }
-  .showcase-text p{color:var(--ink-soft); font-size:0.95rem; margin-bottom:20px; line-height:1.6;}
-  .mock-chat{
-    background:#fff; border-radius:20px; box-shadow:0 20px 50px -20px rgba(0,0,0,0.18);
-    border:1px solid var(--line); overflow:hidden; max-width:320px; margin:0 auto;
-  }
-  .mock-chat-head{background:var(--ink); color:#fff; padding:14px 16px; display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:600;}
-  .mock-chat-head .dot{width:7px; height:7px; border-radius:50%; background:#34C759;}
-  .mock-chat-body{padding:16px; display:flex; flex-direction:column; gap:10px;}
-  .mock-bubble{max-width:80%; padding:9px 13px; border-radius:14px; font-size:0.85rem; line-height:1.4;}
-  .mock-bubble.bot{background:var(--bg-dim); align-self:flex-start; border-bottom-left-radius:4px;}
-  .mock-bubble.user{background:var(--blue); color:#fff; align-self:flex-end; border-bottom-right-radius:4px;}
-  .mock-pdf{
-    background:#fff; border-radius:20px; box-shadow:0 20px 50px -20px rgba(0,0,0,0.18);
-    border:1px solid var(--line); padding:22px; max-width:320px; margin:0 auto;
-  }
-  .mock-pdf-row{display:flex; align-items:center; gap:12px; padding:12px; border-radius:12px; background:var(--bg-dim); margin-bottom:10px;}
-  .mock-pdf-row .file-icon{width:36px; height:36px; border-radius:9px; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; flex-shrink:0;}
-  .mock-pdf-row .file-name{font-size:0.85rem; font-weight:500;}
-  .mock-pdf-answer{background:#F0F7FF; border:1px solid rgba(0,113,227,0.15); border-radius:12px; padding:12px 14px; font-size:0.83rem; color:var(--ink); margin-top:14px;}
-  .mock-pdf-answer strong{color:var(--blue);}
-  .badge-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;}
-  .badge-item{
-    display:flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--line);
-    border-radius:980px; padding:8px 14px; font-size:0.82rem; font-weight:500;
-  }
-  .badge-item .check{color:var(--blue); font-weight:700;}
-
-  .plans{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
-  @media (max-width:800px){ .plans{grid-template-columns:1fr;} }
-  .plan{
-    border:1px solid var(--line); border-radius:24px; padding:32px 28px;
-    display:flex; flex-direction:column; background:#fff; min-width:0;
-  }
-  .plan.featured{background:var(--bg-dim);}
-  .plan-name-row{display:flex; align-items:center; gap:10px; margin-bottom:6px;}
-  .plan h3{font-size:1.3rem;}
-  .popular-pill{background:var(--blue); color:#fff; font-size:0.7rem; font-weight:700; padding:5px 12px; border-radius:980px;}
-  .plan .desc{font-size:0.88rem; color:var(--ink-soft); margin-bottom:22px;}
-  .plan .price-amount{font-size:2.4rem; font-weight:800; letter-spacing:-0.02em; transition:opacity .15s;}
-  .plan .price-unit{font-size:0.85rem; color:var(--ink-soft); margin-bottom:22px;}
-  .btn{
-    display:inline-flex; align-items:center; justify-content:center; gap:6px;
-    padding:12px 22px; border-radius:980px; font-weight:500; font-size:0.9rem;
-    cursor:pointer; border:none; width:100%; margin-bottom:22px; font-family:inherit;
-  }
-  .btn-secondary{background:var(--bg-dim); color:var(--ink);}
-  .btn-secondary:hover{background:#E8E8ED;}
-  .plan.featured .btn-secondary{background:var(--blue); color:#fff;}
-  .plan.featured .btn-secondary:hover{background:var(--blue-dark);}
-  .plan ul{list-style:none; display:flex; flex-direction:column; gap:12px;}
-  .plan li{font-size:0.88rem; display:flex; align-items:center; gap:9px;}
-  .plan li .li-icon{color:var(--ink-soft); width:18px; text-align:center; flex-shrink:0;}
-
-  .addon-note{
-    text-align:center; margin-top:36px; font-size:0.88rem; color:var(--ink-soft);
-    background:var(--bg-dim); padding:16px 20px; border-radius:14px;
-  }
-
-  /* WISSENSDATENBANK DEMO */
-  .kb-demo{
-    background:var(--bg-dim); border:1px solid var(--line); border-radius:24px;
-    padding:36px; margin-bottom:48px; text-align:center;
-  }
-  .kb-demo-label{font-size:0.8rem; font-weight:700; color:var(--blue); margin-bottom:10px;}
-  .kb-demo h3{font-size:1.3rem; margin-bottom:8px;}
-  .kb-demo p{color:var(--ink-soft); font-size:0.92rem; margin-bottom:24px;}
-  .kb-input-row{display:flex; gap:10px; max-width:520px; margin:0 auto;}
-  .kb-input-row input{
-    flex:1; border:1px solid var(--line); background:#fff; border-radius:12px;
-    padding:13px 16px; font-size:0.95rem; font-family:inherit; outline:none;
-  }
-  .kb-input-row input:focus{border-color:var(--blue);}
-  .kb-input-row button{
-    background:var(--blue); color:#fff; border:none; border-radius:12px;
-    padding:0 24px; font-weight:600; font-size:0.92rem; cursor:pointer; font-family:inherit;
-  }
-  .kb-input-row button:hover{background:var(--blue-dark);}
-  .kb-input-row button:disabled{opacity:0.6; cursor:default;}
-  .kb-answer{
-    max-width:520px; margin:20px auto 0; text-align:left; background:#fff;
-    border:1px solid var(--line); border-radius:14px; padding:18px 20px;
-    font-size:0.92rem; line-height:1.55; display:none;
-  }
-  .kb-answer.visible{display:block;}
-  .kb-answer .label{font-size:0.75rem; font-weight:700; color:var(--blue); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.03em;}
-
-  footer{padding:36px 0; text-align:center; font-size:0.8rem; color:var(--ink-soft); border-top:1px solid var(--line);}
-
-  /* BILLING TOGGLE */
-  .billing-toggle{display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:36px; font-size:0.9rem; color:var(--ink-soft);}
-  .switch{
-    position:relative; width:44px; height:25px; border-radius:980px; background:#DADADE;
-    border:none; cursor:pointer; transition:background .2s; flex-shrink:0;
-  }
-  .switch.on{background:var(--blue);}
-  .switch .thumb{
-    position:absolute; top:3px; left:3px; width:19px; height:19px; border-radius:50%; background:#fff;
-    box-shadow:0 1px 3px rgba(0,0,0,0.25); transition:transform .2s;
-  }
-  .switch.on .thumb{transform:translateX(19px);}
-  .save-text{color:var(--blue); font-weight:600;}
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<nav>
-  <div class="wrap">
-    <div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>CloudFlow</div>
-    <ul>
-      <li><a href="index.html">Startseite</a></li>
-      <li><a href="preise.html">Preise</a></li>
-      <li><a href="kontakt.html" target="_blank">Kontakt</a></li>
-      <li><a href="dashboard.html" target="_blank">Login</a></li>
-    </ul>
-    <a class="nav-cta" href="kontakt.html" target="_blank">Anfragen</a>
+<header>
+  <div class="wrap head-in">
+    <a class="logo" href="index.html">
+      <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>
+      <span>Cloud<em>Flow</em></span>
+    </a>
+    <nav class="main">
+      <a href="index.html">Startseite</a>
+      <a class="active" href="produkte.html">Produkte</a>
+      <a href="preise.html">Preise</a>
+      <a href="kontakt.html">Kontakt</a>
+      <a href="dashboard.html">Login</a>
+    </nav>
+    <div class="head-contact">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 7 9 6 9-6"/></svg>
+      <div><b>kontakt@cloudflow.at</b><span>Direkt schreiben</span></div>
+    </div>
+    <a class="cut-btn small" href="kontakt.html">Jetzt kontaktieren</a>
   </div>
-</nav>
-
-<section class="hero">
-  <h1>Der CloudFlow Chatbot</h1>
-  <p>Ein persönlicher Chatbot für deine Website — inklusive integrierter Wissensdatenbank, die automatisch aus deinen hochgeladenen PDFs lernt.</p>
+</header>
+<section class="hero page">
+  <div class="blob" style="width:520px;height:420px;left:-140px;top:-120px;background:#9CCBFF;"></div>
+  <div class="blob" style="width:480px;height:400px;right:-120px;top:0;background:#4E9DFF;opacity:.7;animation-delay:-8s;"></div>
+  <div class="blob" style="width:700px;height:300px;left:25%;bottom:-170px;background:#EAF4FF;"></div>
+  <div class="wrap">
+    <h1>Der CloudFlow Chatbot</h1>
+    <p class="lead">Ein persönlicher Chatbot für deine Website — inklusive integrierter Wissensdatenbank, die automatisch aus deinen hochgeladenen PDFs lernt.</p>
+  </div>
 </section>
 
-<section class="product-detail visible" id="detailChatbot">
+<section class="block grey">
   <div class="wrap">
 
-    <div class="showcase-card">
-      <div class="showcase-grid">
-        <div class="showcase-text">
-          <h3>Automatisiere deinen Kundenservice</h3>
-          <p>Die meisten Anfragen sind wiederkehrend — Öffnungszeiten, Preise, Reservierungswünsche. Dein CloudFlow-Chatbot beantwortet sie automatisch, rund um die Uhr, während du dich um dein Business kümmerst.</p>
-          <div class="badge-row">
-            <div class="badge-item"><span class="check">✓</span> 24/7 verfügbar</div>
-            <div class="badge-item"><span class="check">✓</span> Ohne Wartezeit</div>
-            <div class="badge-item"><span class="check">✓</span> In Tagen live</div>
-          </div>
-        </div>
-        <div class="showcase-visual">
-          <div class="mock-chat">
-            <div class="mock-chat-head"><span class="dot"></span> CloudFlow Chatbot</div>
-            <div class="mock-chat-body">
-              <div class="mock-bubble bot">Hallo! Wie kann ich dir helfen?</div>
-              <div class="mock-bubble user">Habt ihr am Sonntag offen?</div>
-              <div class="mock-bubble bot">Ja, sonntags von 9:00 bis 15:00 Uhr 😊</div>
-            </div>
-          </div>
+    <div class="show-card">
+      <div>
+        <h3>Automatisiere deinen Kundenservice</h3>
+        <p>Die meisten Anfragen sind wiederkehrend — Öffnungszeiten, Preise, Reservierungswünsche. Dein CloudFlow-Chatbot beantwortet sie automatisch, rund um die Uhr, während du dich um dein Business kümmerst.</p>
+        <div class="badges"><span>24/7 verfügbar</span><span>Ohne Wartezeit</span><span>In Tagen live</span></div>
+      </div>
+      <div class="mock">
+        <div class="mock-head"><i></i> CloudFlow Chatbot</div>
+        <div class="mock-body">
+          <div class="bubble bot">Hallo! Wie kann ich dir helfen?</div>
+          <div class="bubble user">Habt ihr am Sonntag offen?</div>
+          <div class="bubble bot">Ja, sonntags von 9:00 bis 15:00 Uhr 😊</div>
         </div>
       </div>
     </div>
 
-    <div class="showcase-card">
-      <div class="showcase-grid">
-        <div class="showcase-text">
-          <h3>Integrierte Wissensdatenbank</h3>
-          <p>Lade PDFs hoch — FAQ, Preisliste, Handbuch — dein Chatbot nutzt sie automatisch als Wissensquelle. Kein separates Produkt, einfach im Preis enthalten.</p>
-          <div class="badge-row">
-            <div class="badge-item"><span class="check">✓</span> PDF-Upload</div>
-            <div class="badge-item"><span class="check">✓</span> Sofort einsatzbereit</div>
-            <div class="badge-item"><span class="check">✓</span> Sicher gespeichert</div>
-          </div>
-        </div>
-        <div class="showcase-visual">
-          <div class="mock-pdf">
-            <div class="mock-pdf-row">
-              <span class="file-icon">PDF</span>
-              <span class="file-name">Garantiebedingungen.pdf</span>
-            </div>
-            <div class="mock-pdf-answer">
-              <strong>Frage:</strong> Wie lange gilt die Garantie?<br>
-              <strong>Antwort:</strong> Laut Dokument beträgt die Garantiezeit 24 Monate.
-            </div>
-          </div>
-        </div>
+    <div class="show-card">
+      <div>
+        <h3>Integrierte Wissensdatenbank</h3>
+        <p>Lade PDFs hoch — FAQ, Preisliste, Handbuch — dein Chatbot nutzt sie automatisch als Wissensquelle. Kein separates Produkt, einfach im Preis enthalten.</p>
+        <div class="badges"><span>PDF-Upload</span><span>Sofort einsatzbereit</span><span>Sicher gespeichert</span></div>
+      </div>
+      <div class="pdf-mock">
+        <div class="pdf-row"><b>PDF</b> Garantiebedingungen.pdf</div>
+        <div class="pdf-ans"><strong>Frage:</strong> Wie lange gilt die Garantie?<br><strong>Antwort:</strong> Laut Dokument beträgt die Garantiezeit 24 Monate.</div>
       </div>
     </div>
 
     <div class="kb-demo">
-      <div class="kb-demo-label">LIVE-DEMO</div>
-      <h3>Probier's direkt aus</h3>
-      <p>Stell eine Frage — die Antwort kommt aus einem echten hochgeladenen Dokument.</p>
-      <div class="kb-input-row">
-        <input type="text" id="kbInput" placeholder="z. B. Wie sind eure Bürozeiten?">
-        <button id="kbAsk" onclick="askKnowledgeBase()">Fragen</button>
-      </div>
-      <div class="kb-answer" id="kbAnswer">
-        <div class="label">Antwort</div>
-        <div id="kbAnswerText"></div>
+      <div class="blob" style="width:420px;height:300px;left:-100px;top:-120px;background:#0A57C2;opacity:.8;"></div>
+      <div style="position:relative;z-index:1;">
+        <div class="lbl">LIVE-DEMO</div>
+        <h3>Probier's direkt aus</h3>
+        <p>Stell eine Frage — die Antwort kommt aus einem echten hochgeladenen Dokument.</p>
+        <div class="kb-row">
+          <input type="text" id="kbInput" placeholder="z. B. Wie sind eure Bürozeiten?">
+          <button id="kbAsk" onclick="askKnowledgeBase()">Fragen</button>
+        </div>
+        <div class="kb-answer" id="kbAnswer">
+          <div class="label">ANTWORT</div>
+          <div id="kbAnswerText"></div>
+        </div>
       </div>
     </div>
 
-    <div style="text-align:center; margin-top:8px;">
-      <a class="btn btn-secondary" href="preise.html" target="_blank" style="background:var(--blue); color:#fff; display:inline-flex; width:auto; padding:14px 30px;">Preise anschauen →</a>
+    <div style="text-align:center;">
+      <a class="cut-btn" href="preise.html">Preise anschauen →</a>
     </div>
-
   </div>
 </section>
 
-<footer>© 2026 CloudFlow · KI-Chatbots für lokale Unternehmen</footer>
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="logo"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></div>
+        <p>Mehr Zeit für dein Business.<br>KI-Chatbots für lokale Unternehmen.</p>
+      </div>
+      <div><h4>Unternehmen</h4><ul>
+        <li><a href="kontakt.html">Über uns</a></li><li><a href="kontakt.html">Kontakt</a></li><li><a href="#">Impressum</a></li><li><a href="#">Datenschutz</a></li></ul></div>
+      <div><h4>Produkte</h4><ul>
+        <li><a href="produkte.html">KI-Chatbot</a></li><li><a href="preise.html">Preise</a></li></ul></div>
+      <div><h4>Mehr erfahren</h4><ul>
+        <li><a href="index.html#ablauf">So funktioniert's</a></li><li><a href="index.html#faq">Häufige Fragen</a></li><li><a href="dashboard.html">Kunden-Login</a></li></ul></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 CloudFlow. Alle Rechte vorbehalten.</span><span>kontakt@cloudflow.at</span></div>
+  </div>
+</footer>
 
 <script>
 // Live-Demo (nutzt dieselbe Edge Function wie der Chatbot, ohne Chatverlauf)
@@ -298,18 +125,11 @@ async function askKnowledgeBase(){
   const answerText = document.getElementById('kbAnswerText');
   const question = input.value.trim();
   if(!question) return;
-
-  btn.disabled = true;
-  btn.textContent = 'Sucht …';
-
+  btn.disabled = true; btn.textContent = 'Sucht …';
   try{
     const res = await fetch(KB_FUNCTION_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + KB_ANON_KEY,
-        'apikey': KB_ANON_KEY
-      },
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+KB_ANON_KEY,'apikey':KB_ANON_KEY},
       body: JSON.stringify({ company_id: KB_COMPANY_ID, message: question, history: [] })
     });
     const data = await res.json();
@@ -317,16 +137,10 @@ async function askKnowledgeBase(){
   } catch(e){
     answerText.textContent = 'Die Demo ist gerade nicht erreichbar. Versuch es gleich nochmal.';
   }
-
   answerBox.classList.add('visible');
-  btn.disabled = false;
-  btn.textContent = 'Fragen';
+  btn.disabled = false; btn.textContent = 'Fragen';
 }
-
-document.getElementById('kbInput')?.addEventListener('keydown', e => {
-  if(e.key === 'Enter') askKnowledgeBase();
-});
+document.getElementById('kbInput')?.addEventListener('keydown', e => { if(e.key === 'Enter') askKnowledgeBase(); });
 </script>
-
 </body>
 </html>
