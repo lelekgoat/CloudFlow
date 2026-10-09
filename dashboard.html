@@ -134,6 +134,21 @@
   table{width:100%; border-collapse:collapse; font-size:0.93rem;}
   th{text-align:left; color:var(--ink-soft); font-weight:700; font-size:0.76rem; padding:0 12px 10px 0; text-transform:uppercase; letter-spacing:0.08em;}
   td{padding:13px 12px 13px 0; border-top:1px solid var(--line);}
+
+  /* ---------- Admin: Abo-Uebersicht ---------- */
+  .toolbar{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;}
+  .toolbar input, .toolbar select{border:1px solid rgba(9,23,46,0.22); background:#fff; border-radius:0; padding:10px 12px; font-size:0.92rem; outline:none; color:var(--ink);}
+  .toolbar input{flex:1; min-width:200px;}
+  .toolbar input:focus, .toolbar select:focus, td select:focus, td input:focus{border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,113,227,0.14);}
+  td select, td input{border:1px solid rgba(9,23,46,0.18); background:#fff; border-radius:0; padding:7px 8px; font-size:0.88rem; color:var(--ink); outline:none; max-width:100%;}
+  td input.note{width:170px;}
+  td .sub{color:var(--ink-soft); font-size:0.8rem;}
+  td.doc-cell{white-space:nowrap; font-weight:700; color:var(--navy);}
+  td.doc-cell.full{color:var(--red);}
+  .st{display:inline-block; font-size:0.74rem; font-weight:800; letter-spacing:0.05em; text-transform:uppercase; padding:3px 9px; color:#fff;}
+  .st.Aktiv{background:var(--green);} .st.Interessent{background:var(--blue);} .st.Pausiert{background:#B7791F;} .st.Gekuendigt{background:var(--red);}
+  .toast{position:fixed; right:24px; bottom:24px; background:var(--navy); color:#fff; padding:12px 20px; font-weight:700; font-size:0.9rem; opacity:0; transform:translateY(10px); transition:all .25s; pointer-events:none; z-index:300;}
+  .toast.show{opacity:1; transform:translateY(0);}
 </style>
 </head>
 <body>
@@ -231,14 +246,15 @@
 
     <div class="stat-grid">
       <div class="stat-card"><div class="label">Aktueller Plan</div><div class="value" id="planLabel">—</div></div>
-      <div class="stat-card"><div class="label">Status</div><div class="value green">Aktiv</div></div>
+      <div class="stat-card"><div class="label">Status</div><div class="value" id="statusLabel">—</div></div>
       <div class="stat-card"><div class="label">Firma</div><div class="value" id="companyLabel" style="font-size:1.25rem;">—</div></div>
       <div class="stat-card"><div class="label">Dokumente</div><div class="value" id="docCount">0</div></div>
     </div>
 
-    <div class="panel">
-      <h2><span>Dokumente</span></h2>
-      <p class="panel-sub">Dein Chatbot beantwortet Fragen auf Basis dieser PDFs.</p>
+    <div id="docsSlotCustomer">
+    <div class="panel" id="docsPanel">
+      <h2><span id="docsTitle">Dokumente</span></h2>
+      <p class="panel-sub" id="docsSub">Dein Chatbot beantwortet Fragen auf Basis dieser PDFs.</p>
       <div id="docList"></div>
       <div id="docListEmpty" class="empty-note">Noch keine Dokumente hochgeladen.</div>
       <label class="upload-zone" id="uploadZone" for="fileInput">
@@ -249,10 +265,12 @@
         <input type="file" id="fileInput" accept="application/pdf" onchange="addDoc(this)">
       </label>
     </div>
+    </div>
 
     <div class="panel">
       <h2><span>Abonnement</span></h2>
       <div class="kv-row"><span class="k">Paket</span><span class="plan-badge" id="planBadge">—</span></div>
+      <div class="kv-row"><span class="k">Abrechnung</span><span id="billingKv">—</span></div>
       <div class="kv-row"><span class="k">E-Mail</span><span id="emailKv">—</span></div>
       <div class="kv-row"><span class="k">Konto erstellt</span><span id="createdKv">—</span></div>
     </div>
@@ -261,29 +279,41 @@
   <!-- ADMIN-ANSICHT -->
   <div class="shell-inner" id="adminView" style="display:none;">
     <h1 class="page-title"><span class="m">Admin-Übersicht</span></h1>
-    <p class="page-sub">Alle Kunden und Aktivität auf einen Blick.</p>
+    <p class="page-sub">Alle Kunden, Abos und Umsatz auf einen Blick.</p>
 
     <div class="stat-grid">
       <div class="stat-card"><div class="label">Kunden gesamt</div><div class="value" id="totalCustomers">—</div></div>
-      <div class="stat-card"><div class="label">MRR</div><div class="value muted">Noch nicht getrackt</div></div>
-      <div class="stat-card"><div class="label">Aktive Chatbots</div><div class="value muted">Noch nicht getrackt</div></div>
-      <div class="stat-card"><div class="label">Anfragen (Monat)</div><div class="value muted">Noch nicht getrackt</div></div>
+      <div class="stat-card"><div class="label">Aktive Abos</div><div class="value" id="activeSubs">—</div></div>
+      <div class="stat-card"><div class="label">MRR (pro Monat)</div><div class="value" id="mrrValue">—</div></div>
+      <div class="stat-card"><div class="label">Dokumente gesamt</div><div class="value" id="totalDocs">—</div></div>
     </div>
 
     <div class="panel">
-      <h2><span>Kunden</span></h2>
+      <h2><span>Kunden &amp; Abos</span></h2>
+      <p class="panel-sub">Paket, Abrechnung, Status und Notiz kannst du direkt in der Tabelle ändern — es wird sofort gespeichert. Nur Kunden mit Status „Aktiv“ zählen zum MRR.</p>
+      <div class="toolbar">
+        <input type="search" id="custSearch" placeholder="Suchen nach Firma oder E-Mail …" oninput="renderCustomers()">
+        <select id="custFilter" onchange="renderCustomers()">
+          <option value="">Alle Status</option>
+          <option>Aktiv</option><option>Interessent</option><option>Pausiert</option><option>Gekuendigt</option>
+        </select>
+      </div>
       <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Firma</th><th>E-Mail</th><th>Paket</th><th>Registriert am</th></tr>
+          <tr><th>Firma</th><th>E-Mail</th><th>Paket</th><th>Abrechnung</th><th>Status</th><th>Dokumente</th><th>Registriert</th><th>Notiz</th></tr>
         </thead>
         <tbody id="customerTableBody"></tbody>
       </table>
       </div>
-      <div id="customerTableEmpty" class="empty-note" style="display:none;">Noch keine Kunden registriert.</div>
+      <div id="customerTableEmpty" class="empty-note" style="display:none;">Keine Kunden gefunden.</div>
     </div>
+
+    <div id="docsSlotAdmin"></div>
   </div>
 </div>
+
+<div class="toast" id="toast">Gespeichert</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -407,14 +437,26 @@ async function enterApp(user){
   if(isAdmin){
     document.getElementById('adminView').style.display = 'block';
     document.getElementById('customerView').style.display = 'none';
+    // PDF-Fenster für die eigene Website (Chatbot auf cloudflow.at) in die Admin-Ansicht holen
+    document.getElementById('docsSlotAdmin').appendChild(document.getElementById('docsPanel'));
+    document.getElementById('docsTitle').textContent = 'PDFs für den Chatbot auf deiner Website';
+    document.getElementById('docsSub').textContent = 'Diese Dokumente nutzt der Chatbot auf cloudflow.at für seine Antworten.';
     loadAdminData();
+    loadDocs();
   } else {
     document.getElementById('customerView').style.display = 'block';
     document.getElementById('adminView').style.display = 'none';
+    document.getElementById('docsSlotCustomer').appendChild(document.getElementById('docsPanel'));
+    document.getElementById('docsTitle').textContent = 'Dokumente';
+    document.getElementById('docsSub').textContent = 'Dein Chatbot beantwortet Fragen auf Basis dieser PDFs.';
     document.getElementById('companyLabel').textContent = profile?.company_name || user.email.split('@')[0];
     document.getElementById('custName').textContent = profile?.company_name || user.email.split('@')[0];
     document.getElementById('planLabel').textContent = profile?.plan || 'Standard';
     document.getElementById('planBadge').textContent = profile?.plan || 'Standard';
+    const st = profile?.sub_status || 'Interessent';
+    const stEl = document.getElementById('statusLabel');
+    stEl.textContent = (STATUS_LABEL[st] || st); stEl.className = 'value' + (st === 'Aktiv' ? ' green' : '');
+    document.getElementById('billingKv').textContent = profile?.billing || 'monatlich';
     document.getElementById('emailKv').textContent = user.email;
     document.getElementById('createdKv').textContent = profile?.created_at ? new Date(profile.created_at).toLocaleDateString('de-AT') : '—';
     loadDocs();
@@ -429,16 +471,16 @@ async function loadDocs(){
 
   if(error || !data || data.length === 0){
     emptyEl.style.display = 'block';
-    document.getElementById('docCount').textContent = 0;
+    setText('docCount', 0);
     return;
   }
   emptyEl.style.display = 'none';
-  document.getElementById('docCount').textContent = data.length;
+  setText('docCount', data.length);
 
   data.forEach(file => {
     const row = document.createElement('div');
     row.className = 'doc-row';
-    row.innerHTML = '<div class="doc-name"><span class="doc-icon">PDF</span> ' + file.name + '</div><button class="doc-remove" onclick="removeDoc(\'' + file.name.replace(/'/g,"\\'") + '\')">Entfernen</button>';
+    row.innerHTML = '<div class="doc-name"><span class="doc-icon">PDF</span> ' + esc(file.name) + '</div><button class="doc-remove" onclick="removeDoc(\'' + file.name.replace(/'/g,"\\'") + '\')">Entfernen</button>';
     listEl.appendChild(row);
   });
 }
@@ -525,26 +567,100 @@ async function removeDoc(fileName){
   loadDocs();
 }
 
+// ---------- Admin: Kunden & Abos ----------
+const PLANS = {
+  'Basic':    { monthly: 29.99, yearly: 287, limit: 5 },
+  'Standard': { monthly: 49.49, yearly: 475, limit: 15 },
+  'Premium':  { monthly: 89.99, yearly: 863, limit: 30 }
+};
+const STATUSES = ['Interessent','Aktiv','Pausiert','Gekuendigt'];
+const STATUS_LABEL = { Gekuendigt: 'Gekündigt' };
+let customers = [];
+let docCounts = {};
+
+function esc(t){
+  return String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function setText(id, v){ const el = document.getElementById(id); if(el) el.textContent = v; }
+function euro(n){ return n.toLocaleString('de-AT', { style:'currency', currency:'EUR' }); }
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 1800);
+}
+function opts(list, current, labels){
+  return list.map(v => '<option value="' + esc(v) + '"' + (v === current ? ' selected' : '') + '>' + esc((labels && labels[v]) || v) + '</option>').join('');
+}
+
 async function loadAdminData(){
-  const { data, error } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+  const [{ data, error }, { data: docs }] = await Promise.all([
+    sb.from('profiles').select('*').order('created_at', { ascending: false }),
+    sb.from('documents').select('user_id')
+  ]);
+  docCounts = {};
+  (docs || []).forEach(d => { docCounts[d.user_id] = (docCounts[d.user_id] || 0) + 1; });
+  // Dein eigener Admin-Account ist kein Kunde
+  customers = error || !data ? [] : data.filter(p => !p.is_admin);
+  renderStats();
+  renderCustomers();
+}
+
+function renderStats(){
+  let mrr = 0, active = 0;
+  customers.forEach(p => {
+    if(p.sub_status !== 'Aktiv') return;
+    active++;
+    const plan = PLANS[p.plan];
+    if(plan) mrr += p.billing === 'jaehrlich' ? plan.yearly / 12 : plan.monthly;
+  });
+  setText('totalCustomers', customers.length);
+  setText('activeSubs', active);
+  setText('mrrValue', euro(mrr));
+  setText('totalDocs', customers.reduce((n, p) => n + (docCounts[p.id] || 0), 0));
+}
+
+function renderCustomers(){
+  const q = (document.getElementById('custSearch').value || '').trim().toLowerCase();
+  const f = document.getElementById('custFilter').value;
   const body = document.getElementById('customerTableBody');
   const emptyEl = document.getElementById('customerTableEmpty');
+  const rows = customers.filter(p =>
+    (!f || (p.sub_status || 'Interessent') === f) &&
+    (!q || (p.company_name || '').toLowerCase().includes(q) || (p.email || '').toLowerCase().includes(q))
+  );
   body.innerHTML = '';
-
-  if(error || !data || data.length === 0){
-    emptyEl.style.display = 'block';
-    document.getElementById('totalCustomers').textContent = 0;
-    return;
-  }
-  emptyEl.style.display = 'none';
-  document.getElementById('totalCustomers').textContent = data.length;
-
-  data.forEach(p => {
+  emptyEl.style.display = rows.length ? 'none' : 'block';
+  rows.forEach(p => {
+    const st = p.sub_status || 'Interessent';
+    const limit = (PLANS[p.plan] || {}).limit;
+    const n = docCounts[p.id] || 0;
     const tr = document.createElement('tr');
-    const created = p.created_at ? new Date(p.created_at).toLocaleDateString('de-AT') : '—';
-    tr.innerHTML = '<td>' + (p.company_name || '—') + '</td><td>' + p.email + '</td><td>' + (p.plan || 'Standard') + '</td><td>' + created + '</td>';
+    tr.innerHTML =
+      '<td><strong>' + esc(p.company_name || '—') + '</strong></td>' +
+      '<td>' + esc(p.email) + '</td>' +
+      '<td><select onchange="updateProfile(\'' + p.id + '\',\'plan\',this.value)">' + opts(Object.keys(PLANS), p.plan || 'Standard') + '</select></td>' +
+      '<td><select onchange="updateProfile(\'' + p.id + '\',\'billing\',this.value)">' + opts(['monatlich','jaehrlich'], p.billing || 'monatlich', { jaehrlich: 'jährlich' }) + '</select></td>' +
+      '<td><select onchange="updateProfile(\'' + p.id + '\',\'sub_status\',this.value)">' + opts(STATUSES, st, STATUS_LABEL) + '</select></td>' +
+      '<td class="doc-cell' + (limit && n >= limit ? ' full' : '') + '">' + n + (limit ? ' / ' + limit : '') + '</td>' +
+      '<td>' + (p.created_at ? new Date(p.created_at).toLocaleDateString('de-AT') : '—') + '</td>' +
+      '<td><input class="note" type="text" maxlength="200" placeholder="Notiz …" value="' + esc(p.notes || '') + '" onchange="updateProfile(\'' + p.id + '\',\'notes\',this.value)"></td>';
     body.appendChild(tr);
   });
+}
+
+async function updateProfile(id, field, value){
+  const patch = { [field]: value };
+  // Beim ersten Wechsel auf "Aktiv" das Startdatum merken
+  if(field === 'sub_status' && value === 'Aktiv'){
+    const p = customers.find(c => c.id === id);
+    if(p && !p.plan_since) patch.plan_since = new Date().toISOString().slice(0, 10);
+  }
+  const { error } = await sb.from('profiles').update(patch).eq('id', id);
+  if(error){ alert('Speichern fehlgeschlagen: ' + error.message + '\n\nHast du supabase/migration-abo.sql schon in Supabase ausgeführt?'); loadAdminData(); return; }
+  const p = customers.find(c => c.id === id);
+  if(p) Object.assign(p, patch);
+  renderStats();
+  toast('Gespeichert');
 }
 
 // Beim Laden prüfen, ob schon eine Session besteht (z. B. nach Neuladen der Seite)
