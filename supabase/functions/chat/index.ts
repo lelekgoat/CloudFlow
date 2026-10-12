@@ -28,7 +28,8 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_DOC_CHARS = 40000;
 const MAX_HISTORY = 12;
 const LIMIT_IP_PER_MIN = 8;      // Nachrichten pro Besucher (IP) und Minute
-const LIMIT_COMPANY_PER_DAY = 1500; // Nachrichten pro Firma und Tag
+const LIMIT_COMPANY_PER_DAY = 500; // Nachrichten pro Firma und Tag
+const MONTH_LIMITS: Record<string, number> = { Basic: 500, Standard: 2000, Premium: 5000 }; // faire Nutzung pro Monat
 
 async function sha256(t: string) {
   const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
@@ -78,7 +79,7 @@ Deno.serve(async (req) => {
     await supabase.from("chat_log").insert({ company_id, ip_hash: ipHash });
 
     const [{ data: profile, error: pErr }, { data: docs, error: dErr }] = await Promise.all([
-      supabase.from("profiles").select("company_name, email, is_admin, paid_until").eq("id", company_id).maybeSingle(),
+      supabase.from("profiles").select("company_name, email, is_admin, paid_until, plan").eq("id", company_id).maybeSingle(),
       supabase.from("documents").select("file_name, content").eq("user_id", company_id).order("created_at"),
     ]);
     if (pErr) console.error("profiles:", pErr.message);
@@ -89,6 +90,17 @@ Deno.serve(async (req) => {
       const limit = new Date(profile.paid_until).getTime() + 8 * 86_400_000;
       if (Date.now() > limit) {
         return json({ reply: "Der Assistent ist gerade nicht verfügbar. Bitte nimm direkt Kontakt mit dem Unternehmen auf." });
+      }
+    }
+
+    // Monatslimit je Paket (faire Nutzung); Admin-Konto ausgenommen
+    if (profile && !profile.is_admin) {
+      const monthLimit = MONTH_LIMITS[profile.plan ?? "Standard"] ?? MONTH_LIMITS.Standard;
+      const m0 = new Date(); m0.setUTCDate(1); m0.setUTCHours(0, 0, 0, 0);
+      const { count: monthCount } = await supabase.from("chat_log").select("id", { count: "exact", head: true })
+        .eq("company_id", company_id).gte("created_at", m0.toISOString());
+      if ((monthCount ?? 0) > monthLimit) {
+        return json({ reply: "Der Assistent hat sein Nachrichtenlimit für diesen Monat erreicht. Bitte nimm direkt Kontakt mit dem Unternehmen auf." });
       }
     }
 
