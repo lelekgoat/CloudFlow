@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <title>Login & Dashboard — CloudFlow</title>
-<link rel="stylesheet" href="style.css?v=20261017">
+<link rel="stylesheet" href="style.css?v=20261019">
 <style>
   /* Dashboard-spezifisch – Farben, Schrift, Logo und Buttons kommen aus style.css */
   :root{ --green:#1A9F5C; --red:#C8102E; }
@@ -304,7 +304,16 @@
       </div>
       <button class="dz-btn" onclick="saveDesign()">Design speichern</button>
       <div class="dz-note" id="dzNote"></div>
-      <div class="dz-note">Deine Chatbot-ID für den Einbau: <code id="dzId"></code></div>
+      <div class="dz-note" id="dzNote2"></div>
+    </div>
+
+    <div class="panel" id="embedPanel">
+      <h2><span>Auf deiner Website einbauen</span></h2>
+      <p class="panel-sub">Kopiere diese Zeile und füge sie auf deiner Website direkt vor dem schließenden <code>&lt;/body&gt;</code>-Tag ein. Das Design, das du oben speicherst, übernimmt der Chatbot automatisch.</p>
+      <textarea id="embedCode" readonly rows="3" style="width:100%;padding:12px;border:1px solid var(--line);font-family:Consolas,monospace;font-size:.85rem;background:#F7FAFD;" aria-label="Einbau-Code"></textarea>
+      <button class="dz-btn" onclick="copyEmbed()">Code kopieren</button>
+      <div class="dz-note" id="embedNote"></div>
+      <div class="dz-note"><b>Wo einfügen?</b> Bei Wix, Jimdo, WordPress und ähnlichen Baukästen gibt es meist ein Feld „Benutzerdefinierter Code“ oder „Code einbetten“ für den Fußbereich der Seite. Klappt es nicht, schick uns den Code an kontakt@cloudflow.at, dann bauen wir ihn für dich ein.</div>
     </div>
 
     <div class="panel">
@@ -533,6 +542,12 @@ function showPayBanner(p){
   }[s];
   b.style.display = 'block'; b.style.borderColor = cfg.c; b.style.background = cfg.bg; b.innerHTML = cfg.t + ' Fragen? kontakt@cloudflow.at';
 }
+function copyEmbed(){
+  const t = document.getElementById('embedCode'); t.select();
+  const done = () => { document.getElementById('embedNote').textContent = 'Kopiert.'; };
+  if(navigator.clipboard){ navigator.clipboard.writeText(t.value).then(done, () => { document.execCommand('copy'); done(); }); }
+  else { document.execCommand('copy'); done(); }
+}
 function initDesign(profile){
   const cfg = (profile && profile.widget_config) || {};
   dz = { launcher: cfg.launcher || 'l1', chat: cfg.chat || 'c2', p: cfg.primary || '#09172E', a: cfg.accent || '#0071E3' };
@@ -546,7 +561,7 @@ function initDesign(profile){
   document.getElementById('dzGreet').value = cfg.greeting || '';
   document.getElementById('dzTopics').value = cfg.topics || '';
   document.getElementById('dzLogo').value = cfg.logo || '';
-  document.getElementById('dzId').textContent = currentUser.id;
+  document.getElementById('embedCode').value = '<script src="https://cloudflow.at/widget.js" data-company="' + currentUser.id + '"></' + 'script>';
   window.__plan = profile && profile.plan || 'Standard';
   window.__docLimit = (PLANS[window.__plan] || PLANS.Standard).limit;
   window.__isPremium = prem;

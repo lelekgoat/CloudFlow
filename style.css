@@ -512,4 +512,5 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 body>section,body>footer{animation:pageIn .4s ease-out both;}
 body>section:nth-of-type(2){animation-delay:.06s;}
 body>section:nth-of-type(n+3){animation-delay:.1s;}
+.setup-fee{font-size:.88rem; font-weight:700; color:var(--blue); margin:4px 0 10px;}
 /* ===== Ende Basis-Erweiterungen ===== */
