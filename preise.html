@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://cloudflow.at/preise.html">
 <meta name="twitter:card" content="summary">
 <link rel="preload" href="fonts/open-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="style.css?v=20261021">
+<link rel="stylesheet" href="style.css?v=20261022">
 </head>
 <body>
 <a class="skip" href="#main">Zum Inhalt springen</a>
@@ -51,10 +51,12 @@
 
 <section class="block grey">
   <div class="wrap">
-    <div class="billing-toggle">
-      <span>Monatlich</span>
-      <button class="switch" id="switchChatbot" onclick="toggleBilling('switchChatbot','chatbotPlans')" aria-label="Abrechnung umschalten"><span class="thumb"></span></button>
-      <span>Jährlich · <span class="save-text">20% sparen</span></span>
+    <div class="bill-seg-wrap">
+      <p class="bill-q">So möchtest du zahlen:</p>
+      <div class="bill-seg" role="group" aria-label="Zahlweise wählen">
+        <button type="button" class="on" id="segMonth" aria-pressed="true" onclick="setBilling(false)">Monatlich<small>flexibel, jederzeit kündbar</small></button>
+        <button type="button" id="segYear" aria-pressed="false" onclick="setBilling(true)">Jährlich<small>20 % sparen + Einrichtung gratis oder halb</small></button>
+      </div>
     </div>
     <div class="plans" id="chatbotPlans">
       <div class="plan" data-monthly="29,99" data-yearly="287">
@@ -108,9 +110,12 @@
 </footer>
 
 <script>
-function toggleBilling(switchId, plansId){
-  const btn = document.getElementById(switchId);
-  const isYearly = btn.classList.toggle('on');
+function setBilling(isYearly){
+  const plansId = 'chatbotPlans';
+  document.getElementById('segMonth').classList.toggle('on', !isYearly);
+  document.getElementById('segYear').classList.toggle('on', isYearly);
+  document.getElementById('segMonth').setAttribute('aria-pressed', String(!isYearly));
+  document.getElementById('segYear').setAttribute('aria-pressed', String(isYearly));
   document.getElementById(plansId).querySelectorAll('.plan').forEach(plan => {
     const amountEl = plan.querySelector('.price-amount');
     const unitLabelEl = plan.querySelector('.unit-label');
@@ -126,6 +131,6 @@ function toggleBilling(switchId, plansId){
   });
 }
 </script>
-<script src="widget.js?v=20261021" data-company="8995e595-bb45-4753-a4f6-ff74e80cf74e" data-name="CloudFlow Chatbot" data-greeting="Hallo und willkommen bei CloudFlow 👋 Gerne beraten wir dich zu unseren Chatbots, Preisen oder wie du startest." data-topics="Preise=Was kostet das?|Ablauf=Wie läuft der Ablauf ab?|Technik nötig?=Brauche ich technisches Wissen?" data-chat="c2" data-launcher="l1"></script>
+<script src="widget.js?v=20261022" data-company="8995e595-bb45-4753-a4f6-ff74e80cf74e" data-name="CloudFlow Chatbot" data-greeting="Hallo und willkommen bei CloudFlow 👋 Gerne beraten wir dich zu unseren Chatbots, Preisen oder wie du startest." data-topics="Preise=Was kostet das?|Ablauf=Wie läuft der Ablauf ab?|Technik nötig?=Brauche ich technisches Wissen?" data-chat="c2" data-launcher="l1"></script>
 </body>
 </html>
