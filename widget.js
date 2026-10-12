@@ -1,3 +1,20 @@
+/* CloudFlow Chat-Widget
+ * Einbindung auf der Kunden-Website (vor </body>):
+ *   <script src="https://cloudflow.at/widget.js" data-company="KUNDEN-ID"></script>
+ *
+ * Optionale Einstellungen (alle als data-Attribute im <script>-Tag):
+ *   data-name        Name des Assistenten            (Standard: "Chatbot")
+ *   data-greeting    Begrüßungstext
+ *   data-topics      Themen-Buttons: "Öffnungszeiten|Preise|Termin vereinbaren"
+ *                    oder mit eigener Frage: "Preise=Was kostet das?|Termin=Ich möchte einen Termin"
+ *   data-primary     Hauptfarbe  (z. B. #09172E)
+ *   data-accent      Akzentfarbe (z. B. #0071E3)
+ *   data-chat        Chatfenster: c1 Klassisch | c2 Himmel | c3 Minimal | c4 Dunkel   (Standard: c2)
+ *   data-launcher    Button: l1 Quadrat | l2 Rechteck+Text | l3 Rund | l4 Weiße Karte | l5 Verlauf (Standard: l1)
+ *   data-launcher-text  Text im Button bei l2/l4
+ *   data-logo        URL zu einem eigenen Logo (PNG/SVG)
+ *   data-brand       Text in der Fußzeile ("Chatbot von ...", Standard: CloudFlow)
+ */
 (function(){
   'use strict';
 
@@ -5,20 +22,39 @@
   var FUNCTION_URL = 'https://rkbockdrhxmpvxugkmrt.supabase.co/functions/v1/chat';
   var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrYm9ja2RyaHhtcHZ4dWdrbXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxOTgzNjIsImV4cCI6MjEwMjc3NDM2Mn0.0AEyPvayW8NKlriAGz3zvDVsz2itHeVLQUO3ea6MDOE';
 
-  // ---------- Eigene Kunden-ID aus dem <script>-Tag auslesen ----------
+  // ---------- Einstellungen aus dem <script>-Tag ----------
   var currentScript = document.currentScript || (function(){
     var scripts = document.getElementsByTagName('script');
     return scripts[scripts.length - 1];
   })();
-  var COMPANY_ID = currentScript.getAttribute('data-company');
-  var BOT_NAME = currentScript.getAttribute('data-name') || 'Assistent';
+  function attr(n, d){ var v = currentScript.getAttribute('data-' + n); return v ? v : d; }
+  var COMPANY_ID = attr('company', '');
+  var BOT_NAME   = attr('name', 'Chatbot');
+  var GREETING   = attr('greeting', 'Hallo! 👋 Wie kann ich dir helfen?');
+  var BRAND      = attr('brand', 'CloudFlow');
+  var CHAT       = /^c[1-4]$/.test(attr('chat','')) ? attr('chat') : 'c2';
+  var LAUNCHER   = /^l[1-5]$/.test(attr('launcher','')) ? attr('launcher') : 'l1';
+  var LOGO_URL   = attr('logo', '');
+  var PRIMARY    = /^#[0-9a-fA-F]{6}$/.test(attr('primary','')) ? attr('primary') : '#09172E';
+  var ACCENT     = /^#[0-9a-fA-F]{6}$/.test(attr('accent','')) ? attr('accent') : '#0071E3';
+  var LAUNCH_TXT = attr('launcher-text', LAUNCHER === 'l4' ? 'Chat' : 'Frag uns!');
+  var TOPICS = attr('topics', 'Öffnungszeiten=Wie sind eure Öffnungszeiten?|Preise=Was kostet das?|Termin vereinbaren=Ich möchte einen Termin vereinbaren.')
+    .split('|').map(function(t){ var p = t.split('='); return { label: p[0].trim(), q: (p[1] || p[0]).trim() }; })
+    .filter(function(t){ return t.label; });
 
   if(!COMPANY_ID){
     console.error('CloudFlow Widget: data-company Attribut fehlt im <script>-Tag.');
     return;
   }
 
-  // ---------- Eigenen Container mit Shadow DOM bauen (isoliert vom Host-Styling) ----------
+  function lum(hex){
+    var c = [1,3,5].map(function(i){ return parseInt(hex.slice(i,i+2),16)/255; })
+      .map(function(v){ return v <= .03928 ? v/12.92 : Math.pow((v+.055)/1.055, 2.4); });
+    return .2126*c[0] + .7152*c[1] + .0722*c[2];
+  }
+  function onColor(hex){ return lum(hex) > .5 ? '#09172E' : '#FFFFFF'; }
+
+  // ---------- Eigener Container mit Shadow DOM (isoliert vom Host-Styling) ----------
   var host = document.createElement('div');
   host.id = 'cloudflow-widget-host';
   document.body.appendChild(host);
@@ -26,99 +62,150 @@
 
   var styleEl = document.createElement('style');
   styleEl.textContent = `
-    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
-    *{box-sizing:border-box; margin:0; padding:0; font-family:'Open Sans', 'Segoe UI', Arial, sans-serif;}
-    .cf-fab{
-      position:fixed; bottom:24px; right:24px; z-index:2147483000;
-      width:58px; height:58px; border-radius:50%;
-      background:#0071E3; color:#fff; border:none; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      box-shadow:0 10px 30px -6px rgba(0,113,227,0.55);
-      transition:transform .2s; font-size:1.5rem;
-    }
-    .cf-fab:hover{transform:scale(1.06);}
-    .cf-fab .cf-icon-close{display:none;}
-    .cf-fab.open .cf-icon-chat{display:none;}
-    .cf-fab.open .cf-icon-close{display:block;}
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
+    :host{all:initial;}
+    /* ---------- CloudFlow Chat-Komponente (Fenster + Button) ---------- */
+.cf-win,.cf-win *,.cf-fab,.cf-fab *{box-sizing:border-box;}
+.cf-win{
+  position:relative; width:400px; max-width:calc(100vw - 32px); height:620px; max-height:calc(100vh - 130px);
+  display:flex; flex-direction:column; background:#fff; border:1px solid rgba(9,23,46,.14);
+  box-shadow:0 40px 80px -24px rgba(9,23,46,.5); overflow:hidden; text-align:left; color:#161B26;
+  font-family:'Open Sans','Segoe UI',Arial,sans-serif; font-size:16px; line-height:1.5;
+}
+.cf-hero{position:relative; flex-shrink:0; display:flex; flex-direction:column; align-items:center; text-align:center; padding:26px 20px 24px; overflow:hidden;}
+.cf-hero > *{position:relative; z-index:1;}
+.cf-close{position:absolute !important; top:12px; right:12px; width:34px; height:34px; border:0; cursor:pointer; background:rgba(255,255,255,.75); color:#09172E; font-size:1rem; display:flex; align-items:center; justify-content:center; font-family:inherit;}
+.cf-close:hover{background:#fff;}
+.cf-logo{width:58px; height:58px; margin-bottom:10px; display:flex; align-items:center; justify-content:center; background:var(--p,#09172E); color:var(--onp,#FFFFFF); box-shadow:0 14px 30px -12px rgba(9,23,46,.55);}
+.cf-logo svg{width:30px; height:30px;} .cf-logo img{width:38px; height:38px; object-fit:contain;}
+.cf-name{font-size:1.2rem; font-weight:800; letter-spacing:-.01em; line-height:1.25;}
+.cf-status{font-size:.78rem; display:flex; align-items:center; gap:6px; opacity:.85; margin-top:3px;}
+.cf-status::before{content:""; width:7px; height:7px; background:#22C55E;}
+.cf-log{flex:1; min-height:0; overflow-y:auto; padding:8px 20px 14px; display:flex; flex-direction:column; gap:14px;}
+.cf-msg{max-width:88%; font-size:.93rem; line-height:1.5;}
+.cf-msg .t{padding:11px 14px; white-space:pre-wrap; word-break:break-word;}
+.cf-msg time{display:block; font-size:.7rem; color:#8A93A6; margin-top:4px;}
+.cf-msg.bot{align-self:flex-start;} .cf-msg.bot .t{background:#F1F4F9; border-left:3px solid var(--a,#0071E3);}
+.cf-msg.user{align-self:flex-end; text-align:right;} .cf-msg.user .t{background:var(--a,#0071E3); color:var(--ona,#FFFFFF); text-align:left;}
+.cf-topics{border:1px solid rgba(9,23,46,.14); background:#fff; padding:14px; box-shadow:0 14px 30px -20px rgba(9,23,46,.45);}
+.cf-topics p{font-weight:700; font-size:.88rem; margin-bottom:10px; color:var(--p,#09172E);}
+.cf-chips{display:flex; flex-wrap:wrap; gap:8px;}
+.cf-chip{border:1.5px solid var(--a,#0071E3); background:#fff; color:var(--a,#0071E3); font-family:inherit; font-weight:700; font-size:.84rem; padding:8px 14px; cursor:pointer; transition:background .15s,color .15s;}
+.cf-chip:hover{background:var(--a,#0071E3); color:var(--ona,#FFFFFF);}
+.cf-typing{display:flex; gap:4px; align-self:flex-start; padding:13px 14px; background:#F1F4F9; border-left:3px solid var(--a,#0071E3);}
+.cf-typing span{width:6px; height:6px; border-radius:50%; background:#9AA3B2; animation:cfbounce 1.2s infinite;}
+.cf-typing span:nth-child(2){animation-delay:.15s;} .cf-typing span:nth-child(3){animation-delay:.3s;}
+@keyframes cfbounce{0%,60%,100%{transform:translateY(0);opacity:.5;} 30%{transform:translateY(-4px);opacity:1;}}
+.cf-bar{position:relative; flex-shrink:0; display:flex; align-items:stretch; margin:0 16px; border:1.5px solid var(--a,#0071E3); background:#fff;}
+.cf-menu{width:40px; display:flex; align-items:center; justify-content:center; border:0; background:none; cursor:pointer; font-size:1.3rem; font-weight:800; color:#5B6475; font-family:inherit;}
+.cf-menu:hover{color:var(--a,#0071E3);}
+.cf-bar input{flex:1; min-width:0; border:0; outline:0; padding:14px 6px 14px 2px; font-family:inherit; font-size:.95rem; background:transparent; color:inherit;}
+.cf-send{width:50px; border:0; background:var(--a,#0071E3); color:var(--ona,#FFFFFF); cursor:pointer; display:flex; align-items:center; justify-content:center;}
+.cf-send svg{width:20px; height:20px;}
+.cf-pop{position:absolute; left:-1.5px; bottom:calc(100% + 8px); display:none; background:#fff; border:1px solid rgba(9,23,46,.18); box-shadow:0 18px 40px -18px rgba(9,23,46,.5); z-index:5;}
+.cf-pop.show{display:block;}
+.cf-pop button{display:block; width:100%; border:0; background:none; padding:11px 20px; font-family:inherit; font-weight:600; font-size:.9rem; cursor:pointer; white-space:nowrap; text-align:left; color:#161B26;}
+.cf-pop button:hover{background:#F1F4F9;}
+.cf-foot{flex-shrink:0; text-align:center; font-size:.72rem; color:#8A93A6; padding:10px 0 12px;} .cf-foot b{color:#5B6475;}
 
-    .cf-panel{
-      position:fixed; bottom:94px; right:24px; z-index:2147483000;
-      width:360px; max-width:calc(100vw - 32px);
-      background:#fff; border-radius:20px;
-      box-shadow:0 24px 60px -16px rgba(0,0,0,0.28);
-      overflow:hidden; border:1px solid rgba(0,0,0,0.08);
-      opacity:0; transform:translateY(16px) scale(0.97);
-      pointer-events:none; transition:opacity .2s ease, transform .2s ease;
-    }
-    .cf-panel.open{opacity:1; transform:translateY(0) scale(1); pointer-events:auto;}
+/* Chat-Designs */
+.cf-c1 .cf-hero{background:var(--p,#09172E); color:var(--onp,#FFFFFF);}
+.cf-c1 .cf-logo{background:var(--a,#0071E3); color:var(--ona,#FFFFFF);}
+.cf-c1 .cf-close{background:rgba(255,255,255,.16); color:var(--onp,#FFFFFF);} .cf-c1 .cf-close:hover{background:rgba(255,255,255,.3);}
+.cf-c2 .cf-hero{color:var(--p,#09172E); background:linear-gradient(180deg,color-mix(in srgb,var(--a,#0071E3) 42%,#fff) 0%,color-mix(in srgb,var(--a,#0071E3) 16%,#fff) 62%,#fff 100%); padding-bottom:30px;}
+.cf-c2 .cf-hero::before{content:""; position:absolute; width:260px; height:200px; left:-70px; top:-90px; border-radius:50%; background:color-mix(in srgb,var(--a,#0071E3) 55%,#fff); filter:blur(46px); opacity:.55;}
+.cf-c2 .cf-hero::after{content:""; position:absolute; width:240px; height:180px; right:-70px; top:10px; border-radius:50%; background:#fff; filter:blur(44px); opacity:.85;}
+.cf-c3 .cf-hero{background:#fff; color:var(--p,#09172E); border-bottom:2px solid var(--p,#09172E); padding-bottom:20px;}
+.cf-c3 .cf-close{background:#fff; border:1px solid var(--p,#09172E); color:var(--p,#09172E);}
+.cf-c3 .cf-msg.bot .t{background:#fff; border:1px solid #C9CFDA; border-left:3px solid var(--p,#09172E);}
+.cf-c3 .cf-msg.user .t{background:#fff; border:1px solid var(--p,#09172E); color:var(--p,#09172E); font-weight:600;}
+.cf-c3 .cf-chip{border-color:var(--p,#09172E); color:var(--p,#09172E);} .cf-c3 .cf-chip:hover{background:var(--p,#09172E); color:var(--onp,#FFFFFF);}
+.cf-c3 .cf-bar{border-color:var(--p,#09172E);} .cf-c3 .cf-send{background:var(--p,#09172E); color:var(--onp,#FFFFFF);} .cf-c3 .cf-typing{background:#fff; border:1px solid #C9CFDA;}
+.cf-c4{background:color-mix(in srgb,var(--p,#09172E) 78%,#000); border-color:color-mix(in srgb,var(--p,#09172E) 78%,#000); color:#E6EEFB;}
+.cf-c4 .cf-hero{background:color-mix(in srgb,var(--p,#09172E) 45%,#000); color:#fff;}
+.cf-c4 .cf-logo{background:var(--a,#0071E3); color:var(--ona,#FFFFFF);}
+.cf-c4 .cf-close{background:rgba(255,255,255,.14); color:#fff;}
+.cf-c4 .cf-msg.bot .t{background:color-mix(in srgb,var(--p,#09172E) 62%,#fff 12%); color:#E6EEFB;}
+.cf-c4 .cf-msg time,.cf-c4 .cf-foot,.cf-c4 .cf-foot b{color:#9AA7C0;}
+.cf-c4 .cf-topics{background:color-mix(in srgb,var(--p,#09172E) 45%,#000); border-color:color-mix(in srgb,var(--p,#09172E) 62%,#fff 12%);} .cf-c4 .cf-topics p{color:#fff;}
+.cf-c4 .cf-chip{background:transparent; color:#fff; border-color:var(--a,#0071E3);} .cf-c4 .cf-chip:hover{background:var(--a,#0071E3); color:var(--ona,#FFFFFF);}
+.cf-c4 .cf-bar{background:color-mix(in srgb,var(--p,#09172E) 45%,#000);} .cf-c4 .cf-bar input{color:#fff;} .cf-c4 .cf-menu{color:#9AA7C0;}
+.cf-c4 .cf-typing{background:color-mix(in srgb,var(--p,#09172E) 62%,#fff 12%);}
+.cf-c4 .cf-pop{background:color-mix(in srgb,var(--p,#09172E) 45%,#000); border-color:color-mix(in srgb,var(--p,#09172E) 62%,#fff 12%);} .cf-c4 .cf-pop button{color:#fff;} .cf-c4 .cf-pop button:hover{background:color-mix(in srgb,var(--p,#09172E) 62%,#fff 12%);}
 
-    .cf-hero{
-      position:relative; background:linear-gradient(180deg, #E9F2FF 0%, #FFFFFF 100%);
-      padding:26px 20px 20px; text-align:center;
-    }
-    .cf-close-btn{
-      position:absolute; top:14px; left:14px; width:30px; height:30px; border-radius:50%;
-      background:#fff; border:1px solid rgba(0,0,0,0.08); display:flex; align-items:center;
-      justify-content:center; cursor:pointer; font-size:0.9rem; color:#6E6E73;
-    }
-    .cf-close-btn:hover{background:#F5F5F7;}
-    .cf-logo-circle{
-      width:56px; height:56px; border-radius:50%; margin:0 auto 10px;
-      background:#fff; border:1px solid rgba(0,0,0,0.08); display:flex;
-      align-items:center; justify-content:center; box-shadow:0 8px 20px -6px rgba(0,0,0,0.12);
-    }
-    .cf-logo-circle svg{width:26px; height:26px; color:#8E8E93;}
-    .cf-hero h3{font-size:1.05rem; margin-bottom:4px; color:#1D1D1F; font-weight:600;}
-    .cf-status{font-size:0.72rem; color:#1A9F5C; display:inline-flex; align-items:center; gap:5px;}
-    .cf-status::before{content:""; width:6px; height:6px; border-radius:50%; background:#1A9F5C;}
+/* Fest unten rechts auf der Website */
+.cf-win.cf-fixed{position:fixed; right:26px; bottom:104px; z-index:299; opacity:0; transform:translateY(14px); pointer-events:none; transition:opacity .2s,transform .2s;}
+.cf-win.cf-fixed.open{opacity:1; transform:none; pointer-events:auto;}
 
-    .cf-log{height:260px; overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:10px;}
-    .cf-msg{max-width:78%; padding:9px 13px; border-radius:15px; font-size:0.87rem; line-height:1.4;}
-    .cf-msg.bot{background:#F5F5F7; align-self:flex-start; border-bottom-left-radius:4px; color:#1D1D1F;}
-    .cf-msg.user{background:#0071E3; color:#fff; align-self:flex-end; border-bottom-right-radius:4px;}
+/* Buttons unten rechts */
+.cf-fab{display:inline-flex; align-items:center; justify-content:center; gap:9px; position:relative; border:0; cursor:pointer; font-family:'Open Sans','Segoe UI',Arial,sans-serif; font-weight:700; color:#fff; transition:transform .15s;}
+.cf-fab:hover{transform:scale(1.05);}
+.cf-fab svg{width:26px; height:26px; flex-shrink:0;} .cf-fab b{font-size:.95rem;} .cf-fab img{width:34px; height:34px; object-fit:contain;}
+.cf-fab .x{display:none; width:24px; height:24px;}
+.cf-fab.open > svg:not(.x),.cf-fab.open > img,.cf-fab.open > b{display:none;} .cf-fab.open .x{display:block;}
+.cf-fab.open.cf-l2,.cf-fab.open.cf-l4{padding:0; width:56px;}
+.cf-fab.cf-fixed{position:fixed; right:26px; bottom:26px; z-index:300;}
+.cf-l1{width:60px; height:60px; background:var(--p,#09172E); color:var(--onp,#FFFFFF); box-shadow:0 14px 30px -10px rgba(9,23,46,.6);}
+.cf-l2{height:56px; padding:0 22px; background:var(--a,#0071E3); color:var(--ona,#FFFFFF); box-shadow:0 14px 30px -10px rgba(9,23,46,.5);} .cf-l2 svg{width:22px; height:22px;}
+.cf-l3{width:60px; height:60px; border-radius:50%; background:var(--a,#0071E3); color:var(--ona,#FFFFFF); box-shadow:0 14px 30px -8px rgba(9,23,46,.5);}
+.cf-l4{height:56px; padding:0 20px 0 18px; background:#fff; color:var(--p,#09172E); border:2px solid var(--p,#09172E); box-shadow:0 12px 26px -12px rgba(9,23,46,.5);} .cf-l4 svg{width:22px; height:22px; color:var(--a,#0071E3);}
+.cf-l4 .dot{position:absolute; top:-6px; left:-6px; width:13px; height:13px; background:#22C55E; border:2px solid #fff;}
+.cf-l5{width:62px; height:62px; background:linear-gradient(160deg,var(--a,#0071E3),color-mix(in srgb,var(--a,#0071E3) 55%,#fff)); color:var(--ona,#FFFFFF); box-shadow:0 16px 32px -10px rgba(9,23,46,.45);}
+.cf-l5 .dot{position:absolute; top:-5px; right:-5px; width:14px; height:14px; background:#22C55E; border:2px solid #fff;}
+@media (max-width:520px){
+  .cf-win.cf-fixed{right:0; left:0; bottom:0; width:100%; max-width:100%; height:100%; max-height:100%; border:0;}
+  .cf-fab.cf-fixed.open{display:none;}
+}
 
-    .cf-input{display:flex; gap:8px; padding:14px 16px; border-top:1px solid rgba(0,0,0,0.08);}
-    .cf-input input{
-      flex:1; border:1px solid rgba(0,0,0,0.08); background:#F5F5F7; border-radius:980px;
-      padding:10px 14px; font-size:0.87rem; outline:none;
-    }
-    .cf-input input:focus{border-color:#0071E3;}
-    .cf-input button{
-      background:#0071E3; color:#fff; border:none; border-radius:980px;
-      padding:0 18px; font-weight:500; cursor:pointer; font-size:0.82rem;
-    }
-    .cf-typing{display:flex; gap:4px; align-self:flex-start; padding:9px 13px; background:#F5F5F7; border-radius:15px;}
-    .cf-typing span{width:5px; height:5px; border-radius:50%; background:#A1A1A6; animation:cf-bounce 1.2s infinite;}
-    .cf-typing span:nth-child(2){animation-delay:.15s;} .cf-typing span:nth-child(3){animation-delay:.3s;}
-    @keyframes cf-bounce{0%,60%,100%{transform:translateY(0); opacity:.5;} 30%{transform:translateY(-4px); opacity:1;}}
   `;
   shadow.appendChild(styleEl);
 
+  var SVG_LOGO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>';
+  var SVG_CHAT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg>';
+  var SVG_SEND = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  var SVG_X = '<svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+
+  function logoHTML(svg){ return LOGO_URL ? '<img src="" alt="" data-logo>' : svg; }
+
   var wrapper = document.createElement('div');
-  wrapper.innerHTML = `
-    <div class="cf-panel" id="cfPanel">
-      <div class="cf-hero">
-        <button class="cf-close-btn" id="cfClose" aria-label="Chat schließen">✕</button>
-        <div class="cf-logo-circle">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
-        </div>
-        <h3>${BOT_NAME}</h3>
-        <span class="cf-status">Online</span>
-      </div>
-      <div class="cf-log" id="cfLog">
-        <div class="cf-msg bot">Hallo! 👋 Wie kann ich dir helfen?</div>
-      </div>
-      <div class="cf-input">
-        <input type="text" id="cfInput" placeholder="Nachricht schreiben …">
-        <button id="cfSend">Senden</button>
-      </div>
-    </div>
-    <button class="cf-fab" id="cfFab" aria-label="Chat öffnen">
-      <span class="cf-icon-chat">💬</span>
-      <span class="cf-icon-close">✕</span>
-    </button>
-  `;
+  wrapper.style.setProperty('--p', PRIMARY);
+  wrapper.style.setProperty('--a', ACCENT);
+  wrapper.style.setProperty('--onp', onColor(PRIMARY));
+  wrapper.style.setProperty('--ona', onColor(ACCENT));
+
+  var fabInner = {
+    l1: logoHTML(SVG_LOGO),
+    l2: SVG_CHAT + '<b data-launch-text></b>',
+    l3: SVG_CHAT,
+    l4: '<i class="dot"></i>' + logoHTML(SVG_LOGO) + '<b data-launch-text></b>',
+    l5: SVG_CHAT + '<i class="dot"></i>'
+  }[LAUNCHER];
+
+  wrapper.innerHTML =
+    '<div class="cf-win cf-' + CHAT + ' cf-fixed" id="cfPanel">' +
+      '<div class="cf-hero">' +
+        '<button class="cf-close" id="cfClose" aria-label="Chat schließen">✕</button>' +
+        '<span class="cf-logo">' + logoHTML(SVG_LOGO) + '</span>' +
+        '<b class="cf-name" data-name></b>' +
+        '<span class="cf-status">Online · antwortet sofort</span>' +
+      '</div>' +
+      '<div class="cf-log" id="cfLog"></div>' +
+      '<div class="cf-bar">' +
+        '<div class="cf-pop" id="cfPop"><button type="button" id="cfReset">Neues Gespräch</button></div>' +
+        '<button class="cf-menu" type="button" id="cfMenu" aria-label="Menü">⋮</button>' +
+        '<input type="text" id="cfInput" placeholder="Nachricht schreiben …" autocomplete="off">' +
+        '<button class="cf-send" type="button" id="cfSend" aria-label="Senden">' + SVG_SEND + '</button>' +
+      '</div>' +
+      '<div class="cf-foot">Chatbot von <b data-brand></b></div>' +
+    '</div>' +
+    '<button class="cf-fab cf-' + LAUNCHER + ' cf-fixed" id="cfFab" aria-label="Chat öffnen">' + fabInner + SVG_X + '</button>';
   shadow.appendChild(wrapper);
+
+  // Texte sicher einsetzen (kein HTML aus Attributen)
+  wrapper.querySelector('[data-name]').textContent = BOT_NAME;
+  wrapper.querySelector('[data-brand]').textContent = BRAND;
+  wrapper.querySelectorAll('[data-launch-text]').forEach(function(el){ el.textContent = LAUNCH_TXT; });
+  wrapper.querySelectorAll('img[data-logo]').forEach(function(el){ el.src = LOGO_URL; });
 
   // ---------- Verhalten ----------
   var panel = shadow.getElementById('cfPanel');
@@ -127,6 +214,9 @@
   var log = shadow.getElementById('cfLog');
   var input = shadow.getElementById('cfInput');
   var sendBtn = shadow.getElementById('cfSend');
+  var menuBtn = shadow.getElementById('cfMenu');
+  var pop = shadow.getElementById('cfPop');
+  var resetBtn = shadow.getElementById('cfReset');
 
   var chatHistory = [];
 
@@ -137,13 +227,41 @@
   fab.addEventListener('click', toggle);
   closeBtn.addEventListener('click', toggle);
 
+  function nowStr(){ return new Date().toLocaleTimeString('de-AT', { hour: '2-digit', minute: '2-digit' }); }
+
   function addMsg(text, who){
-    var div = document.createElement('div');
-    div.className = 'cf-msg ' + who;
-    div.textContent = text;
-    log.appendChild(div);
+    var d = document.createElement('div'); d.className = 'cf-msg ' + who;
+    var b = document.createElement('div'); b.className = 't'; b.textContent = text;
+    var t = document.createElement('time'); t.textContent = nowStr();
+    d.appendChild(b); d.appendChild(t);
+    log.appendChild(d);
     log.scrollTop = log.scrollHeight;
   }
+
+  var topicsEl = null;
+  function buildStart(){
+    log.innerHTML = '';
+    addMsg(GREETING, 'bot');
+    if(!TOPICS.length){ topicsEl = null; return; }
+    topicsEl = document.createElement('div'); topicsEl.className = 'cf-topics';
+    var p = document.createElement('p'); p.textContent = 'Wähle ein Thema oder schreib uns direkt.';
+    var chips = document.createElement('div'); chips.className = 'cf-chips';
+    TOPICS.forEach(function(t){
+      var c = document.createElement('button'); c.type = 'button'; c.className = 'cf-chip'; c.textContent = t.label;
+      c.addEventListener('click', function(){ send(t.q); });
+      chips.appendChild(c);
+    });
+    var free = document.createElement('button'); free.type = 'button'; free.className = 'cf-chip'; free.textContent = 'Eine Frage stellen …';
+    free.addEventListener('click', function(){ input.focus(); });
+    chips.appendChild(free);
+    topicsEl.appendChild(p); topicsEl.appendChild(chips);
+    log.appendChild(topicsEl);
+  }
+  buildStart();
+
+  menuBtn.addEventListener('click', function(e){ e.stopPropagation(); pop.classList.toggle('show'); });
+  shadow.addEventListener('click', function(){ pop.classList.remove('show'); });
+  resetBtn.addEventListener('click', function(){ chatHistory = []; input.value = ''; buildStart(); });
 
   async function botReply(text){
     try{
@@ -170,6 +288,7 @@
 
   async function send(text){
     if(!text.trim()) return;
+    if(topicsEl){ topicsEl.style.display = 'none'; }
     addMsg(text, 'user');
     input.value = '';
     var typing = document.createElement('div');

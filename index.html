@@ -157,21 +157,35 @@
 </footer>
 
 <!-- Chat Widget -->
-<div class="chat-panel" id="chatPanel">
-  <div class="chat-top">
-    <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>
-    <div><b>CloudFlow Chatbot</b><small>Online</small></div>
-    <button class="x" onclick="toggleChat()" aria-label="Schließen">✕</button>
+<div class="cf-win cf-c2 cf-fixed" id="chatPanel">
+  <div class="cf-hero">
+    <button class="cf-close" onclick="toggleChat()" aria-label="Chat schließen">✕</button>
+    <span class="cf-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>
+    <b class="cf-name">CloudFlow Chatbot</b>
+    <span class="cf-status">Online · antwortet sofort</span>
   </div>
-  <div id="chatLog"><div class="msg bot">Hallo und willkommen bei CloudFlow 👋<br><br>Gerne beraten wir dich zu unseren Chatbots, Preisen oder wie du startest.</div></div>
-  <div class="chips">
-    <div class="chip" data-q="Was kostet das?">Preise</div>
-    <div class="chip" data-q="Wie läuft der Ablauf ab?">Ablauf</div>
-    <div class="chip" data-q="Brauche ich technisches Wissen?">Technik nötig?</div>
+  <div class="cf-log" id="chatLog">
+    <div class="cf-msg bot"><div class="t">Hallo und willkommen bei CloudFlow 👋
+Gerne beraten wir dich zu unseren Chatbots, Preisen oder wie du startest.</div><time class="cf-time"></time></div>
+    <div class="cf-topics" id="cfTopics">
+      <p>Wähle ein Thema oder schreib uns direkt.</p>
+      <div class="cf-chips">
+        <button class="cf-chip" type="button" data-q="Was kostet das?">Preise</button>
+        <button class="cf-chip" type="button" data-q="Wie läuft der Ablauf ab?">Ablauf</button>
+        <button class="cf-chip" type="button" data-q="Brauche ich technisches Wissen?">Technik nötig?</button>
+        <button class="cf-chip" type="button" data-focus="1">Eine Frage stellen …</button>
+      </div>
+    </div>
   </div>
-  <div class="chat-input"><input type="text" id="chatInput" placeholder="Nachricht schreiben …"><button id="chatSend">Senden</button></div>
+  <div class="cf-bar">
+    <div class="cf-pop" id="cfPop"><button type="button" id="cfReset">Neues Gespräch</button></div>
+    <button class="cf-menu" type="button" id="cfMenu" aria-label="Menü">⋮</button>
+    <input type="text" id="chatInput" placeholder="Nachricht schreiben …" autocomplete="off">
+    <button class="cf-send" type="button" id="chatSend" aria-label="Senden"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+  <div class="cf-foot">Chatbot von <b>CloudFlow</b></div>
 </div>
-<button class="chat-fab" id="chatFab" onclick="toggleChat()" aria-label="Chat öffnen"><span class="icon-chat">💬</span><span class="icon-close">✕</span></button>
+<button class="cf-fab cf-l1 cf-fixed" id="chatFab" onclick="toggleChat()" aria-label="Chat öffnen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg><svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
 
 <script>
 const CLOUDFLOW_FUNCTION_URL = 'https://rkbockdrhxmpvxugkmrt.supabase.co/functions/v1/chat';
@@ -198,17 +212,37 @@ async function botReply(text){
 }
 const log = document.getElementById('chatLog');
 const input = document.getElementById('chatInput');
-function addMsg(t,who){const d=document.createElement('div');d.className='msg '+who;d.textContent=t;log.appendChild(d);log.scrollTop=log.scrollHeight;}
+const topics = document.getElementById('cfTopics');
+const pop = document.getElementById('cfPop');
+const nowStr = () => new Date().toLocaleTimeString('de-AT',{hour:'2-digit',minute:'2-digit'});
+function stampGreeting(){ const t=log.querySelector('.cf-time'); if(t) t.textContent=nowStr(); }
+stampGreeting();
+const initialLog = log.innerHTML;
+function addMsg(t,who){
+  const d=document.createElement('div'); d.className='cf-msg '+who;
+  const b=document.createElement('div'); b.className='t'; b.textContent=t;
+  const tm=document.createElement('time'); tm.textContent=nowStr();
+  d.append(b,tm); log.appendChild(d); log.scrollTop=log.scrollHeight;
+}
 async function send(text){
   if(!text.trim()) return;
+  const tp=document.getElementById('cfTopics'); if(tp) tp.style.display='none';
   addMsg(text,'user'); input.value='';
-  const ty=document.createElement('div'); ty.className='typing'; ty.innerHTML='<span></span><span></span><span></span>';
+  const ty=document.createElement('div'); ty.className='cf-typing'; ty.innerHTML='<span></span><span></span><span></span>';
   log.appendChild(ty); log.scrollTop=log.scrollHeight;
   const r=await botReply(text); ty.remove(); addMsg(r,'bot');
 }
 document.getElementById('chatSend').addEventListener('click',()=>send(input.value));
 input.addEventListener('keydown',e=>{if(e.key==='Enter') send(input.value);});
-document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>send(c.dataset.q)));
+log.addEventListener('click',e=>{
+  const c=e.target.closest('.cf-chip'); if(!c) return;
+  if(c.dataset.focus){ input.focus(); } else { send(c.dataset.q); }
+});
+document.getElementById('cfMenu').addEventListener('click',e=>{e.stopPropagation(); pop.classList.toggle('show');});
+document.addEventListener('click',()=>pop.classList.remove('show'));
+document.getElementById('cfReset').addEventListener('click',()=>{
+  chatHistory=[]; log.innerHTML=initialLog; stampGreeting(); input.value='';
+});
 document.querySelectorAll('.faq-item').forEach(i=>i.querySelector('.faq-q').addEventListener('click',()=>i.classList.toggle('open')));
 const chatPanel=document.getElementById('chatPanel'), chatFab=document.getElementById('chatFab');
 function toggleChat(){chatPanel.classList.toggle('open');chatFab.classList.toggle('open');}
