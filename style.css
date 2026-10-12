@@ -508,4 +508,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .pk-tabs a{border:2px solid var(--navy);padding:9px 18px;font-weight:700;color:var(--navy);}
 .pk-tabs a.on{background:var(--navy);color:#fff;}
 .plan .more{display:inline-block;margin-top:10px;font-weight:700;color:var(--blue);border-bottom:1px solid currentColor;}
+@keyframes pageIn{from{opacity:0; transform:translateY(14px);}to{opacity:1; transform:none;}}
+body>section,body>footer{animation:pageIn .4s ease-out both;}
+body>section:nth-of-type(2){animation-delay:.06s;}
+body>section:nth-of-type(n+3){animation-delay:.1s;}
 /* ===== Ende Basis-Erweiterungen ===== */
