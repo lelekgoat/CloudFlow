@@ -78,11 +78,19 @@ Deno.serve(async (req) => {
     await supabase.from("chat_log").insert({ company_id, ip_hash: ipHash });
 
     const [{ data: profile, error: pErr }, { data: docs, error: dErr }] = await Promise.all([
-      supabase.from("profiles").select("company_name, email").eq("id", company_id).maybeSingle(),
+      supabase.from("profiles").select("company_name, email, is_admin, paid_until").eq("id", company_id).maybeSingle(),
       supabase.from("documents").select("file_name, content").eq("user_id", company_id).order("created_at"),
     ]);
     if (pErr) console.error("profiles:", pErr.message);
     if (dErr) console.error("documents:", dErr.message);
+
+    // Abo abgelaufen? (7 Tage Kulanz). Ohne "paid_until" und Admin-Konten wird nie gesperrt.
+    if (profile && !profile.is_admin && profile.paid_until) {
+      const limit = new Date(profile.paid_until).getTime() + 8 * 86_400_000;
+      if (Date.now() > limit) {
+        return json({ reply: "Der Assistent ist gerade nicht verfügbar. Bitte nimm direkt Kontakt mit dem Unternehmen auf." });
+      }
+    }
 
     const companyName = profile?.company_name || "dieses Unternehmen";
 

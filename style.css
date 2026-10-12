@@ -487,4 +487,25 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .ex .a{background:#EAF4FF; color:var(--navy); padding:10px 14px; margin:0 28px 10px 0; font-size:.92rem;}
 .ex-note{text-align:center; color:var(--ink-soft); font-size:.88rem; margin-top:20px;}
 @media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important;}}
+
+.pk-hero-price{font-size:2.4rem;font-weight:800;color:var(--navy);margin:8px 0 2px;}
+.pk-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px;align-items:start;}
+.pk-box{background:#fff;border:1px solid var(--line);border-top:4px solid var(--navy);padding:26px;}
+.pk-box h2{font-size:1.3rem;margin-bottom:12px;color:var(--navy);}
+.pk-box ul{padding-left:0;list-style:none;}.pk-box li{padding:7px 0 7px 28px;position:relative;border-bottom:1px solid #EEF3F9;}
+.pk-box li:before{content:"✓";position:absolute;left:0;color:var(--blue);font-weight:800;}
+.pk-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);}
+.pk-table th,.pk-table td{padding:12px 14px;border-bottom:1px solid #EEF3F9;text-align:center;}
+.pk-table th:first-child,.pk-table td:first-child{text-align:left;}
+.pk-table th{background:var(--navy);color:#fff;} .pk-table td.sel,.pk-table th.sel{outline:3px solid var(--blue);outline-offset:-3px;}
+.pk-table th.sel{background:var(--blue);}
+.pk-wrap{overflow-x:auto;}
+.pk-why{background:#EAF4FF;border-left:5px solid var(--blue);padding:16px 20px;margin-top:18px;}
+.pk-step{display:flex;gap:14px;margin:14px 0;}.pk-step i{flex:none;width:34px;height:34px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;}
+.pk-form label{display:block;font-weight:700;font-size:.9rem;margin:12px 0 4px;color:var(--navy);}
+.pk-form input,.pk-form textarea{width:100%;padding:11px 12px;border:1px solid var(--line);font:inherit;}
+.pk-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:26px;}
+.pk-tabs a{border:2px solid var(--navy);padding:9px 18px;font-weight:700;color:var(--navy);}
+.pk-tabs a.on{background:var(--navy);color:#fff;}
+.plan .more{display:inline-block;margin-top:10px;font-weight:700;color:var(--blue);border-bottom:1px solid currentColor;}
 /* ===== Ende Basis-Erweiterungen ===== */

@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <title>Login & Dashboard — CloudFlow</title>
-<link rel="stylesheet" href="style.css?v=20261013">
+<link rel="stylesheet" href="style.css?v=20261014">
 <style>
   /* Dashboard-spezifisch – Farben, Schrift, Logo und Buttons kommen aus style.css */
   :root{ --green:#1A9F5C; --red:#C8102E; }
@@ -260,6 +260,7 @@
     <h1 class="page-title">Willkommen, <span class="m" id="custName">Kunde</span></h1>
     <p class="page-sub">Hier verwaltest du die Dokumente deines Chatbots und siehst deinen Status.</p>
 
+    <div id="payBanner" style="display:none;margin-bottom:20px;padding:16px 20px;border-left:6px solid #B7791F;background:#FFF7D6;"></div>
     <div class="stat-grid">
       <div class="stat-card"><div class="label">Aktueller Plan</div><div class="value" id="planLabel">—</div></div>
       <div class="stat-card"><div class="label">Status</div><div class="value" id="statusLabel">—</div></div>
@@ -340,7 +341,7 @@
       <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Firma</th><th>E-Mail</th><th>Paket</th><th>Abrechnung</th><th>Status</th><th>Dokumente</th><th>Registriert</th><th>Notiz</th></tr>
+          <tr><th>Firma</th><th>E-Mail</th><th>Paket</th><th>Abrechnung</th><th>Status</th><th>Bezahlt bis</th><th>Dokumente</th><th>Registriert</th><th>Notiz</th></tr>
         </thead>
         <tbody id="customerTableBody"></tbody>
       </table>
@@ -498,6 +499,7 @@ async function enterApp(user){
     document.getElementById('billingKv').textContent = profile?.billing || 'monatlich';
     document.getElementById('emailKv').textContent = user.email;
     initDesign(profile);
+    showPayBanner(profile);
     document.getElementById('createdKv').textContent = profile?.created_at ? new Date(profile.created_at).toLocaleDateString('de-AT') : '—';
     loadDocs();
   }
@@ -519,6 +521,16 @@ function dzRender(){
   const L = document.getElementById('dzLaunchers'), C = document.getElementById('dzChats');
   L.innerHTML = Object.keys(DZ_LAUNCHERS).map(k => '<button type="button" class="dz-opt' + (dz.launcher===k?' on':'') + '" onclick="dz.launcher=\'' + k + '\';dzRender()"><span class="pv" style="--p:' + dz.p + ';--a:' + dz.a + ';">' + DZ_LAUNCHERS[k].html + '</span>' + DZ_LAUNCHERS[k].name + '</button>').join('');
   C.innerHTML = Object.keys(DZ_CHATS).map(k => '<button type="button" class="dz-opt' + (dz.chat===k?' on':'') + '" onclick="dz.chat=\'' + k + '\';dzRender()">Chat: ' + DZ_CHATS[k] + '</button>').join('');
+}
+function showPayBanner(p){
+  const b = document.getElementById('payBanner'); if(!b || !p || !p.paid_until) return;
+  const s = paidState(p), dt = new Date(p.paid_until).toLocaleDateString('de-AT');
+  const cfg = {
+    ok:{ c:'#0F7B3A', bg:'#E8F6EE', t:'Dein Abo ist bezahlt bis <b>' + dt + '</b>.' },
+    grace:{ c:'#B7791F', bg:'#FFF7D6', t:'Dein Abo ist am <b>' + dt + '</b> abgelaufen. Bitte überweise den Monatsbetrag, sonst wird dein Chatbot bald pausiert.' },
+    blocked:{ c:'#B42318', bg:'#FDECEA', t:'Dein Abo ist abgelaufen und dein Chatbot ist pausiert. Sobald deine Zahlung eingegangen ist, läuft er wieder.' }
+  }[s];
+  b.style.display = 'block'; b.style.borderColor = cfg.c; b.style.background = cfg.bg; b.innerHTML = cfg.t + ' Fragen? kontakt@cloudflow.at';
 }
 function initDesign(profile){
   const cfg = (profile && profile.widget_config) || {};
@@ -745,11 +757,38 @@ function renderCustomers(){
       '<td><select onchange="updateProfile(\'' + p.id + '\',\'plan\',this.value)">' + opts(Object.keys(PLANS), p.plan || 'Standard') + '</select></td>' +
       '<td><select onchange="updateProfile(\'' + p.id + '\',\'billing\',this.value)">' + opts(['monatlich','jaehrlich'], p.billing || 'monatlich', { jaehrlich: 'jährlich' }) + '</select></td>' +
       '<td><select onchange="updateProfile(\'' + p.id + '\',\'sub_status\',this.value)">' + opts(STATUSES, st, STATUS_LABEL) + '</select></td>' +
+      '<td class="paid-cell">' + paidCell(p) + '</td>' +
       '<td class="doc-cell' + (limit && n >= limit ? ' full' : '') + '">' + n + (limit ? ' / ' + limit : '') + '</td>' +
       '<td>' + (p.created_at ? new Date(p.created_at).toLocaleDateString('de-AT') : '—') + '</td>' +
       '<td><input class="note" type="text" maxlength="200" placeholder="Notiz …" value="' + esc(p.notes || '') + '" onchange="updateProfile(\'' + p.id + '\',\'notes\',this.value)"></td>';
     body.appendChild(tr);
   });
+}
+
+function paidState(p){
+  if(!p.paid_until) return 'none';
+  const days = Math.floor((new Date(new Date().toISOString().slice(0,10)) - new Date(p.paid_until)) / 86400000);
+  if(days <= 0) return 'ok';
+  return days <= 7 ? 'grace' : 'blocked';
+}
+function paidCell(p){
+  const s = paidState(p);
+  const txt = p.paid_until ? new Date(p.paid_until).toLocaleDateString('de-AT') : '—';
+  const col = { ok:'#0F7B3A', grace:'#B7791F', blocked:'#B42318', none:'#5B6475' }[s];
+  const label = { ok:'', grace:' (Kulanz)', blocked:' (gesperrt)', none:'' }[s];
+  return '<span style="color:' + col + ';font-weight:700;">' + txt + label + '</span><br><button type="button" class="dz-btn" style="margin:6px 0 0;padding:6px 10px;font-size:.8rem;" onclick="markPaid(\'' + p.id + '\')">Zahlung eingegangen</button>';
+}
+async function markPaid(id){
+  const p = customers.find(c => c.id === id); if(!p) return;
+  const today = new Date(); today.setHours(12,0,0,0);
+  const base = p.paid_until && new Date(p.paid_until) > today ? new Date(p.paid_until) : today;
+  base.setMonth(base.getMonth() + (p.billing === 'jaehrlich' ? 12 : 1));
+  const iso = base.toISOString().slice(0,10);
+  const patch = { paid_until: iso, sub_status: 'Aktiv' };
+  if(!p.plan_since) patch.plan_since = new Date().toISOString().slice(0,10);
+  const { error } = await sb.from('profiles').update(patch).eq('id', id);
+  if(error){ alert('Speichern fehlgeschlagen: ' + error.message + '\n\nHast du supabase/migration-zahlung.sql ausgeführt?'); return; }
+  Object.assign(p, patch); renderStats(); renderCustomers(); toast('Bezahlt bis ' + base.toLocaleDateString('de-AT'));
 }
 
 async function updateProfile(id, field, value){
