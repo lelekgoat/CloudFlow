@@ -17,17 +17,37 @@
  */
 (function(){
   'use strict';
+  var currentScript = document.currentScript || (function(){
+    var scripts = document.getElementsByTagName('script');
+    return scripts[scripts.length - 1];
+  })();
+  var _cid = currentScript.getAttribute('data-company') || '';
+  var _started = false;
+  function _go(R){ if(_started) return; _started = true; start(R || {}); }
+  if(!_cid){ _go({}); return; }
+  // Gespeichertes Design des Kunden laden (max. 2,5 s), data-Attribute im Script-Tag haben Vorrang
+  setTimeout(function(){ _go({}); }, 2500);
+  try{
+    fetch('https://rkbockdrhxmpvxugkmrt.supabase.co/rest/v1/rpc/get_widget_config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrYm9ja2RyaHhtcHZ4dWdrbXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxOTgzNjIsImV4cCI6MjEwMjc3NDM2Mn0.0AEyPvayW8NKlriAGz3zvDVsz2itHeVLQUO3ea6MDOE', 'Authorization': 'Bearer ANON' },
+      body: JSON.stringify({ company: _cid })
+    }).then(function(r){ return r.ok ? r.json() : {}; }).then(function(j){ _go(j && typeof j === 'object' ? j : {}); }).catch(function(){ _go({}); });
+  }catch(e){ _go({}); }
+
+  function start(R){
 
   // ---------- Konfiguration ----------
   var FUNCTION_URL = 'https://rkbockdrhxmpvxugkmrt.supabase.co/functions/v1/chat';
   var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrYm9ja2RyaHhtcHZ4dWdrbXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxOTgzNjIsImV4cCI6MjEwMjc3NDM2Mn0.0AEyPvayW8NKlriAGz3zvDVsz2itHeVLQUO3ea6MDOE';
 
   // ---------- Einstellungen aus dem <script>-Tag ----------
-  var currentScript = document.currentScript || (function(){
-    var scripts = document.getElementsByTagName('script');
-    return scripts[scripts.length - 1];
-  })();
-  function attr(n, d){ var v = currentScript.getAttribute('data-' + n); return v ? v : d; }
+  function attr(n, d){
+    var v = currentScript.getAttribute('data-' + n);
+    if(v) return v;
+    var k = n === 'launcher-text' ? 'launcherText' : n;
+    return (R[k] && typeof R[k] === 'string') ? R[k] : d;
+  }
   var COMPANY_ID = attr('company', '');
   var BOT_NAME   = attr('name', 'Chatbot');
   var GREETING   = attr('greeting', 'Hallo! 👋 Wie kann ich dir helfen?');
@@ -62,7 +82,6 @@
 
   var styleEl = document.createElement('style');
   styleEl.textContent = `
-    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
     :host{all:initial;}
     /* ---------- CloudFlow Chat-Komponente (Fenster + Button) ---------- */
 .cf-win,.cf-win *,.cf-fab,.cf-fab *{box-sizing:border-box;}
@@ -196,7 +215,7 @@
         '<input type="text" id="cfInput" placeholder="Nachricht schreiben …" autocomplete="off">' +
         '<button class="cf-send" type="button" id="cfSend" aria-label="Senden">' + SVG_SEND + '</button>' +
       '</div>' +
-      '<div class="cf-foot">Chatbot von <b data-brand></b></div>' +
+      '<div class="cf-foot">KI-Assistent · Chatbot von <b data-brand></b></div>' +
     '</div>' +
     '<button class="cf-fab cf-' + LAUNCHER + ' cf-fixed" id="cfFab" aria-label="Chat öffnen">' + fabInner + SVG_X + '</button>';
   shadow.appendChild(wrapper);
@@ -304,4 +323,5 @@
 
   sendBtn.addEventListener('click', function(){ send(input.value); });
   input.addEventListener('keydown', function(e){ if(e.key === 'Enter') send(input.value); });
+  }
 })();

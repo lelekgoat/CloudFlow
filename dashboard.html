@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <title>Login & Dashboard — CloudFlow</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261012">
+<link rel="stylesheet" href="style.css?v=20261013">
 <style>
   /* Dashboard-spezifisch – Farben, Schrift, Logo und Buttons kommen aus style.css */
   :root{ --green:#1A9F5C; --red:#C8102E; }
@@ -149,6 +148,23 @@
   .st.Aktiv{background:var(--green);} .st.Interessent{background:var(--blue);} .st.Pausiert{background:#B7791F;} .st.Gekuendigt{background:var(--red);}
   .toast{position:fixed; right:24px; bottom:24px; background:var(--navy); color:#fff; padding:12px 20px; font-weight:700; font-size:0.9rem; opacity:0; transform:translateY(10px); transition:all .25s; pointer-events:none; z-index:300;}
   .toast.show{opacity:1; transform:translateY(0);}
+
+  .dz-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-bottom:18px;}
+  .dz-opt{border:2px solid var(--line); background:#fff; padding:12px 8px; cursor:pointer; text-align:center; font:inherit; font-size:.85rem; font-weight:600; color:var(--navy); display:flex; flex-direction:column; align-items:center; gap:10px;}
+  .dz-opt.on{border-color:var(--blue); background:#EAF4FF;}
+  .dz-opt .pv{min-height:56px; display:flex; align-items:center; justify-content:center;}
+  .dz-row{display:flex; gap:22px; flex-wrap:wrap; margin-bottom:18px;}
+  .dz-row label{font-size:.85rem; font-weight:700; color:var(--navy); display:flex; flex-direction:column; gap:6px;}
+  .dz-row input[type=color]{width:80px; height:40px; border:1px solid var(--line); padding:2px; background:#fff;}
+  .dz-prem{border:1px dashed var(--line); padding:16px; margin-top:6px;}
+  .dz-prem label{display:block; font-size:.85rem; font-weight:700; color:var(--navy); margin:10px 0 4px;}
+  .dz-prem input,.dz-prem textarea{width:100%; padding:10px 12px; border:1px solid var(--line); font:inherit;}
+  .dz-prem.locked{opacity:.55;}
+  .dz-prem.locked input,.dz-prem.locked textarea{pointer-events:none; background:#F3F6FA;}
+  .dz-lock{font-size:.85rem; color:var(--ink-soft); margin-bottom:6px;}
+  .dz-btn{background:var(--navy); color:#fff; border:0; padding:12px 24px; font:inherit; font-weight:700; cursor:pointer; margin-top:16px;}
+  .dz-note{font-size:.85rem; color:var(--ink-soft); margin-top:10px;}
+  .limit-note{font-size:.85rem; color:var(--ink-soft); margin-top:10px;}
 </style>
 </head>
 <body>
@@ -267,6 +283,28 @@
     </div>
     </div>
 
+
+    <div class="panel" id="designPanel">
+      <h2><span>Chatbot-Design</span></h2>
+      <p class="panel-sub">So sieht der Chatbot auf deiner Website aus. Änderungen sind nach dem Speichern sofort live.</p>
+      <div class="dz-grid" id="dzLaunchers"></div>
+      <div class="dz-grid" id="dzChats"></div>
+      <div class="dz-row">
+        <label>Hauptfarbe<input type="color" id="dzP" value="#09172E"></label>
+        <label>Akzentfarbe<input type="color" id="dzA" value="#0071E3"></label>
+      </div>
+      <div class="dz-prem" id="dzPrem">
+        <div class="dz-lock" id="dzLock">🔒 Eigener Name, Begrüßung, Themen-Buttons und Logo gibt es im Premium-Paket.</div>
+        <label for="dzName">Name des Chatbots</label><input id="dzName" maxlength="40" placeholder="z. B. Friseur Müller Assistent">
+        <label for="dzGreet">Begrüßung</label><textarea id="dzGreet" rows="2" maxlength="200" placeholder="Hallo! Wie kann ich helfen?"></textarea>
+        <label for="dzTopics">Themen-Buttons (je Zeile: Titel=Frage)</label><textarea id="dzTopics" rows="3" maxlength="400" placeholder="Öffnungszeiten=Wann habt ihr geöffnet?&#10;Preise=Was kostet ein Haarschnitt?"></textarea>
+        <label for="dzLogo">Logo-URL (https://…)</label><input id="dzLogo" maxlength="300" placeholder="https://deine-seite.at/logo.png">
+      </div>
+      <button class="dz-btn" onclick="saveDesign()">Design speichern</button>
+      <div class="dz-note" id="dzNote"></div>
+      <div class="dz-note">Deine Chatbot-ID für den Einbau: <code id="dzId"></code></div>
+    </div>
+
     <div class="panel">
       <h2><span>Abonnement</span></h2>
       <div class="kv-row"><span class="k">Paket</span><span class="plan-badge" id="planBadge">—</span></div>
@@ -286,6 +324,7 @@
       <div class="stat-card"><div class="label">Aktive Abos</div><div class="value" id="activeSubs">—</div></div>
       <div class="stat-card"><div class="label">MRR (pro Monat)</div><div class="value" id="mrrValue">—</div></div>
       <div class="stat-card"><div class="label">Dokumente gesamt</div><div class="value" id="totalDocs">—</div></div>
+      <div class="stat-card"><div class="label">Chat-Anfragen (Monat)</div><div class="value" id="chatMonth">—</div></div>
     </div>
 
     <div class="panel">
@@ -458,9 +497,61 @@ async function enterApp(user){
     stEl.textContent = (STATUS_LABEL[st] || st); stEl.className = 'value' + (st === 'Aktiv' ? ' green' : '');
     document.getElementById('billingKv').textContent = profile?.billing || 'monatlich';
     document.getElementById('emailKv').textContent = user.email;
+    initDesign(profile);
     document.getElementById('createdKv').textContent = profile?.created_at ? new Date(profile.created_at).toLocaleDateString('de-AT') : '—';
     loadDocs();
   }
+}
+
+
+// ---------- Dokument-Limit ----------
+function myLimit(){ return Number(window.__docLimit || 0); }
+function updateLimitNote(n){
+  const el = document.getElementById('limitNote'); if(!el || !myLimit()) return;
+  el.textContent = n + ' von ' + myLimit() + ' Dokumenten genutzt (Paket ' + (window.__plan || '—') + ').';
+}
+
+// ---------- Design-Panel (Kunde) ----------
+const DZ_LAUNCHERS = {"l1": {"name": "Quadrat", "html": "<span class=\"cf-fab cf-l1\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z\"/></svg></span>"}, "l2": {"name": "Rechteck mit Text", "html": "<span class=\"cf-fab cf-l2\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z\"/></svg><b>Frag uns!</b></span>"}, "l3": {"name": "Rund", "html": "<span class=\"cf-fab cf-l3\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z\"/></svg></span>"}, "l4": {"name": "Weiße Karte", "html": "<span class=\"cf-fab cf-l4\"><i class=\"dot\"></i><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z\"/></svg><b>Chat</b></span>"}, "l5": {"name": "Himmel-Verlauf", "html": "<span class=\"cf-fab cf-l5\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z\"/></svg><i class=\"dot\"></i></span>"}};
+const DZ_CHATS = {c1:'Klassisch', c2:'Himmel', c3:'Minimal', c4:'Dunkel'};
+let dz = { launcher:'l1', chat:'c2', p:'#09172E', a:'#0071E3' };
+function dzRender(){
+  const L = document.getElementById('dzLaunchers'), C = document.getElementById('dzChats');
+  L.innerHTML = Object.keys(DZ_LAUNCHERS).map(k => '<button type="button" class="dz-opt' + (dz.launcher===k?' on':'') + '" onclick="dz.launcher=\'' + k + '\';dzRender()"><span class="pv" style="--p:' + dz.p + ';--a:' + dz.a + ';">' + DZ_LAUNCHERS[k].html + '</span>' + DZ_LAUNCHERS[k].name + '</button>').join('');
+  C.innerHTML = Object.keys(DZ_CHATS).map(k => '<button type="button" class="dz-opt' + (dz.chat===k?' on':'') + '" onclick="dz.chat=\'' + k + '\';dzRender()">Chat: ' + DZ_CHATS[k] + '</button>').join('');
+}
+function initDesign(profile){
+  const cfg = (profile && profile.widget_config) || {};
+  dz = { launcher: cfg.launcher || 'l1', chat: cfg.chat || 'c2', p: cfg.primary || '#09172E', a: cfg.accent || '#0071E3' };
+  document.getElementById('dzP').value = dz.p; document.getElementById('dzA').value = dz.a;
+  document.getElementById('dzP').oninput = e => { dz.p = e.target.value; dzRender(); };
+  document.getElementById('dzA').oninput = e => { dz.a = e.target.value; dzRender(); };
+  const prem = (profile && profile.plan) === 'Premium';
+  document.getElementById('dzPrem').classList.toggle('locked', !prem);
+  document.getElementById('dzLock').style.display = prem ? 'none' : 'block';
+  document.getElementById('dzName').value = cfg.name || '';
+  document.getElementById('dzGreet').value = cfg.greeting || '';
+  document.getElementById('dzTopics').value = cfg.topics || '';
+  document.getElementById('dzLogo').value = cfg.logo || '';
+  document.getElementById('dzId').textContent = currentUser.id;
+  window.__plan = profile && profile.plan || 'Standard';
+  window.__docLimit = (PLANS[window.__plan] || PLANS.Standard).limit;
+  window.__isPremium = prem;
+  dzRender();
+}
+async function saveDesign(){
+  const cfg = { launcher: dz.launcher, chat: dz.chat, primary: dz.p, accent: dz.a };
+  if(window.__isPremium){
+    const logo = document.getElementById('dzLogo').value.trim();
+    if(logo && !/^https:\/\//i.test(logo)){ alert('Die Logo-URL muss mit https:// beginnen.'); return; }
+    cfg.name = document.getElementById('dzName').value.trim();
+    cfg.greeting = document.getElementById('dzGreet').value.trim();
+    cfg.topics = document.getElementById('dzTopics').value.trim();
+    cfg.logo = logo;
+  }
+  const { error } = await sb.from('profiles').update({ widget_config: cfg }).eq('id', currentUser.id);
+  const note = document.getElementById('dzNote');
+  note.textContent = error ? 'Speichern fehlgeschlagen: ' + error.message + ' (migration-limits.sql schon ausgeführt?)' : 'Gespeichert. Dein Chatbot übernimmt das Design in wenigen Sekunden.';
 }
 
 async function loadDocs(){
@@ -472,10 +563,12 @@ async function loadDocs(){
   if(error || !data || data.length === 0){
     emptyEl.style.display = 'block';
     setText('docCount', 0);
+    updateLimitNote(0);
     return;
   }
   emptyEl.style.display = 'none';
   setText('docCount', data.length);
+  updateLimitNote(data.length);
 
   data.forEach(file => {
     const row = document.createElement('div');
@@ -534,6 +627,14 @@ async function addDoc(input){
 }
 
 async function uploadFile(file){
+  if(myLimit()){
+    const { data: ex } = await sb.storage.from('pdfs').list(currentUser.id);
+    const names = (ex || []).map(f => f.name);
+    if(!names.includes(file.name) && names.length >= myLimit()){
+      alert('Dein Paket ' + window.__plan + ' erlaubt ' + myLimit() + ' Dokumente. Entferne ein Dokument oder wechsle auf ein größeres Paket (kontakt@cloudflow.at).');
+      return;
+    }
+  }
   const path = currentUser.id + '/' + file.name;
   setUploading(true);
 
@@ -603,6 +704,9 @@ async function loadAdminData(){
   customers = error || !data ? [] : data.filter(p => !p.is_admin);
   renderStats();
   renderCustomers();
+  const m0 = new Date(); m0.setDate(1); m0.setHours(0,0,0,0);
+  const { count } = await sb.from('chat_log').select('id', { count: 'exact', head: true }).gte('created_at', m0.toISOString());
+  setText('chatMonth', count == null ? '—' : count);
 }
 
 function renderStats(){

@@ -3,13 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Produkte — CloudFlow</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261012">
+<title>Produkte — CloudFlow KI-Chatbot</title>
+<meta name="description" content="Der CloudFlow Chatbot im Detail: Antworten aus deinen PDFs, eigenes Design und Farben, Live-Demo zum Ausprobieren.">
+<meta name="theme-color" content="#09172E">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://cloudflow.at/produkte.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CloudFlow">
+<meta property="og:title" content="Produkte — CloudFlow KI-Chatbot">
+<meta property="og:description" content="Der CloudFlow Chatbot im Detail: Antworten aus deinen PDFs, eigenes Design und Farben, Live-Demo zum Ausprobieren.">
+<meta property="og:url" content="https://cloudflow.at/produkte.html">
+<meta name="twitter:card" content="summary">
+<link rel="preload" href="fonts/open-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css?v=20261013">
 </head>
 <body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
 <header>
   <div class="wrap head-in">
     <a class="logo" href="index.html">
@@ -30,7 +39,7 @@
     <a class="cut-btn small" href="kontakt.html">Jetzt kontaktieren</a>
   </div>
 </header>
-<section class="hero page">
+<section id="main" class="hero page">
   <div class="blob" style="width:520px;height:420px;left:-140px;top:-120px;background:#9CCBFF;"></div>
   <div class="blob" style="width:480px;height:400px;right:-120px;top:0;background:#4E9DFF;opacity:.7;animation-delay:-8s;"></div>
   <div class="blob" style="width:700px;height:300px;left:25%;bottom:-170px;background:#EAF4FF;"></div>
@@ -94,12 +103,28 @@
   </div>
 </section>
 
+<section class="block" id="beispiele">
+ <div class="wrap">
+  <div class="sec-head">
+   <div class="eyebrow">Beispiele</div>
+   <h2 class="mark"><span>So antwortet dein Chatbot</span></h2>
+   <p class="sub">Erfundene Beispiel-Gespräche, damit du ein Gefühl bekommst. Dein Chatbot antwortet immer nur mit dem, was in deinen eigenen PDFs steht.</p>
+  </div>
+  <div class="ex-grid">
+   <article class="ex"><h3>Restaurant</h3><p class="q">Habt ihr heute einen Tisch für 4 um 19 Uhr?</p><p class="a">Reservierungen nehmen wir unter der Telefonnummer auf unserer Kontaktseite entgegen. Unsere Küche ist täglich von 11:30 bis 22:00 Uhr geöffnet.</p><p class="q">Gibt es vegetarische Gerichte?</p><p class="a">Ja, auf unserer Speisekarte sind vegetarische Gerichte gekennzeichnet, zum Beispiel die Kürbis-Lasagne.</p></article>
+   <article class="ex"><h3>Friseur</h3><p class="q">Was kostet ein Herrenschnitt?</p><p class="a">Laut unserer Preisliste kostet der Herrenschnitt 32 €, mit Waschen 38 €.</p><p class="q">Muss ich vorher einen Termin machen?</p><p class="a">Wir empfehlen einen Termin, spontane Besuche sind je nach Auslastung möglich.</p></article>
+   <article class="ex"><h3>Handwerk</h3><p class="q">Macht ihr auch Notdienste am Wochenende?</p><p class="a">Ja, unser Notdienst ist am Wochenende unter der Nummer in unserem Infoblatt erreichbar. Dafür gilt ein Zuschlag.</p><p class="q">In welchem Gebiet seid ihr tätig?</p><p class="a">Wir arbeiten in Wien und im Umkreis von 30 km.</p></article>
+  </div>
+  <p class="ex-note">Die Gespräche sind frei erfunden und dienen nur als Beispiel.</p>
+ </div>
+</section>
+
 <section class="block design-lab" id="design" style="background:linear-gradient(180deg,#EAF4FF 0%,#F7FBFF 100%);">
  <div class="wrap">
   <div class="sec-head">
     <div class="eyebrow">Individuell</div>
     <h2 class="mark"><span>Wähle dein Design</span></h2>
-    <p class="sub">So kann dein Chatbot auf deiner Website aussehen. Such dir Button und Chatfenster aus und stell deine Farben ein — probier es gleich aus.</p>
+    <p class="sub">So kann dein Chatbot auf deiner Website aussehen. Such dir Button und Chatfenster aus und stell deine Farben ein — probier es gleich aus. Gespeichert wird dein Design später im Kunden-Dashboard, sobald du ein Paket gewählt hast. Eigener Name, Begrüßung und Logo gibt es mit Premium.</p>
   </div>
 
   <div class="pick-label"><span class="n">1</span> Button unten rechts</div>
@@ -188,7 +213,7 @@ function winHTML(c,full){
      (full?'<div class="cf-msg user"><div class="t">Habt ihr am Sonntag offen?</div><time>09:42</time></div><div class="cf-msg bot"><div class="t">Ja, sonntags von 9:00 bis 15:00 Uhr.</div><time>09:42</time></div>':'')+
    '</div>'+
    '<div class="cf-bar"><span class="cf-menu">⋮</span><input type="text" placeholder="Nachricht schreiben …" tabindex="-1" readonly><span class="cf-send">'+SVG_SEND+'</span></div>'+
-   '<div class="cf-foot">Chatbot von <b>CloudFlow</b></div></div>';
+   '<div class="cf-foot">KI-Assistent · Chatbot von <b>CloudFlow</b></div></div>';
 }
 function render(){
   slot.innerHTML='';
@@ -236,7 +261,7 @@ setColors('#09172E','#0071E3'); render();
         <p>Mehr Zeit für dein Business.<br>KI-Chatbots für lokale Unternehmen.</p>
       </div>
       <div><h4>Unternehmen</h4><ul>
-        <li><a href="kontakt.html">Über uns</a></li><li><a href="kontakt.html">Kontakt</a></li><li><a href="#">Impressum</a></li><li><a href="#">Datenschutz</a></li></ul></div>
+        <li><a href="kontakt.html">Über uns</a></li><li><a href="kontakt.html">Kontakt</a></li><li><a href="impressum.html">Impressum</a></li><li><a href="datenschutz.html">Datenschutz</a></li></ul></div>
       <div><h4>Produkte</h4><ul>
         <li><a href="produkte.html">KI-Chatbot</a></li><li><a href="preise.html">Preise</a></li></ul></div>
       <div><h4>Mehr erfahren</h4><ul>
@@ -276,6 +301,6 @@ async function askChatbot(){
 }
 document.getElementById('kbInput')?.addEventListener('keydown', e => { if(e.key === 'Enter') askChatbot(); });
 </script>
-<script src="widget.js?v=20261012" data-company="8995e595-bb45-4753-a4f6-ff74e80cf74e" data-name="CloudFlow Chatbot" data-greeting="Hallo und willkommen bei CloudFlow 👋 Gerne beraten wir dich zu unseren Chatbots, Preisen oder wie du startest." data-topics="Preise=Was kostet das?|Ablauf=Wie läuft der Ablauf ab?|Technik nötig?=Brauche ich technisches Wissen?" data-chat="c2" data-launcher="l1"></script>
+<script src="widget.js?v=20261013" data-company="8995e595-bb45-4753-a4f6-ff74e80cf74e" data-name="CloudFlow Chatbot" data-greeting="Hallo und willkommen bei CloudFlow 👋 Gerne beraten wir dich zu unseren Chatbots, Preisen oder wie du startest." data-topics="Preise=Was kostet das?|Ablauf=Wie läuft der Ablauf ab?|Technik nötig?=Brauche ich technisches Wissen?" data-chat="c2" data-launcher="l1"></script>
 </body>
 </html>

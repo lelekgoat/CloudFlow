@@ -27,6 +27,13 @@ const json = (body: unknown, status = 200) =>
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_DOC_CHARS = 40000;
 const MAX_HISTORY = 12;
+const LIMIT_IP_PER_MIN = 8;      // Nachrichten pro Besucher (IP) und Minute
+const LIMIT_COMPANY_PER_DAY = 1500; // Nachrichten pro Firma und Tag
+
+async function sha256(t: string) {
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
+  return Array.from(new Uint8Array(b)).map((x) => x.toString(16).padStart(2, "0")).join("").slice(0, 32);
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
@@ -52,6 +59,23 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
       { auth: { persistSession: false } },
     );
+
+    // --- Missbrauchsschutz (Metadaten only, kein Nachrichteninhalt) ---
+    const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || "unknown";
+    const ipHash = await sha256(ip + ":" + company_id);
+    const since1 = new Date(Date.now() - 60_000).toISOString();
+    const since24 = new Date(Date.now() - 86_400_000).toISOString();
+    const [{ count: ipCount }, { count: dayCount }] = await Promise.all([
+      supabase.from("chat_log").select("id", { count: "exact", head: true }).eq("ip_hash", ipHash).gte("created_at", since1),
+      supabase.from("chat_log").select("id", { count: "exact", head: true }).eq("company_id", company_id).gte("created_at", since24),
+    ]);
+    if ((ipCount ?? 0) >= LIMIT_IP_PER_MIN) {
+      return json({ reply: "Bitte warte einen Moment, du schreibst sehr schnell. Versuch es in einer Minute noch einmal." });
+    }
+    if ((dayCount ?? 0) >= LIMIT_COMPANY_PER_DAY) {
+      return json({ reply: "Der Assistent ist heute leider ausgelastet. Bitte nimm direkt Kontakt mit uns auf." });
+    }
+    await supabase.from("chat_log").insert({ company_id, ip_hash: ipHash });
 
     const [{ data: profile, error: pErr }, { data: docs, error: dErr }] = await Promise.all([
       supabase.from("profiles").select("company_name, email").eq("id", company_id).maybeSingle(),
