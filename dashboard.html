@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <title>Login & Dashboard — CloudFlow</title>
-<link rel="stylesheet" href="style.css?v=20261015">
+<link rel="stylesheet" href="style.css?v=20261016">
 <style>
   /* Dashboard-spezifisch – Farben, Schrift, Logo und Buttons kommen aus style.css */
   :root{ --green:#1A9F5C; --red:#C8102E; }
@@ -717,7 +717,8 @@ async function loadAdminData(){
   renderStats();
   renderCustomers();
   const m0 = new Date(); m0.setDate(1); m0.setHours(0,0,0,0);
-  const { count } = await sb.from('chat_log').select('id', { count: 'exact', head: true }).gte('created_at', m0.toISOString());
+  const { count, error: clErr } = await sb.from('chat_log').select('id', { count: 'exact', head: true }).gte('created_at', m0.toISOString());
+  if(clErr) console.warn('chat_log:', clErr.message);
   setText('chatMonth', count == null ? '—' : count);
 }
 
@@ -773,10 +774,17 @@ function paidState(p){
 }
 function paidCell(p){
   const s = paidState(p);
-  const txt = p.paid_until ? new Date(p.paid_until).toLocaleDateString('de-AT') : '—';
   const col = { ok:'#0F7B3A', grace:'#B7791F', blocked:'#B42318', none:'#5B6475' }[s];
-  const label = { ok:'', grace:' (Kulanz)', blocked:' (gesperrt)', none:'' }[s];
-  return '<span style="color:' + col + ';font-weight:700;">' + txt + label + '</span><br><button type="button" class="dz-btn" style="margin:6px 0 0;padding:6px 10px;font-size:.8rem;" onclick="markPaid(\'' + p.id + '\')">Zahlung eingegangen</button>';
+  const label = { ok:'', grace:'Kulanz', blocked:'gesperrt', none:'' }[s];
+  return '<input type="date" aria-label="Bezahlt bis" value="' + esc(p.paid_until || '') + '" style="border:2px solid ' + col + ';padding:4px;font:inherit;font-size:.85rem;" onchange="setPaid(\'' + p.id + '\',this.value)">' +
+    (label ? '<br><b style="color:' + col + ';font-size:.8rem;">' + label + '</b>' : '') +
+    '<br><button type="button" class="dz-btn" style="margin:6px 0 0;padding:6px 10px;font-size:.8rem;" onclick="markPaid(\'' + p.id + '\')">Zahlung eingegangen (+1 Monat)</button>';
+}
+async function setPaid(id, value){
+  const p = customers.find(c => c.id === id); if(!p) return;
+  const { error } = await sb.from('profiles').update({ paid_until: value || null }).eq('id', id);
+  if(error){ alert('Speichern fehlgeschlagen: ' + error.message); return; }
+  p.paid_until = value || null; renderCustomers(); toast('Gespeichert');
 }
 async function markPaid(id){
   const p = customers.find(c => c.id === id); if(!p) return;
