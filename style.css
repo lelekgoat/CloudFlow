@@ -515,11 +515,14 @@ body>section:nth-of-type(n+3){animation-delay:.1s;}
 .setup-fee{font-size:.88rem; font-weight:700; color:var(--blue); margin:4px 0 10px;}
 .bill-seg-wrap{text-align:center; margin:0 0 44px;}
 .bill-q{font-weight:700; color:var(--navy); margin-bottom:12px;}
-.bill-seg{display:inline-flex; border:3px solid var(--navy); background:#fff; max-width:100%;}
-.bill-seg button{border:0; background:#fff; color:var(--navy); padding:14px 30px; font:inherit; font-size:1.05rem; font-weight:800; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:2px; transition:background .2s,color .2s;}
-.bill-seg button small{font-size:.78rem; font-weight:600; opacity:.8;}
-.bill-seg button.on{background:var(--navy); color:#fff;}
-.bill-seg button#segYear.on{background:var(--blue);}
-.bill-seg button:not(.on):hover{background:#EAF4FF;}
-@media (max-width:560px){.bill-seg{display:flex; flex-direction:column; width:100%;} .bill-seg button{padding:12px 16px;}}
+.bill-cards{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+.bill-cards button{position:relative; border:3px solid var(--line); background:#fff; padding:18px 56px 18px 26px; text-align:left; min-width:250px; font:inherit; cursor:pointer; color:var(--navy); transition:border-color .2s,background .2s;}
+.bill-cards button b{display:block; font-size:1.15rem; font-weight:800;}
+.bill-cards button span{font-size:.88rem; color:var(--ink-soft);}
+.bill-cards button:before{content:""; position:absolute; right:20px; top:50%; width:18px; height:18px; margin-top:-9px; border:3px solid var(--line); border-radius:50%;}
+.bill-cards button.on{border-color:var(--blue); background:#EAF4FF;}
+.bill-cards button.on:before{border-color:var(--blue); background:var(--blue); box-shadow:inset 0 0 0 3px #fff;}
+.bill-cards button i{position:absolute; top:-13px; right:14px; background:#0F7B3A; color:#fff; font-style:normal; font-size:.75rem; font-weight:700; padding:3px 10px;}
+.bill-cards button:not(.on):hover{border-color:#9CCBFF;}
+@media (max-width:560px){.bill-cards{flex-direction:column; align-items:stretch; padding:0 6px;} .bill-cards button{min-width:0;}}
 /* ===== Ende Basis-Erweiterungen ===== */
