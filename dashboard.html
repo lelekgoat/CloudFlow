@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <title>Login & Dashboard — CloudFlow</title>
-<link rel="stylesheet" href="style.css?v=20261023">
+<link rel="stylesheet" href="style.css?v=20261024">
 <style>
   /* Dashboard-spezifisch – Farben, Schrift, Logo und Buttons kommen aus style.css */
   :root{ --green:#1A9F5C; --red:#C8102E; }
@@ -295,12 +295,16 @@
         <label>Hauptfarbe<input type="color" id="dzP" value="#09172E"></label>
         <label>Akzentfarbe<input type="color" id="dzA" value="#0071E3"></label>
       </div>
-      <div class="dz-prem" id="dzPrem">
-        <div class="dz-lock" id="dzLock">🔒 Eigener Name, Begrüßung, Themen-Buttons und Logo gibt es im Premium-Paket.</div>
-        <label for="dzName">Name des Chatbots</label><input id="dzName" maxlength="40" placeholder="z. B. Friseur Müller Assistent">
+      <div class="dz-prem" style="margin-bottom:14px;">
+        <label for="dzName">Name des Chatbots</label><input id="dzName" maxlength="40" placeholder="z. B. Friseur Müller Assistent (leer = Firmenname)">
         <label for="dzGreet">Begrüßung</label><textarea id="dzGreet" rows="2" maxlength="200" placeholder="Hallo! Wie kann ich helfen?"></textarea>
+      </div>
+      <div class="dz-prem" id="dzPrem">
+        <div class="dz-lock" id="dzLock">🔒 Eigene Themen-Buttons, Logo und Sonderwünsche gibt es im Premium-Paket.</div>
         <label for="dzTopics">Themen-Buttons (je Zeile: Titel=Frage)</label><textarea id="dzTopics" rows="3" maxlength="400" placeholder="Öffnungszeiten=Wann habt ihr geöffnet?&#10;Preise=Was kostet ein Haarschnitt?"></textarea>
         <label for="dzLogo">Logo-URL (https://…)</label><input id="dzLogo" maxlength="300" placeholder="https://deine-seite.at/logo.png">
+        <label for="dzWish">Sonderwunsch an das CloudFlow-Team (Design, Texte, Bilder, Sprachen)</label><textarea id="dzWish" rows="3" maxlength="800" placeholder="Beschreib, was wir für dich umsetzen sollen."></textarea>
+        <button type="button" class="dz-btn" style="margin-top:10px;" onclick="sendWish()">Sonderwunsch per E-Mail senden</button>
       </div>
       <button class="dz-btn" onclick="saveDesign()">Design speichern</button>
       <div class="dz-note" id="dzNote"></div>
@@ -548,6 +552,12 @@ function copyEmbed(){
   if(navigator.clipboard){ navigator.clipboard.writeText(t.value).then(done, () => { document.execCommand('copy'); done(); }); }
   else { document.execCommand('copy'); done(); }
 }
+function sendWish(){
+  if(!window.__isPremium){ alert('Sonderwünsche gibt es im Premium-Paket. Schreib uns an kontakt@cloudflow.at, wenn du wechseln möchtest.'); return; }
+  const w = document.getElementById('dzWish').value.trim();
+  if(!w){ alert('Bitte beschreibe zuerst deinen Sonderwunsch.'); return; }
+  location.href = 'mailto:kontakt@cloudflow.at?subject=' + encodeURIComponent('Premium-Sonderwunsch') + '&body=' + encodeURIComponent('Kunden-ID: ' + currentUser.id + '\nFirma: ' + (document.getElementById('custName').textContent || '') + '\n\n' + w);
+}
 function initDesign(profile){
   const cfg = (profile && profile.widget_config) || {};
   dz = { launcher: cfg.launcher || 'l1', chat: cfg.chat || 'c2', p: cfg.primary || '#09172E', a: cfg.accent || '#0071E3' };
@@ -569,11 +579,11 @@ function initDesign(profile){
 }
 async function saveDesign(){
   const cfg = { launcher: dz.launcher, chat: dz.chat, primary: dz.p, accent: dz.a };
+  cfg.name = document.getElementById('dzName').value.trim();
+  cfg.greeting = document.getElementById('dzGreet').value.trim();
   if(window.__isPremium){
     const logo = document.getElementById('dzLogo').value.trim();
     if(logo && !/^https:\/\//i.test(logo)){ alert('Die Logo-URL muss mit https:// beginnen.'); return; }
-    cfg.name = document.getElementById('dzName').value.trim();
-    cfg.greeting = document.getElementById('dzGreet').value.trim();
     cfg.topics = document.getElementById('dzTopics').value.trim();
     cfg.logo = logo;
   }
