@@ -176,7 +176,20 @@
   .cf-fab.cf-fixed.open{display:none;}
 }
 
-  `;
+  /* ---------- Weiche Ecken ---------- */
+.cf-win{border-radius:20px;}
+.cf-logo{border-radius:16px;}
+.cf-close{border-radius:12px;}
+.cf-msg .t{border-radius:16px;}
+.cf-msg.bot .t{border-left:0; border-bottom-left-radius:6px;}
+.cf-msg.user .t{border-bottom-right-radius:6px;}
+.cf-topics{border-radius:16px;}
+.cf-chip{border-radius:999px; padding:8px 16px;}
+.cf-bar{border-radius:16px;}
+.cf-send{border-radius:0 14px 14px 0;}
+.cf-pop{border-radius:12px; overflow:hidden;}
+.cf-l1{border-radius:18px;} .cf-l2{border-radius:16px;} .cf-l4{border-radius:16px;} .cf-l5{border-radius:20px;}
+`;
   shadow.appendChild(styleEl);
 
   var SVG_LOGO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>';

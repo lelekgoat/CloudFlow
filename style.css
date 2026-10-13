@@ -525,4 +525,17 @@ body>section:nth-of-type(n+3){animation-delay:.1s;}
 .bill-cards button i{position:absolute; top:-13px; right:14px; background:#0F7B3A; color:#fff; font-style:normal; font-size:.75rem; font-weight:700; padding:3px 10px;}
 .bill-cards button:not(.on):hover{border-color:#9CCBFF;}
 @media (max-width:560px){.bill-cards{flex-direction:column; align-items:stretch; padding:0 6px;} .bill-cards button{min-width:0;}}
+/* ---------- Weiche Ecken ---------- */
+.cf-win{border-radius:20px;}
+.cf-logo{border-radius:16px;}
+.cf-close{border-radius:12px;}
+.cf-msg .t{border-radius:16px;}
+.cf-msg.bot .t{border-left:0; border-bottom-left-radius:6px;}
+.cf-msg.user .t{border-bottom-right-radius:6px;}
+.cf-topics{border-radius:16px;}
+.cf-chip{border-radius:999px; padding:8px 16px;}
+.cf-bar{border-radius:16px;}
+.cf-send{border-radius:0 14px 14px 0;}
+.cf-pop{border-radius:12px; overflow:hidden;}
+.cf-l1{border-radius:18px;} .cf-l2{border-radius:16px;} .cf-l4{border-radius:16px;} .cf-l5{border-radius:20px;}
 /* ===== Ende Basis-Erweiterungen ===== */
