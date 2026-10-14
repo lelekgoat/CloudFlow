@@ -4,7 +4,8 @@
 //
 // Secrets (Supabase -> Edge Functions -> Secrets):
 //   ANTHROPIC_API_KEY   (Pflicht)
-//   RESEND_API_KEY      (optional, für Terminmails)
+//   RESEND_API_KEY      (optional, für Terminmails; ohne Schlüssel gibt es keine Terminfunktion)
+//   RESEND_FROM         (optional, Absender, z. B. "CloudFlow <termine@cloudflow.at>")
 //   CLAUDE_MODEL        (optional, Standard: claude-sonnet-5)
 // SUPABASE_URL und SUPABASE_SERVICE_ROLE_KEY gibt es automatisch.
 //
@@ -106,6 +107,15 @@ Deno.serve(async (req) => {
 
     const companyName = profile?.company_name || "dieses Unternehmen";
 
+    // Funktionen je Paket (wie auf der Preise-Seite)
+    const plan = profile?.plan ?? "Basic";
+    const isAdmin = !!profile?.is_admin;
+    const resendKey = Deno.env.get("RESEND_API_KEY");
+    // Terminanfragen: nur Standard/Premium und nur, wenn der E-Mail-Versand wirklich eingerichtet ist
+    const canBook = (isAdmin || plan === "Standard" || plan === "Premium") && !!resendKey && !!profile?.email;
+    // Mehrsprachig: nur Premium (und Admin)
+    const multilingual = isAdmin || plan === "Premium";
+
     let knowledge = "Es wurden noch keine Dokumente hochgeladen.";
     if (docs && docs.length > 0) {
       knowledge = docs
@@ -116,8 +126,13 @@ Deno.serve(async (req) => {
 
     const system = `Du bist der freundliche KI-Assistent von ${companyName} auf deren Website.
 Beantworte Fragen der Besucher NUR auf Basis der Dokumente unten. Steht die Antwort dort nicht, sag ehrlich, dass du es nicht weißt, und schlage vor, direkt Kontakt aufzunehmen. Erfinde nie Preise, Zeiten oder Fakten.
-Antworte kurz (meist 1-3 Sätze), freundlich und in der Sprache des Besuchers (Standard: Deutsch).
-Wenn jemand einen Termin möchte, frage nach Name und Wunschtermin und nutze dann das Tool "book_appointment".
+Antworte kurz (meist 1-3 Sätze) und freundlich.
+${multilingual
+  ? "Antworte in der Sprache des Besuchers (Standard: Deutsch)."
+  : "Antworte immer auf Deutsch, auch wenn der Besucher in einer anderen Sprache schreibt."}
+${canBook
+  ? 'Wenn jemand einen Termin möchte, frage nach Name und Wunschtermin und nutze dann das Tool "book_appointment". Sag dabei, dass es eine Anfrage ist und das Unternehmen den Termin noch bestätigt.'
+  : "Du kannst keine Termine oder Reservierungen entgegennehmen oder weiterleiten. Wenn jemand einen Termin möchte, sag das ehrlich und nenne die Kontaktmöglichkeiten aus den Dokumenten (Telefon, E-Mail, Online-Buchung). Behaupte nie, etwas weitergeleitet oder gebucht zu haben."}
 
 Dokumente von ${companyName}:
 ${knowledge}`;
@@ -165,7 +180,9 @@ ${knowledge}`;
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
       },
-      body: JSON.stringify({ model, max_tokens: 600, system, tools, messages: clean }),
+      body: JSON.stringify(canBook
+        ? { model, max_tokens: 600, system, tools, messages: clean }
+        : { model, max_tokens: 600, system, messages: clean }),
     });
 
     const ai = await aiRes.json().catch(() => ({}));
@@ -178,27 +195,31 @@ ${knowledge}`;
     const toolUse = ai.content?.find((c: any) => c.type === "tool_use" && c.name === "book_appointment");
     let reply = "";
 
-    if (toolUse) {
+    if (toolUse && canBook) {
       const { customer_name, desired_date, service, contact } = toolUse.input ?? {};
-      const resendKey = Deno.env.get("RESEND_API_KEY");
-
-      if (resendKey && profile?.email) {
+      const from = Deno.env.get("RESEND_FROM") || "CloudFlow <onboarding@resend.dev>";
+      let sent = false;
+      try {
         const mail = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            from: "CloudFlow <onboarding@resend.dev>",
-            to: profile.email,
+            from,
+            to: profile!.email,
             subject: "Neuer Terminwunsch über deinen CloudFlow-Chatbot",
             text: `Neuer Terminwunsch:\n\nName: ${customer_name}\nWunschtermin: ${desired_date}\nLeistung: ${service || "nicht angegeben"}\nKontakt: ${contact || "nicht angegeben"}\n\nBitte direkt mit dem Kunden bestätigen.`,
           }),
-        }).catch((e) => { console.error("Resend:", String(e)); return null; });
-        if (mail && !mail.ok) console.error("Resend Status", mail.status, await mail.text());
-      } else {
-        console.log("Terminwunsch (keine Mail versendet):", JSON.stringify(toolUse.input));
+        });
+        sent = mail.ok;
+        if (!mail.ok) console.error("Resend Status", mail.status, await mail.text());
+      } catch (e) {
+        console.error("Resend:", String(e));
       }
 
-      reply = `Danke, ${customer_name}! Dein Terminwunsch (${desired_date}${service ? ", " + service : ""}) wurde an ${companyName} weitergeleitet. Du bekommst bald eine Bestätigung.`;
+      // Nur dann "weitergeleitet" sagen, wenn die E-Mail wirklich rausging
+      reply = sent
+        ? `Danke, ${customer_name}! Deine Terminanfrage (${desired_date}${service ? ", " + service : ""}) wurde an ${companyName} weitergeleitet. Der Termin ist erst fix, wenn ${companyName} ihn dir bestätigt.`
+        : `Entschuldigung, ich konnte deine Terminanfrage gerade nicht weiterleiten. Bitte nimm direkt Kontakt mit ${companyName} auf.`;
     } else {
       reply = ai.content?.find((c: any) => c.type === "text")?.text?.trim()
         || "Entschuldigung, dazu habe ich gerade keine Antwort.";
