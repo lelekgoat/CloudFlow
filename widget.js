@@ -5,8 +5,8 @@
  * Optionale Einstellungen (alle als data-Attribute im <script>-Tag):
  *   data-name        Name des Assistenten            (Standard: "Chatbot")
  *   data-greeting    Begrüßungstext
- *   data-topics      Themen-Buttons: "Öffnungszeiten|Preise|Termin vereinbaren"
- *                    oder mit eigener Frage: "Preise=Was kostet das?|Termin=Ich möchte einen Termin"
+ *   data-topics      Themen-Buttons: "Öffnungszeiten|Preise|Kontakt"
+ *                    oder mit eigener Frage: "Preise=Was kostet das?|Kontakt=Wie kann ich euch erreichen?"
  *   data-primary     Hauptfarbe  (z. B. #09172E)
  *   data-accent      Akzentfarbe (z. B. #0071E3)
  *   data-chat        Chatfenster: c1 Klassisch | c2 Himmel | c3 Minimal | c4 Dunkel   (Standard: c2)
@@ -58,7 +58,7 @@
   var PRIMARY    = /^#[0-9a-fA-F]{6}$/.test(attr('primary','')) ? attr('primary') : '#09172E';
   var ACCENT     = /^#[0-9a-fA-F]{6}$/.test(attr('accent','')) ? attr('accent') : '#0071E3';
   var LAUNCH_TXT = attr('launcher-text', LAUNCHER === 'l4' ? 'Chat' : 'Frag uns!');
-  var TOPICS = attr('topics', 'Öffnungszeiten=Wie sind eure Öffnungszeiten?|Preise=Was kostet das?|Termin vereinbaren=Ich möchte einen Termin vereinbaren.')
+  var TOPICS = attr('topics', 'Öffnungszeiten=Wie sind eure Öffnungszeiten?|Preise=Was kostet das?|Kontakt=Wie kann ich euch erreichen?')
     .split('|').map(function(t){ var p = t.split('='); return { label: p[0].trim(), q: (p[1] || p[0]).trim() }; })
     .filter(function(t){ return t.label; });
 
