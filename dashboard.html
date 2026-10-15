@@ -182,6 +182,10 @@
   .dz-btn{background:var(--navy); color:#fff; border:0; padding:12px 24px; font:inherit; font-weight:700; cursor:pointer; margin-top:16px;}
   .dz-note{font-size:.85rem; color:var(--ink-soft); margin-top:10px;}
   .limit-note{font-size:.85rem; color:var(--ink-soft); margin-top:10px;}
+  .inv-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px;}
+  .inv-grid label{font-size:.85rem; font-weight:700; color:var(--navy); display:flex; flex-direction:column; gap:6px;}
+  .inv-grid input,.inv-grid select{padding:10px 12px; border:1px solid var(--line); font:inherit; font-weight:400; background:#fff;}
+  .dz-note.err{color:var(--red); font-weight:600;} .dz-note.ok{color:var(--green); font-weight:600;}
 </style>
 </head>
 <body>
@@ -216,7 +220,8 @@
       </div>
       <div class="error-msg" id="signinError">Fehler</div>
       <button class="primary" onclick="login()">Anmelden</button>
-      <div class="auth-switch">Kein Konto? <a onclick="showSignup()">Registrieren</a></div>
+      <div class="auth-switch"><a onclick="forgotPassword()">Passwort vergessen?</a></div>
+      <div class="login-hint" id="signinHint">Noch kein Kunde? Den Zugang bekommst du nach Vertragsabschluss per E-Mail. Schreib uns an <b>kontakt@cloudflow.at</b>.</div>
     </div>
   </div>
 </div>
@@ -227,7 +232,7 @@
     <div class="blob" style="width:520px;height:400px;left:-140px;top:-120px;background:#3E98FF;opacity:.55;"></div>
     <div class="blob" style="width:480px;height:380px;right:-160px;bottom:-120px;background:#fff;opacity:.9;"></div>
     <a class="logo" href="index.html"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></a>
-    <div class="auth-tagline">Starte in wenigen Minuten mit deinem <span>Chatbot</span>.</div>
+    <div class="auth-tagline">Willkommen bei <span>CloudFlow</span>.</div>
     <div style="display:grid;gap:22px;">
       <ul class="auth-points">
         <li>Chatbot für deine Website</li>
@@ -240,22 +245,16 @@
   <div class="auth-right">
     <div class="auth-form">
       <a class="logo mobile-logo" href="index.html"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></a>
-      <h1><span>Konto erstellen</span></h1>
-      <p class="sub">Leg dir einen Zugang zu deinem CloudFlow-Dashboard an.</p>
-      <label>E-Mail</label>
-      <input type="email" id="signupEmail" placeholder="du@firma.at">
-      <label>Passwort</label>
+      <h1><span id="setPwTitle">Passwort festlegen</span></h1>
+      <p class="sub" id="setPwSub">Leg ein Passwort für dein CloudFlow-Konto fest. Damit meldest du dich ab jetzt an.</p>
+      <label>Neues Passwort</label>
       <div class="pw-wrap">
-        <input type="password" id="signupPassword" placeholder="mind. 6 Zeichen, 1 Zahl, 1 Buchstabe" oninput="checkPwStrength()">
-        <button type="button" class="pw-toggle" onclick="togglePw('signupPassword', this)">Zeigen</button>
+        <input type="password" id="newPassword" placeholder="mind. 6 Zeichen, 1 Zahl, 1 Buchstabe" oninput="checkPwStrength()">
+        <button type="button" class="pw-toggle" onclick="togglePw('newPassword', this)">Zeigen</button>
       </div>
       <div class="pw-hint" id="pwHint">Mind. 6 Zeichen, mind. 1 Zahl und 1 Buchstabe.</div>
-      <div class="error-msg" id="signupError">Fehler</div>
-      <button class="primary" onclick="signUp()">Konto erstellen</button>
-      <div class="auth-switch">Schon ein Konto? <a onclick="showSignin()">Anmelden</a></div>
-      <div class="login-hint" id="loginHint">
-        Nach der Registrierung bekommst du evtl. eine Bestätigungs-Mail — bitte prüf dein Postfach.
-      </div>
+      <div class="error-msg" id="setPwError">Fehler</div>
+      <button class="primary" onclick="savePassword()">Passwort speichern</button>
     </div>
   </div>
 </div>
@@ -375,6 +374,19 @@
       <div class="stat-card"><div class="label">Deine Website (Monat)</div><div class="value" id="ownMonth">—</div></div>
     </div>
 
+    <div class="panel" id="invitePanel">
+      <h2><span>Kunde einladen</span></h2>
+      <p class="panel-sub">Nur eingeladene Kunden bekommen ein Konto. Der Kunde erhält eine E-Mail mit Link und legt dort sein Passwort selbst fest. Der Chatbot antwortet erst, wenn der Status auf „Aktiv“ steht.</p>
+      <div class="inv-grid">
+        <label>E-Mail<input type="email" id="invEmail" placeholder="kunde@firma.at"></label>
+        <label>Firmenname<input type="text" id="invCompany" maxlength="100" placeholder="Friseur Müller"></label>
+        <label>Paket<select id="invPlan"><option>Basic</option><option selected>Standard</option><option>Premium</option></select></label>
+        <label>Abrechnung<select id="invBilling"><option value="monatlich">monatlich</option><option value="jaehrlich">jährlich</option></select></label>
+      </div>
+      <button class="dz-btn" id="invBtn" onclick="inviteCustomer()">Einladung senden</button>
+      <div class="dz-note" id="invNote"></div>
+    </div>
+
     <div class="panel">
       <h2><span>Kunden &amp; Abos</span></h2>
       <p class="panel-sub">Paket, Abrechnung, Status und Notiz kannst du direkt in der Tabelle ändern — es wird sofort gespeichert. Nur Kunden mit Status „Aktiv“ zählen zum MRR.</p>
@@ -410,6 +422,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 <script>
 const SUPABASE_URL = 'https://rkbockdrhxmpvxugkmrt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrYm9ja2RyaHhtcHZ4dWdrbXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxOTgzNjIsImV4cCI6MjEwMjc3NDM2Mn0.0AEyPvayW8NKlriAGz3zvDVsz2itHeVLQUO3ea6MDOE';
+// Kommt der Besucher über einen Einladungs- oder Passwort-Link? (vor createClient lesen)
+const AUTH_HASH = new URLSearchParams(location.hash.replace(/^#/, ''));
+const AUTH_TYPE = AUTH_HASH.get('type');                 // 'invite' | 'recovery' | null
+const AUTH_ERROR = AUTH_HASH.get('error_description');   // z. B. abgelaufener Link
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentUser = null;
@@ -418,10 +434,17 @@ function showSignin(){
   document.getElementById('signupScreen').classList.remove('active');
   document.getElementById('signinScreen').classList.add('active');
 }
-function showSignup(){
+function showSetPassword(type){
   document.getElementById('signinScreen').classList.remove('active');
   document.getElementById('signupScreen').classList.add('active');
-  document.getElementById('signupEmail').value = document.getElementById('signinEmail').value;
+  if(type === 'recovery'){
+    document.getElementById('setPwTitle').textContent = 'Neues Passwort';
+    document.getElementById('setPwSub').textContent = 'Leg ein neues Passwort für dein CloudFlow-Konto fest.';
+  }
+}
+function showSigninMsg(msg, isError){
+  const el = document.getElementById(isError ? 'signinError' : 'signinHint');
+  el.textContent = msg; el.style.display = 'block';
 }
 
 function togglePw(inputId, btn){
@@ -436,7 +459,7 @@ function isPasswordValid(pw){
 }
 
 function checkPwStrength(){
-  const pw = document.getElementById('signupPassword').value;
+  const pw = document.getElementById('newPassword').value;
   const hint = document.getElementById('pwHint');
   if(pw.length === 0){
     hint.textContent = 'Mind. 6 Zeichen, mind. 1 Zahl und 1 Buchstabe.';
@@ -450,35 +473,33 @@ function checkPwStrength(){
   }
 }
 
-async function signUp(){
-  const errorEl = document.getElementById('signupError');
+async function savePassword(){
+  const errorEl = document.getElementById('setPwError');
   errorEl.style.display = 'none';
-  const email = document.getElementById('signupEmail').value.trim();
-  const password = document.getElementById('signupPassword').value.trim();
-
-  if(!email || !password){
-    errorEl.textContent = 'Bitte E-Mail und Passwort eingeben.';
-    errorEl.style.display = 'block';
-    return;
-  }
+  const password = document.getElementById('newPassword').value.trim();
   if(!isPasswordValid(password)){
     errorEl.textContent = 'Passwort muss mind. 6 Zeichen, 1 Zahl und 1 Buchstaben enthalten.';
     errorEl.style.display = 'block';
     return;
   }
-
-  const { data, error } = await sb.auth.signUp({ email, password });
+  const { data, error } = await sb.auth.updateUser({ password });
   if(error){
-    errorEl.textContent = error.message;
+    errorEl.textContent = error.message.includes('session') ? 'Der Link ist abgelaufen. Bitte fordere einen neuen an.' : error.message;
     errorEl.style.display = 'block';
     return;
   }
+  history.replaceState(null, '', location.pathname);
+  toast('Passwort gespeichert');
+  await enterApp(data.user);
+}
 
-  if(data.session){
-    await enterApp(data.user);
-  } else {
-    document.getElementById('loginHint').textContent = '✓ Konto erstellt! Falls eine Bestätigungs-Mail nötig ist, prüf dein Postfach — sonst kannst du dich jetzt direkt anmelden.';
-  }
+async function forgotPassword(){
+  document.getElementById('signinError').style.display = 'none';
+  const email = document.getElementById('signinEmail').value.trim();
+  if(!email){ showSigninMsg('Gib oben deine E-Mail-Adresse ein und klick dann noch einmal auf „Passwort vergessen?“.', true); return; }
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+  if(error){ showSigninMsg('Das hat nicht geklappt: ' + error.message, true); return; }
+  showSigninMsg('Falls es ein Konto mit dieser E-Mail gibt, haben wir dir einen Link zum Zurücksetzen geschickt. Bitte prüf dein Postfach.', false);
 }
 
 async function login(){
@@ -783,6 +804,33 @@ async function loadAdminData(){
   await loadChatStats();
 }
 
+// ---------- Kunde einladen (Admin) ----------
+async function inviteCustomer(){
+  const note = document.getElementById('invNote');
+  const btn = document.getElementById('invBtn');
+  const body = {
+    email: document.getElementById('invEmail').value.trim(),
+    company_name: document.getElementById('invCompany').value.trim(),
+    plan: document.getElementById('invPlan').value,
+    billing: document.getElementById('invBilling').value
+  };
+  note.className = 'dz-note';
+  if(!body.email || !body.company_name){ note.textContent = 'Bitte E-Mail und Firmenname eingeben.'; note.className = 'dz-note err'; return; }
+  btn.disabled = true; note.textContent = 'Einladung wird gesendet …';
+  const { data, error } = await sb.functions.invoke('invite', { body });
+  btn.disabled = false;
+  let msg = data && data.error;
+  if(error && !msg){
+    try { msg = (await error.context.json()).error; } catch(e) { msg = error.message; }
+  }
+  if(msg){ note.textContent = msg; note.className = 'dz-note err'; return; }
+  note.textContent = '✓ Einladung an ' + body.email + ' gesendet.';
+  note.className = 'dz-note ok';
+  document.getElementById('invEmail').value = '';
+  document.getElementById('invCompany').value = '';
+  loadAdminData();
+}
+
 // ---------- Statistik (Admin) ----------
 async function loadChatStats(){
   chatStats = {};
@@ -960,6 +1008,12 @@ async function updateProfile(id, field, value){
 // Beim Laden prüfen, ob schon eine Session besteht (z. B. nach Neuladen der Seite)
 (async () => {
   const { data: { session } } = await sb.auth.getSession();
+  if(AUTH_ERROR){
+    history.replaceState(null, '', location.pathname);
+    showSigninMsg('Der Link ist ungültig oder abgelaufen. Bitte fordere über „Passwort vergessen?“ einen neuen an oder schreib uns an kontakt@cloudflow.at.', true);
+    return;
+  }
+  if(session && (AUTH_TYPE === 'invite' || AUTH_TYPE === 'recovery')){ showSetPassword(AUTH_TYPE); return; }
   if(session){ await enterApp(session.user); }
 })();
 </script>

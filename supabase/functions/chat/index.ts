@@ -80,11 +80,16 @@ Deno.serve(async (req) => {
     const { data: logRow } = await supabase.from("chat_log").insert({ company_id, ip_hash: ipHash }).select("id").single();
 
     const [{ data: profile, error: pErr }, { data: docs, error: dErr }] = await Promise.all([
-      supabase.from("profiles").select("company_name, email, is_admin, paid_until, plan").eq("id", company_id).maybeSingle(),
+      supabase.from("profiles").select("company_name, email, is_admin, paid_until, plan, sub_status").eq("id", company_id).maybeSingle(),
       supabase.from("documents").select("file_name, content").eq("user_id", company_id).order("created_at"),
     ]);
     if (pErr) console.error("profiles:", pErr.message);
     if (dErr) console.error("documents:", dErr.message);
+
+    // Nur aktive Kunden (und das Admin-Konto) bekommen Antworten
+    if (!profile || (!profile.is_admin && profile.sub_status !== "Aktiv")) {
+      return json({ reply: "Der Assistent ist gerade nicht verfügbar. Bitte nimm direkt Kontakt mit dem Unternehmen auf." });
+    }
 
     // Abo abgelaufen? (7 Tage Kulanz). Ohne "paid_until" und Admin-Konten wird nie gesperrt.
     if (profile && !profile.is_admin && profile.paid_until) {
