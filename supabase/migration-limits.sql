@@ -16,7 +16,7 @@ create policy "chat_log_admin_select" on public.chat_log for select using (publi
 -- (Insert macht nur die Edge Function mit dem service_role Key.)
 
 -- Alte Eintraege aufraeumen (manuell oder per Cron): 
--- delete from public.chat_log where created_at < now() - interval '30 days';
+-- delete from public.chat_log where created_at < now() - interval '90 days';  (Statistik braucht mind. 2 Monate)
 
 -- 2) Design-Einstellungen pro Kunde
 alter table public.profiles add column if not exists widget_config jsonb not null default '{}'::jsonb;

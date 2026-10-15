@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
     if ((dayCount ?? 0) >= LIMIT_COMPANY_PER_DAY) {
       return json({ reply: "Der Assistent ist heute leider ausgelastet. Bitte nimm direkt Kontakt mit uns auf." });
     }
-    await supabase.from("chat_log").insert({ company_id, ip_hash: ipHash });
+    const { data: logRow } = await supabase.from("chat_log").insert({ company_id, ip_hash: ipHash }).select("id").single();
 
     const [{ data: profile, error: pErr }, { data: docs, error: dErr }] = await Promise.all([
       supabase.from("profiles").select("company_name, email, is_admin, paid_until, plan").eq("id", company_id).maybeSingle(),
@@ -211,6 +211,11 @@ ${knowledge}`;
           }),
         });
         sent = mail.ok;
+        // Fuer die Statistik im Dashboard als Terminanfrage markieren
+        if (sent && logRow?.id) {
+          const { error: bErr } = await supabase.from("chat_log").update({ booking: true }).eq("id", logRow.id);
+          if (bErr) console.error("chat_log booking:", bErr.message);
+        }
         if (!mail.ok) console.error("Resend Status", mail.status, await mail.text());
       } catch (e) {
         console.error("Resend:", String(e));

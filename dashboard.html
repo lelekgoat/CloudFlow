@@ -144,6 +144,23 @@
   td .sub{color:var(--ink-soft); font-size:0.8rem;}
   td.doc-cell{white-space:nowrap; font-weight:700; color:var(--navy);}
   td.doc-cell.full{color:var(--red);}
+  /* Statistik */
+  .st-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:24px;}
+  .st-box{border:1px solid var(--line); padding:16px 18px;}
+  .st-label{font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px;}
+  .st-num{font-size:1.7rem; font-weight:800; color:var(--navy);}
+  .st-hint{font-size:0.82rem; color:var(--ink-soft); margin-top:4px;}
+  .st-bar{height:6px; background:#E8EEF6; margin-top:10px;}
+  .st-bar i{display:block; height:100%; width:0; background:var(--blue); transition:width .4s;}
+  .st-bar i.warn{background:#B7791F;} .st-bar i.full{background:var(--red);}
+  .st-chart{display:flex; align-items:flex-end; gap:3px; height:110px; border-bottom:1px solid var(--line);}
+  .st-chart div{flex:1; background:var(--blue); min-height:2px;}
+  .st-chart div.zero{background:var(--line);}
+  .st-chart div:hover{background:var(--navy);}
+  .st-axis{display:flex; justify-content:space-between; font-size:0.75rem; color:var(--ink-soft); margin-top:6px;}
+  td.chat-cell{white-space:nowrap; font-weight:700; color:var(--navy);}
+  td.chat-cell small{display:block; font-weight:400; font-size:0.78rem; color:var(--ink-soft); margin-top:2px;}
+  td.chat-cell.warn b{color:#B7791F;} td.chat-cell.full b{color:var(--red);}
   .st{display:inline-block; font-size:0.74rem; font-weight:800; letter-spacing:0.05em; text-transform:uppercase; padding:3px 9px; color:#fff;}
   .st.Aktiv{background:var(--green);} .st.Interessent{background:var(--blue);} .st.Pausiert{background:#B7791F;} .st.Gekuendigt{background:var(--red);}
   .toast{position:fixed; right:24px; bottom:24px; background:var(--navy); color:#fff; padding:12px 20px; font-weight:700; font-size:0.9rem; opacity:0; transform:translateY(10px); transition:all .25s; pointer-events:none; z-index:300;}
@@ -268,6 +285,20 @@
       <div class="stat-card"><div class="label">Dokumente</div><div class="value" id="docCount">0</div></div>
     </div>
 
+    <div class="panel" id="statsPanel" style="display:none;">
+      <h2><span>Dein Chatbot in Zahlen</span></h2>
+      <p class="panel-sub">So oft haben Besucher deiner Website mit deinem Chatbot geschrieben.</p>
+      <div class="st-row">
+        <div class="st-box"><div class="st-label">Nachrichten diesen Monat</div><div class="st-num" id="stMonth">0</div><div class="st-bar"><i id="stBar"></i></div><div class="st-hint" id="stLimit"></div></div>
+        <div class="st-box"><div class="st-label">Vormonat</div><div class="st-num" id="stPrev">0</div><div class="st-hint" id="stTrend"></div></div>
+        <div class="st-box" id="stBookBox"><div class="st-label">Terminanfragen diesen Monat</div><div class="st-num" id="stBook">0</div><div class="st-hint">an deine E-Mail weitergeleitet</div></div>
+      </div>
+      <div class="st-label">Letzte 30 Tage</div>
+      <div class="st-chart" id="stChart" role="img" aria-label="Nachrichten pro Tag in den letzten 30 Tagen"></div>
+      <div class="st-axis"><span id="stFrom"></span><span>heute</span></div>
+      <div class="empty-note" id="stEmpty" style="display:none;">Noch keine Nachrichten. Sobald der Chatbot auf deiner Website eingebaut ist, siehst du hier, wie oft er hilft.</div>
+    </div>
+
     <div id="docsSlotCustomer">
     <div class="panel" id="docsPanel">
       <h2><span id="docsTitle">Dokumente</span></h2>
@@ -339,7 +370,9 @@
       <div class="stat-card"><div class="label">Aktive Abos</div><div class="value" id="activeSubs">—</div></div>
       <div class="stat-card"><div class="label">MRR (pro Monat)</div><div class="value" id="mrrValue">—</div></div>
       <div class="stat-card"><div class="label">Dokumente gesamt</div><div class="value" id="totalDocs">—</div></div>
-      <div class="stat-card"><div class="label">Chat-Anfragen (Monat)</div><div class="value" id="chatMonth">—</div></div>
+      <div class="stat-card"><div class="label">Nachrichten Kunden (Monat)</div><div class="value" id="chatMonth">—</div></div>
+      <div class="stat-card"><div class="label">Terminanfragen (Monat)</div><div class="value" id="bookMonth">—</div></div>
+      <div class="stat-card"><div class="label">Deine Website (Monat)</div><div class="value" id="ownMonth">—</div></div>
     </div>
 
     <div class="panel">
@@ -355,7 +388,7 @@
       <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Firma</th><th>E-Mail</th><th>Paket</th><th>Abrechnung</th><th>Status</th><th>Bezahlt bis</th><th>Dokumente</th><th>Registriert</th><th>Notiz</th></tr>
+          <tr><th>Firma</th><th>E-Mail</th><th>Paket</th><th>Abrechnung</th><th>Status</th><th>Bezahlt bis</th><th>Dokumente</th><th>Chat (Monat)</th><th>Registriert</th><th>Notiz</th></tr>
         </thead>
         <tbody id="customerTableBody"></tbody>
       </table>
@@ -514,6 +547,7 @@ async function enterApp(user){
     document.getElementById('emailKv').textContent = user.email;
     initDesign(profile);
     showPayBanner(profile);
+    loadMyStats(profile?.plan || 'Standard');
     document.getElementById('createdKv').textContent = profile?.created_at ? new Date(profile.created_at).toLocaleDateString('de-AT') : '—';
     loadDocs();
   }
@@ -716,6 +750,10 @@ const STATUSES = ['Interessent','Aktiv','Pausiert','Gekuendigt'];
 const STATUS_LABEL = { Gekuendigt: 'Gekündigt' };
 let customers = [];
 let docCounts = {};
+let chatStats = {};
+// Nachrichten pro Monat (faire Nutzung) – gleich wie in der Chat-Funktion
+const MSG_LIMITS = { Basic: 500, Standard: 2000, Premium: 5000 };
+const num = n => Number(n || 0).toLocaleString('de-AT');
 
 function esc(t){
   return String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -742,10 +780,88 @@ async function loadAdminData(){
   customers = error || !data ? [] : data.filter(p => !p.is_admin);
   renderStats();
   renderCustomers();
-  const m0 = new Date(); m0.setDate(1); m0.setHours(0,0,0,0);
-  const { count, error: clErr } = await sb.from('chat_log').select('id', { count: 'exact', head: true }).gte('created_at', m0.toISOString());
-  if(clErr) console.warn('chat_log:', clErr.message);
-  setText('chatMonth', count == null ? '—' : count);
+  await loadChatStats();
+}
+
+// ---------- Statistik (Admin) ----------
+async function loadChatStats(){
+  chatStats = {};
+  const { data, error } = await sb.rpc('get_admin_stats');
+  if(error){
+    // migration-statistik.sql noch nicht ausgeführt: nur Gesamtzahl wie bisher
+    console.warn('get_admin_stats:', error.message);
+    const m0 = new Date(); m0.setDate(1); m0.setHours(0,0,0,0);
+    const { count } = await sb.from('chat_log').select('id', { count: 'exact', head: true }).gte('created_at', m0.toISOString());
+    setText('chatMonth', count == null ? '—' : num(count));
+    setText('bookMonth', '—'); setText('ownMonth', '—');
+    renderCustomers();
+    return;
+  }
+  const ids = new Set(customers.map(c => c.id));
+  let sum = 0, book = 0, own = 0;
+  (data || []).forEach(r => {
+    chatStats[r.company_id] = r;
+    if(ids.has(r.company_id)){ sum += Number(r.this_month); book += Number(r.bookings); }
+    else if(currentUser && r.company_id === currentUser.id){ own = Number(r.this_month); }
+  });
+  setText('chatMonth', num(sum));
+  setText('bookMonth', num(book));
+  setText('ownMonth', num(own));
+  renderCustomers();
+}
+
+function chatCell(p){
+  const s = chatStats[p.id];
+  const lim = MSG_LIMITS[p.plan || 'Standard'] || MSG_LIMITS.Standard;
+  if(!s) return '<td class="chat-cell"><b>0 / ' + num(lim) + '</b><small>noch keine Nachricht</small></td>';
+  const n = Number(s.this_month);
+  const cls = n >= lim ? ' full' : (n >= lim * 0.8 ? ' warn' : '');
+  const last = s.last_at ? new Date(s.last_at).toLocaleDateString('de-AT') : '—';
+  return '<td class="chat-cell' + cls + '" title="' + (cls ? 'Nahe am Monatslimit – vielleicht ein Upgrade anbieten' : '') + '"><b>' + num(n) + ' / ' + num(lim) + '</b>' +
+    '<small>Vormonat ' + num(s.last_month) + (Number(s.bookings) ? ' · ' + num(s.bookings) + ' Termine' : '') + '<br>zuletzt ' + last + '</small></td>';
+}
+
+// ---------- Statistik (Kunde) ----------
+async function loadMyStats(plan){
+  const { data, error } = await sb.rpc('get_my_stats');
+  if(error || !data){ console.warn('get_my_stats:', error && error.message); return; }
+  document.getElementById('statsPanel').style.display = 'block';
+  const lim = MSG_LIMITS[plan] || MSG_LIMITS.Standard;
+  const n = Number(data.this_month || 0), prev = Number(data.last_month || 0);
+  setText('stMonth', num(n));
+  setText('stPrev', num(prev));
+  setText('stLimit', 'von ' + num(lim) + ' im Paket ' + plan);
+  const bar = document.getElementById('stBar');
+  bar.style.width = Math.min(100, n / lim * 100) + '%';
+  bar.className = n >= lim ? 'full' : (n >= lim * 0.8 ? 'warn' : '');
+  if(n >= lim) setText('stLimit', 'Monatslimit erreicht – melde dich bei uns für ein größeres Paket');
+  else if(n >= lim * 0.8) setText('stLimit', 'von ' + num(lim) + ' – fast erreicht');
+  setText('stTrend', !prev ? 'noch keine Daten' : (n > prev ? 'Diesen Monat schon mehr als im ganzen Vormonat' : 'Diesen Monat bisher ' + Math.round(n / prev * 100) + ' % davon'));
+  document.getElementById('stBookBox').style.display = plan === 'Basic' ? 'none' : '';
+  setText('stBook', num(data.bookings));
+
+  // Balken pro Tag (letzte 30 Tage)
+  const byDay = {};
+  (data.days || []).forEach(x => { byDay[x.d] = Number(x.n); });
+  const chart = document.getElementById('stChart');
+  chart.innerHTML = '';
+  let max = 0, total = 0;
+  const days = [];
+  for(let i = 29; i >= 0; i--){
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const key = d.toLocaleDateString('sv-SE');
+    const v = byDay[key] || 0;
+    days.push([d, v]); max = Math.max(max, v); total += v;
+  }
+  days.forEach(([d, v]) => {
+    const b = document.createElement('div');
+    b.style.height = max ? Math.max(2, v / max * 100) + '%' : '2px';
+    if(!v) b.className = 'zero';
+    b.title = d.toLocaleDateString('de-AT') + ': ' + v + (v === 1 ? ' Nachricht' : ' Nachrichten');
+    chart.appendChild(b);
+  });
+  setText('stFrom', days[0][0].toLocaleDateString('de-AT'));
+  document.getElementById('stEmpty').style.display = total ? 'none' : 'block';
 }
 
 function renderStats(){
@@ -786,6 +902,7 @@ function renderCustomers(){
       '<td><select onchange="updateProfile(\'' + p.id + '\',\'sub_status\',this.value)">' + opts(STATUSES, st, STATUS_LABEL) + '</select></td>' +
       '<td class="paid-cell">' + paidCell(p) + '</td>' +
       '<td class="doc-cell' + (limit && n >= limit ? ' full' : '') + '">' + n + (limit ? ' / ' + limit : '') + '</td>' +
+      chatCell(p) +
       '<td>' + (p.created_at ? new Date(p.created_at).toLocaleDateString('de-AT') : '—') + '</td>' +
       '<td><input class="note" type="text" maxlength="200" placeholder="Notiz …" value="' + esc(p.notes || '') + '" onchange="updateProfile(\'' + p.id + '\',\'notes\',this.value)"></td>';
     body.appendChild(tr);
