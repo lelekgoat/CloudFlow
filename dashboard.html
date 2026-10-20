@@ -666,7 +666,8 @@ async function loadDocs(){
   data.forEach(file => {
     const row = document.createElement('div');
     row.className = 'doc-row';
-    row.innerHTML = '<div class="doc-name"><span class="doc-icon">PDF</span> ' + esc(file.name) + '</div><button class="doc-remove" onclick="removeDoc(\'' + file.name.replace(/'/g,"\\'") + '\')">Entfernen</button>';
+    row.innerHTML = '<div class="doc-name"><span class="doc-icon">PDF</span> ' + esc(file.name) + '</div><button class="doc-remove" type="button">Entfernen</button>';
+    row.querySelector('.doc-remove').addEventListener('click', () => removeDoc(file.name));
     listEl.appendChild(row);
   });
 }
@@ -719,16 +720,24 @@ async function addDoc(input){
   input.value = '';
 }
 
+// Supabase-Storage lehnt Umlaute/Sonderzeichen im Dateinamen ab ("Invalid key"): ä->ae, ß->ss, Rest -> _
+function safeFileName(name){
+  const map = { 'ä':'ae','ö':'oe','ü':'ue','Ä':'Ae','Ö':'Oe','Ü':'Ue','ß':'ss' };
+  const s = name.replace(/[äöüÄÖÜß]/g, c => map[c]).replace(/[^A-Za-z0-9._-]+/g, '_').replace(/^_+/, '');
+  return /\.pdf$/i.test(s) ? s : (s || 'dokument') + '.pdf';
+}
+
 async function uploadFile(file){
+  const fileName = safeFileName(file.name);
   if(myLimit()){
     const { data: ex } = await sb.storage.from('pdfs').list(currentUser.id);
     const names = (ex || []).map(f => f.name);
-    if(!names.includes(file.name) && names.length >= myLimit()){
+    if(!names.includes(fileName) && names.length >= myLimit()){
       alert('Dein Paket ' + window.__plan + ' erlaubt ' + myLimit() + ' Dokumente. Entferne ein Dokument oder wechsle auf ein größeres Paket (kontakt@cloudflow.at).');
       return;
     }
   }
-  const path = currentUser.id + '/' + file.name;
+  const path = currentUser.id + '/' + fileName;
   setUploading(true);
 
   const { error: uploadError } = await sb.storage.from('pdfs').upload(path, file, { upsert: true });
@@ -742,9 +751,9 @@ async function uploadFile(file){
   }
 
   if(text.trim().length > 0){
-    await sb.from('documents').delete().eq('user_id', currentUser.id).eq('file_name', file.name);
+    await sb.from('documents').delete().eq('user_id', currentUser.id).eq('file_name', fileName);
     const { error: docError } = await sb.from('documents').insert({
-      user_id: currentUser.id, file_name: file.name, content: text.trim()
+      user_id: currentUser.id, file_name: fileName, content: text.trim()
     });
     if(docError){ alert('Text konnte nicht gespeichert werden: ' + docError.message); }
   }

@@ -6,7 +6,7 @@
 //   ANTHROPIC_API_KEY   (Pflicht)
 //   RESEND_API_KEY      (optional, für Terminmails; ohne Schlüssel gibt es keine Terminfunktion)
 //   RESEND_FROM         (optional, Absender, z. B. "CloudFlow <termine@cloudflow.at>")
-//   CLAUDE_MODEL        (optional, Standard: claude-sonnet-5)
+//   CLAUDE_MODEL        (optional, Standard: claude-sonnet-5-5)
 // SUPABASE_URL und SUPABASE_SERVICE_ROLE_KEY gibt es automatisch.
 //
 // WICHTIG: Bei dieser Funktion "Verify JWT" / "Enforce JWT verification" AUSSCHALTEN.
@@ -61,6 +61,12 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
       { auth: { persistSession: false } },
     );
+
+    // Unbekannte company_id: nichts protokollieren (sonst ließe sich chat_log mit Fake-IDs füllen)
+    const { data: exists } = await supabase.from("profiles").select("id").eq("id", company_id).maybeSingle();
+    if (!exists) {
+      return json({ reply: "Der Assistent ist gerade nicht verfügbar. Bitte nimm direkt Kontakt mit dem Unternehmen auf." });
+    }
 
     // --- Missbrauchsschutz (Metadaten only, kein Nachrichteninhalt) ---
     const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || "unknown";
@@ -176,7 +182,7 @@ ${knowledge}`;
       },
     }];
 
-    const model = Deno.env.get("CLAUDE_MODEL") || "claude-sonnet-5";
+    const model = Deno.env.get("CLAUDE_MODEL") || "claude-sonnet-5-5";
 
     const aiRes = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",

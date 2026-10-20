@@ -23,6 +23,7 @@
   })();
   var _cid = currentScript.getAttribute('data-company') || '';
   var _started = false;
+  var _ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrYm9ja2RyaHhtcHZ4dWdrbXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxOTgzNjIsImV4cCI6MjEwMjc3NDM2Mn0.0AEyPvayW8NKlriAGz3zvDVsz2itHeVLQUO3ea6MDOE';
   function _go(R){ if(_started) return; _started = true; start(R || {}); }
   if(!_cid){ _go({}); return; }
   // Gespeichertes Design des Kunden laden (max. 2,5 s), data-Attribute im Script-Tag haben Vorrang
@@ -30,7 +31,7 @@
   try{
     fetch('https://rkbockdrhxmpvxugkmrt.supabase.co/rest/v1/rpc/get_widget_config', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrYm9ja2RyaHhtcHZ4dWdrbXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxOTgzNjIsImV4cCI6MjEwMjc3NDM2Mn0.0AEyPvayW8NKlriAGz3zvDVsz2itHeVLQUO3ea6MDOE', 'Authorization': 'Bearer ANON' },
+      headers: { 'Content-Type': 'application/json', 'apikey': _ANON, 'Authorization': 'Bearer ' + _ANON },
       body: JSON.stringify({ company: _cid })
     }).then(function(r){ return r.ok ? r.json() : {}; }).then(function(j){ _go(j && typeof j === 'object' ? j : {}); }).catch(function(){ _go({}); });
   }catch(e){ _go({}); }
@@ -39,7 +40,7 @@
 
   // ---------- Konfiguration ----------
   var FUNCTION_URL = 'https://rkbockdrhxmpvxugkmrt.supabase.co/functions/v1/chat';
-  var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrYm9ja2RyaHhtcHZ4dWdrbXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxOTgzNjIsImV4cCI6MjEwMjc3NDM2Mn0.0AEyPvayW8NKlriAGz3zvDVsz2itHeVLQUO3ea6MDOE';
+  var ANON_KEY = _ANON;
 
   // ---------- Einstellungen aus dem <script>-Tag ----------
   function attr(n, d){
@@ -255,8 +256,11 @@
   function toggle(){
     panel.classList.toggle('open');
     fab.classList.toggle('open');
+    fab.setAttribute('aria-expanded', panel.classList.contains('open') ? 'true' : 'false');
   }
+  fab.setAttribute('aria-expanded', 'false');
   fab.addEventListener('click', toggle);
+  shadow.addEventListener('keydown', function(e){ if(e.key === 'Escape' && panel.classList.contains('open')) toggle(); });
   closeBtn.addEventListener('click', toggle);
 
   function nowStr(){ return new Date().toLocaleTimeString('de-AT', { hour: '2-digit', minute: '2-digit' }); }
@@ -318,8 +322,10 @@
     }
   }
 
+  var busy = false;
   async function send(text){
-    if(!text.trim()) return;
+    if(busy || !text.trim()) return;
+    busy = true;
     if(topicsEl){ topicsEl.style.display = 'none'; }
     addMsg(text, 'user');
     input.value = '';
@@ -332,9 +338,10 @@
     var reply = await botReply(text);
     typing.remove();
     addMsg(reply, 'bot');
+    busy = false;
   }
 
   sendBtn.addEventListener('click', function(){ send(input.value); });
-  input.addEventListener('keydown', function(e){ if(e.key === 'Enter') send(input.value); });
+  input.addEventListener('keydown', function(e){ if(e.key === 'Enter' && !e.isComposing) send(input.value); });
   }
 })();

@@ -14,8 +14,9 @@ jobs:
     steps:
       - name: Datenbank anpingen
         env:
-          KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrYm9ja2RyaHhtcHZ4dWdrbXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxOTgzNjIsImV4cCI6MjEwMjc3NDM2Mn0.0AEyPvayW8NKlriAGz3zvDVsz2itHeVLQUO3ea6MDOE
+          KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
+          if [ -z "$KEY" ]; then echo "GitHub-Secret SUPABASE_ANON_KEY fehlt (Settings -> Secrets and variables -> Actions)"; exit 1; fi
           curl -sS --fail \
             "https://rkbockdrhxmpvxugkmrt.supabase.co/rest/v1/profiles?select=id&limit=1" \
             -H "apikey: $KEY" \
