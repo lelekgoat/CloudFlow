@@ -414,10 +414,11 @@
 
 <div class="toast" id="toast">Gespeichert</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<!-- Bibliotheken selbst gehostet (feste Version, keine Daten an fremde CDNs) -->
+<script src="vendor/supabase-2.118.0.js"></script>
+<script src="vendor/pdf-3.11.174.min.js"></script>
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'vendor/pdf-3.11.174.worker.min.js';
 </script>
 <script>
 const SUPABASE_URL = 'https://rkbockdrhxmpvxugkmrt.supabase.co';
@@ -727,7 +728,11 @@ function safeFileName(name){
   return /\.pdf$/i.test(s) ? s : (s || 'dokument') + '.pdf';
 }
 
+const MAX_DOC_TEXT = 200000; // gleich wie die Grenze in migration-sicherheit.sql
+const MAX_PDF_BYTES = 10 * 1024 * 1024;
+
 async function uploadFile(file){
+  if(file.size > MAX_PDF_BYTES){ alert('Die PDF ist zu groß (max. 10 MB).'); return; }
   const fileName = safeFileName(file.name);
   if(myLimit()){
     const { data: ex } = await sb.storage.from('pdfs').list(currentUser.id);
@@ -740,8 +745,13 @@ async function uploadFile(file){
   const path = currentUser.id + '/' + fileName;
   setUploading(true);
 
-  const { error: uploadError } = await sb.storage.from('pdfs').upload(path, file, { upsert: true });
-  if(uploadError){ setUploading(false); alert('Upload fehlgeschlagen: ' + uploadError.message); return; }
+  const { error: uploadError } = await sb.storage.from('pdfs').upload(path, file, { upsert: true, contentType: 'application/pdf' });
+  if(uploadError){
+    setUploading(false);
+    const tooBig = /size|too large|maximum/i.test(uploadError.message);
+    alert(tooBig ? 'Die PDF ist zu groß (max. 10 MB).' : 'Upload fehlgeschlagen: ' + uploadError.message);
+    return;
+  }
 
   let text = '';
   try{
@@ -753,7 +763,7 @@ async function uploadFile(file){
   if(text.trim().length > 0){
     await sb.from('documents').delete().eq('user_id', currentUser.id).eq('file_name', fileName);
     const { error: docError } = await sb.from('documents').insert({
-      user_id: currentUser.id, file_name: fileName, content: text.trim()
+      user_id: currentUser.id, file_name: fileName, content: text.trim().slice(0, MAX_DOC_TEXT)
     });
     if(docError){ alert('Text konnte nicht gespeichert werden: ' + docError.message); }
   }

@@ -62,10 +62,23 @@ Deno.serve(async (req) => {
       { auth: { persistSession: false } },
     );
 
-    // Unbekannte company_id: nichts protokollieren (sonst ließe sich chat_log mit Fake-IDs füllen)
-    const { data: exists } = await supabase.from("profiles").select("id").eq("id", company_id).maybeSingle();
-    if (!exists) {
-      return json({ reply: "Der Assistent ist gerade nicht verfügbar. Bitte nimm direkt Kontakt mit dem Unternehmen auf." });
+    const UNAVAILABLE = "Der Assistent ist gerade nicht verfügbar. Bitte nimm direkt Kontakt mit dem Unternehmen auf.";
+
+    // Erst Profil und Abo prüfen, dann protokollieren: Unbekannte IDs, inaktive Kunden und
+    // abgelehnte Nachrichten landen so nicht in chat_log (und nicht in der Statistik).
+    const { data: profile, error: pErr } = await supabase.from("profiles")
+      .select("company_name, email, is_admin, paid_until, plan, sub_status").eq("id", company_id).maybeSingle();
+    if (pErr) console.error("profiles:", pErr.message);
+
+    // Nur aktive Kunden (und das Admin-Konto) bekommen Antworten
+    if (!profile || (!profile.is_admin && profile.sub_status !== "Aktiv")) {
+      return json({ reply: UNAVAILABLE });
+    }
+
+    // Abo abgelaufen? (7 Tage Kulanz). Ohne "paid_until" und Admin-Konten wird nie gesperrt.
+    if (!profile.is_admin && profile.paid_until) {
+      const limit = new Date(profile.paid_until).getTime() + 8 * 86_400_000;
+      if (Date.now() > limit) return json({ reply: UNAVAILABLE });
     }
 
     // --- Missbrauchsschutz (Metadaten only, kein Nachrichteninhalt) ---
@@ -83,38 +96,23 @@ Deno.serve(async (req) => {
     if ((dayCount ?? 0) >= LIMIT_COMPANY_PER_DAY) {
       return json({ reply: "Der Assistent ist heute leider ausgelastet. Bitte nimm direkt Kontakt mit uns auf." });
     }
-    const { data: logRow } = await supabase.from("chat_log").insert({ company_id, ip_hash: ipHash }).select("id").single();
-
-    const [{ data: profile, error: pErr }, { data: docs, error: dErr }] = await Promise.all([
-      supabase.from("profiles").select("company_name, email, is_admin, paid_until, plan, sub_status").eq("id", company_id).maybeSingle(),
-      supabase.from("documents").select("file_name, content").eq("user_id", company_id).order("created_at"),
-    ]);
-    if (pErr) console.error("profiles:", pErr.message);
-    if (dErr) console.error("documents:", dErr.message);
-
-    // Nur aktive Kunden (und das Admin-Konto) bekommen Antworten
-    if (!profile || (!profile.is_admin && profile.sub_status !== "Aktiv")) {
-      return json({ reply: "Der Assistent ist gerade nicht verfügbar. Bitte nimm direkt Kontakt mit dem Unternehmen auf." });
-    }
-
-    // Abo abgelaufen? (7 Tage Kulanz). Ohne "paid_until" und Admin-Konten wird nie gesperrt.
-    if (profile && !profile.is_admin && profile.paid_until) {
-      const limit = new Date(profile.paid_until).getTime() + 8 * 86_400_000;
-      if (Date.now() > limit) {
-        return json({ reply: "Der Assistent ist gerade nicht verfügbar. Bitte nimm direkt Kontakt mit dem Unternehmen auf." });
-      }
-    }
-
-    // Monatslimit je Paket (faire Nutzung); Admin-Konto ausgenommen
-    if (profile && !profile.is_admin) {
+    // Monatslimit je Paket (faire Nutzung); Admin-Konto ausgenommen. Vor dem Protokollieren,
+    // daher ">=": die aktuelle Nachricht ist noch nicht mitgezählt.
+    if (!profile.is_admin) {
       const monthLimit = MONTH_LIMITS[profile.plan ?? "Standard"] ?? MONTH_LIMITS.Standard;
       const m0 = new Date(); m0.setUTCDate(1); m0.setUTCHours(0, 0, 0, 0);
       const { count: monthCount } = await supabase.from("chat_log").select("id", { count: "exact", head: true })
         .eq("company_id", company_id).gte("created_at", m0.toISOString());
-      if ((monthCount ?? 0) > monthLimit) {
+      if ((monthCount ?? 0) >= monthLimit) {
         return json({ reply: "Der Assistent hat sein Nachrichtenlimit für diesen Monat erreicht. Bitte nimm direkt Kontakt mit dem Unternehmen auf." });
       }
     }
+
+    const { data: logRow } = await supabase.from("chat_log").insert({ company_id, ip_hash: ipHash }).select("id").single();
+
+    const { data: docs, error: dErr } = await supabase.from("documents")
+      .select("file_name, content").eq("user_id", company_id).order("created_at");
+    if (dErr) console.error("documents:", dErr.message);
 
     const companyName = profile?.company_name || "dieses Unternehmen";
 
@@ -200,7 +198,8 @@ ${knowledge}`;
 
     if (!aiRes.ok || ai.error) {
       console.error("Anthropic Fehler", aiRes.status, JSON.stringify(ai.error ?? ai));
-      return json({ error: ai?.error?.message || `Anthropic API Fehler (${aiRes.status})` }, 502);
+      // Details nur ins Log, nicht an Website-Besucher
+      return json({ error: "Der Assistent ist gerade nicht erreichbar." }, 502);
     }
 
     const toolUse = ai.content?.find((c: any) => c.type === "tool_use" && c.name === "book_appointment");
@@ -244,6 +243,6 @@ ${knowledge}`;
     return json({ reply });
   } catch (err) {
     console.error("Unerwarteter Fehler:", err);
-    return json({ error: String(err) }, 500);
+    return json({ error: "Interner Fehler" }, 500);
   }
 });
