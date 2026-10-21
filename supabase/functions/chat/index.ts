@@ -122,8 +122,6 @@ Deno.serve(async (req) => {
     const resendKey = Deno.env.get("RESEND_API_KEY");
     // Terminanfragen: nur Standard/Premium und nur, wenn der E-Mail-Versand wirklich eingerichtet ist
     const canBook = (isAdmin || plan === "Standard" || plan === "Premium") && !!resendKey && !!profile?.email;
-    // Mehrsprachig: nur Premium (und Admin)
-    const multilingual = isAdmin || plan === "Premium";
 
     let knowledge = "Es wurden noch keine Dokumente hochgeladen.";
     if (docs && docs.length > 0) {
@@ -136,9 +134,7 @@ Deno.serve(async (req) => {
     const system = `Du bist der freundliche KI-Assistent von ${companyName} auf deren Website.
 Beantworte Fragen der Besucher NUR auf Basis der Dokumente unten. Steht die Antwort dort nicht, sag ehrlich, dass du es nicht weißt, und schlage vor, direkt Kontakt aufzunehmen. Erfinde nie Preise, Zeiten oder Fakten.
 Antworte kurz (meist 1-3 Sätze) und freundlich.
-${multilingual
-  ? "Antworte in der Sprache des Besuchers (Standard: Deutsch)."
-  : "Antworte immer auf Deutsch, auch wenn der Besucher in einer anderen Sprache schreibt."}
+Antworte in der Sprache des Besuchers (Standard: Deutsch).
 ${canBook
   ? 'Wenn jemand einen Termin möchte, frage nach Name und Wunschtermin und nutze dann das Tool "book_appointment". Sag dabei, dass es eine Anfrage ist und das Unternehmen den Termin noch bestätigt.'
   : "Du kannst keine Termine oder Reservierungen entgegennehmen oder weiterleiten. Wenn jemand einen Termin möchte, sag das ehrlich und nenne die Kontaktmöglichkeiten aus den Dokumenten (Telefon, E-Mail, Online-Buchung). Behaupte nie, etwas weitergeleitet oder gebucht zu haben."}

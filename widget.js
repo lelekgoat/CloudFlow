@@ -14,6 +14,8 @@
  *   data-launcher-text  Text im Button bei l2/l4
  *   data-logo        URL zu einem eigenen Logo (PNG/SVG)
  *   data-brand       Text in der Fußzeile ("Chatbot von ...", Standard: CloudFlow)
+ *   data-lang        Sprache der Oberfläche: de | en (Standard: <html lang> der Seite)
+ *   data-greeting-en, data-topics-en, data-launcher-text-en   englische Fassung für Seiten auf Englisch
  */
 (function(){
   'use strict';
@@ -49,17 +51,38 @@
     var k = n === 'launcher-text' ? 'launcherText' : n;
     return (R[k] && typeof R[k] === 'string') ? R[k] : d;
   }
+  // ---------- Sprache der Oberfläche ----------
+  var EN = /^en\b/i.test(currentScript.getAttribute('data-lang') || document.documentElement.lang || '');
+  var TXT = EN ? {
+    greeting: 'Hi! 👋 How can I help you?', launch: 'Ask us!',
+    topics: 'Opening hours=What are your opening hours?|Prices=How much does it cost?|Contact=How can I reach you?',
+    close: 'Close chat', open: 'Open chat', status: 'Online · replies instantly', reset: 'New conversation', menu: 'Menu',
+    placeholder: 'Type a message …', send: 'Send', foot: 'AI assistant · Chatbot by ', pick: 'Pick a topic or just ask us.',
+    ask: 'Ask a question …', error: 'Sorry, something went wrong. Please try again.',
+    offline: 'The chatbot is not reachable right now. Please try again in a few seconds.', locale: 'en-GB'
+  } : {
+    greeting: 'Hallo! 👋 Wie kann ich dir helfen?', launch: 'Frag uns!',
+    topics: 'Öffnungszeiten=Wie sind eure Öffnungszeiten?|Preise=Was kostet das?|Kontakt=Wie kann ich euch erreichen?',
+    close: 'Chat schließen', open: 'Chat öffnen', status: 'Online · antwortet sofort', reset: 'Neues Gespräch', menu: 'Menü',
+    placeholder: 'Nachricht schreiben …', send: 'Senden', foot: 'KI-Assistent · Chatbot von ', pick: 'Wähle ein Thema oder schreib uns direkt.',
+    ask: 'Eine Frage stellen …', error: 'Entschuldigung, da ist etwas schiefgelaufen. Versuch es gleich nochmal.',
+    offline: 'Der Chatbot ist gerade nicht erreichbar. Versuch es in ein paar Sekunden nochmal.', locale: 'de-AT'
+  };
+  // Auf englischen Seiten zuerst die -en-Fassung aus dem <script>-Tag
+  function attrL(n, d){ var v = EN && currentScript.getAttribute('data-' + n + '-en'); return v || attr(n, d); }
+  function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
   var COMPANY_ID = attr('company', '');
   var BOT_NAME   = attr('name', 'Chatbot');
-  var GREETING   = attr('greeting', 'Hallo! 👋 Wie kann ich dir helfen?');
+  var GREETING   = attrL('greeting', TXT.greeting);
   var BRAND      = attr('brand', 'CloudFlow');
   var CHAT       = /^c[1-4]$/.test(attr('chat','')) ? attr('chat') : 'c2';
   var LAUNCHER   = /^l[1-5]$/.test(attr('launcher','')) ? attr('launcher') : 'l1';
   var LOGO_URL   = attr('logo', '');
   var PRIMARY    = /^#[0-9a-fA-F]{6}$/.test(attr('primary','')) ? attr('primary') : '#09172E';
   var ACCENT     = /^#[0-9a-fA-F]{6}$/.test(attr('accent','')) ? attr('accent') : '#0071E3';
-  var LAUNCH_TXT = attr('launcher-text', LAUNCHER === 'l4' ? 'Chat' : 'Frag uns!');
-  var TOPICS = attr('topics', 'Öffnungszeiten=Wie sind eure Öffnungszeiten?|Preise=Was kostet das?|Kontakt=Wie kann ich euch erreichen?')
+  var LAUNCH_TXT = attrL('launcher-text', LAUNCHER === 'l4' ? 'Chat' : TXT.launch);
+  var TOPICS = attrL('topics', TXT.topics)
     .split('|').map(function(t){ var p = t.split('='); return { label: p[0].trim(), q: (p[1] || p[0]).trim() }; })
     .filter(function(t){ return t.label; });
 
@@ -217,21 +240,21 @@
   wrapper.innerHTML =
     '<div class="cf-win cf-' + CHAT + ' cf-fixed" id="cfPanel">' +
       '<div class="cf-hero">' +
-        '<button class="cf-close" id="cfClose" aria-label="Chat schließen">✕</button>' +
+        '<button class="cf-close" id="cfClose" aria-label="' + esc(TXT.close) + '">✕</button>' +
         '<span class="cf-logo">' + logoHTML(SVG_LOGO) + '</span>' +
         '<b class="cf-name" data-name></b>' +
-        '<span class="cf-status">Online · antwortet sofort</span>' +
+        '<span class="cf-status">' + esc(TXT.status) + '</span>' +
       '</div>' +
       '<div class="cf-log" id="cfLog"></div>' +
       '<div class="cf-bar">' +
-        '<div class="cf-pop" id="cfPop"><button type="button" id="cfReset">Neues Gespräch</button></div>' +
-        '<button class="cf-menu" type="button" id="cfMenu" aria-label="Menü">⋮</button>' +
-        '<input type="text" id="cfInput" placeholder="Nachricht schreiben …" autocomplete="off">' +
-        '<button class="cf-send" type="button" id="cfSend" aria-label="Senden">' + SVG_SEND + '</button>' +
+        '<div class="cf-pop" id="cfPop"><button type="button" id="cfReset">' + esc(TXT.reset) + '</button></div>' +
+        '<button class="cf-menu" type="button" id="cfMenu" aria-label="' + esc(TXT.menu) + '">⋮</button>' +
+        '<input type="text" id="cfInput" placeholder="' + esc(TXT.placeholder) + '" autocomplete="off">' +
+        '<button class="cf-send" type="button" id="cfSend" aria-label="' + esc(TXT.send) + '">' + SVG_SEND + '</button>' +
       '</div>' +
-      '<div class="cf-foot">KI-Assistent · Chatbot von <b data-brand></b></div>' +
+      '<div class="cf-foot">' + esc(TXT.foot) + '<b data-brand></b></div>' +
     '</div>' +
-    '<button class="cf-fab cf-' + LAUNCHER + ' cf-fixed" id="cfFab" aria-label="Chat öffnen">' + fabInner + SVG_X + '</button>';
+    '<button class="cf-fab cf-' + LAUNCHER + ' cf-fixed" id="cfFab" aria-label="' + esc(TXT.open) + '">' + fabInner + SVG_X + '</button>';
   shadow.appendChild(wrapper);
 
   // Texte sicher einsetzen (kein HTML aus Attributen)
@@ -263,7 +286,7 @@
   shadow.addEventListener('keydown', function(e){ if(e.key === 'Escape' && panel.classList.contains('open')) toggle(); });
   closeBtn.addEventListener('click', toggle);
 
-  function nowStr(){ return new Date().toLocaleTimeString('de-AT', { hour: '2-digit', minute: '2-digit' }); }
+  function nowStr(){ return new Date().toLocaleTimeString(TXT.locale, { hour: '2-digit', minute: '2-digit' }); }
 
   function addMsg(text, who){
     var d = document.createElement('div'); d.className = 'cf-msg ' + who;
@@ -280,14 +303,14 @@
     addMsg(GREETING, 'bot');
     if(!TOPICS.length){ topicsEl = null; return; }
     topicsEl = document.createElement('div'); topicsEl.className = 'cf-topics';
-    var p = document.createElement('p'); p.textContent = 'Wähle ein Thema oder schreib uns direkt.';
+    var p = document.createElement('p'); p.textContent = TXT.pick;
     var chips = document.createElement('div'); chips.className = 'cf-chips';
     TOPICS.forEach(function(t){
       var c = document.createElement('button'); c.type = 'button'; c.className = 'cf-chip'; c.textContent = t.label;
       c.addEventListener('click', function(){ send(t.q); });
       chips.appendChild(c);
     });
-    var free = document.createElement('button'); free.type = 'button'; free.className = 'cf-chip'; free.textContent = 'Eine Frage stellen …';
+    var free = document.createElement('button'); free.type = 'button'; free.className = 'cf-chip'; free.textContent = TXT.ask;
     free.addEventListener('click', function(){ input.focus(); });
     chips.appendChild(free);
     topicsEl.appendChild(p); topicsEl.appendChild(chips);
@@ -316,9 +339,9 @@
         chatHistory.push({ role: 'assistant', content: data.reply });
         return data.reply;
       }
-      return 'Entschuldigung, da ist etwas schiefgelaufen. Versuch es gleich nochmal.';
+      return TXT.error;
     } catch(e){
-      return 'Der Chatbot ist gerade nicht erreichbar. Versuch es in ein paar Sekunden nochmal.';
+      return TXT.offline;
     }
   }
 

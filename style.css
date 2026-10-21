@@ -556,3 +556,12 @@ body>section:nth-of-type(n+3){animation-delay:.1s;}
 .spot-toggle:hover{background:var(--blue);}
 .spot-toggle:focus-visible{outline:3px solid #fff; outline-offset:2px;}
 @media (max-width:860px){ .spot-grid{grid-template-columns:1fr; gap:36px;} .spot-phone{max-width:260px;} }
+
+/* ---------- Sprachumschalter DE/EN (von i18n.js eingefügt) ---------- */
+.lang-switch{display:flex; border:1.5px solid var(--navy); flex-shrink:0;}
+.lang-switch button{border:0; background:transparent; color:var(--navy); font-family:inherit; font-weight:700; font-size:0.82rem; letter-spacing:.04em; padding:7px 10px; cursor:pointer; line-height:1;}
+.lang-switch button.on{background:var(--navy); color:#fff; cursor:default;}
+.lang-switch button:not(.on):hover{background:var(--mark);}
+.lang-switch button:focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
+@media (max-width:860px){ .head-in{gap:14px;} .lang-switch{margin-left:auto;} }
+@media (max-width:480px){ .head-in > .cut-btn.small{display:none;} }

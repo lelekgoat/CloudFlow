@@ -14,7 +14,8 @@
 <meta property="og:description" content="Alle Details zu den CloudFlow-Paketen Basic, Standard und Premium: Leistungen, Unterschiede, Design und Ablauf.">
 <meta property="og:url" content="https://cloudflow.at/paket.html">
 <link rel="preload" href="fonts/open-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="style.css?v=20261027">
+<link rel="stylesheet" href="style.css?v=20261028">
+<script src="i18n.js?v=20261028"></script>
 </head>
 <body>
 <a class="skip" href="#main">Zum Inhalt springen</a>
@@ -106,19 +107,19 @@
 <script>
 const DATA={
  basic:{name:'Basic',setup:149,price:'29,99',year:'287',docs:5,tag:'Für den Einstieg',
-  list:['Bis zu 5 PDF-Dokumente (z. B. Speisekarte, Preisliste, FAQ)','Bis zu 500 Nachrichten pro Monat (faire Nutzung)','Einbindung auf einer Seite deiner Website','1 Anpassungsrunde pro Monat','Design und Farben frei wählbar: Button, Chatfenster, zwei Farben','Eigener Name und eigene Begrüßung für deinen Chatbot','Zugang zum Kunden-Dashboard','Jederzeit kündbar'],
+  list:['Bis zu 5 PDF-Dokumente (z. B. Speisekarte, Preisliste, FAQ)','Bis zu 500 Nachrichten pro Monat (faire Nutzung)','Einbindung auf einer Seite deiner Website','1 Anpassungsrunde pro Monat','Design und Farben frei wählbar: Button, Chatfenster, zwei Farben','Eigener Name und eigene Begrüßung für deinen Chatbot','Antwortet in der Sprache deiner Kunden (z. B. Deutsch und Englisch)','Zugang zum Kunden-Dashboard','Jederzeit kündbar'],
   forwhom:'Du willst einfach loslegen und die häufigsten Fragen deiner Kunden automatisch beantworten lassen, zum Beispiel Öffnungszeiten, Preise und Anfahrt.',
   why:'<b>Warum Standard statt Basic?</b> Du bekommst mehr Dokumente (15 statt 5), viermal so viele Nachrichten (2.000 statt 500), 2 Anpassungsrunden und Terminanfragen. Wenn dein Chatbot viel genutzt wird, lohnt sich das.',design:'Du wählst Button, Chatfenster, zwei Farben sowie Namen und Begrüßung selbst. Alles speicherst du im Kunden-Dashboard.',next:'standard'},
  standard:{name:'Standard',setup:249,price:'49,49',year:'475',docs:15,tag:'Der Alltagsbegleiter',
   list:['Alles aus Basic','Bis zu 15 PDF-Dokumente','Bis zu 2.000 Nachrichten pro Monat (faire Nutzung)','2 Anpassungsrunden pro Monat','Termin- und Reservierungsanfragen','Design und Farben frei wählbar','Zugang zum Kunden-Dashboard','Jederzeit kündbar'],
   forwhom:'Dein Business hat viele Kunden und viele Fragen, etwa ein Restaurant, einen Friseur oder einen Handwerksbetrieb. Der Chatbot soll rund um die Uhr zuverlässig Auskunft geben.',
-  why:'<b>Warum Premium statt Standard?</b> Du bekommst ein eigenes Logo, eigenen Namen, Begrüßung und Themen-Buttons, individuelle Sonderwünsche, Mehrsprachigkeit und 30 statt 15 Dokumente. Ideal bei mehreren Standorten oder wenn der Chatbot ganz zu deiner Marke passen soll.',design:'Wie bei Basic wählst du Button, Chatfenster, Farben, Namen und Begrüßung. Dazu bekommst du mehr Platz für Dokumente und Anfragen.',next:'premium'},
+  why:'<b>Warum Premium statt Standard?</b> Du bekommst ein eigenes Logo, eigenen Namen, Begrüßung und Themen-Buttons, individuelle Sonderwünsche und 30 statt 15 Dokumente. Ideal bei mehreren Standorten oder wenn der Chatbot ganz zu deiner Marke passen soll.',design:'Wie bei Basic wählst du Button, Chatfenster, Farben, Namen und Begrüßung. Dazu bekommst du mehr Platz für Dokumente und Anfragen.',next:'premium'},
  premium:{name:'Premium',setup:399,price:'89,99',year:'863',docs:30,tag:'Für mehrere Standorte',
-  list:['Alles aus Standard','Bis zu 30 PDF-Dokumente','Bis zu 5.000 Nachrichten pro Monat (faire Nutzung)','Eigenes Logo und eigene Themen-Buttons, im Dashboard selbst bearbeitbar','Individuelle Sonderwünsche für Texte und Bilder (bis zu 2 Stunden pro Monat)','Mehrsprachig (z. B. Deutsch und Englisch)','Design komplett individuell, auf Wunsch gemeinsam mit uns','Zugang zum Kunden-Dashboard','Jederzeit kündbar'],
+  list:['Alles aus Standard','Bis zu 30 PDF-Dokumente','Bis zu 5.000 Nachrichten pro Monat (faire Nutzung)','Eigenes Logo und eigene Themen-Buttons, im Dashboard selbst bearbeitbar','Individuelle Sonderwünsche für Texte und Bilder (bis zu 2 Stunden pro Monat)','Design komplett individuell, auf Wunsch gemeinsam mit uns','Zugang zum Kunden-Dashboard','Jederzeit kündbar'],
   forwhom:'Du hast mehrere Standorte oder willst, dass der Chatbot aussieht und klingt wie dein Unternehmen.',
   why:'<b>Warum Premium?</b> Dein Chatbot trägt dein Logo und deinen Namen und spricht so, wie du es willst. Dazu kommen die meisten Dokumente und Platz für Sonderwünsche.',design:'Du bearbeitest alles selbst im Dashboard: Button, Chatfenster, Farben, Name, Begrüßung, Themen-Buttons und Logo. Für alles Weitere setzen wir dir deine Sonderwünsche um.',next:null}
 };
-const ROWS=[['Dokumente (PDF)',['5','15','30']],['Nachrichten pro Monat (faire Nutzung)',['500','2.000','5.000']],['Termin-/Reservierungsanfragen',['–','✓','✓']],['Design: Button, Chatfenster, Farben',['✓','✓','✓']],['Anpassungsrunden pro Monat',['1','2','nach Absprache']],['Eigener Name und Begrüßung',['✓','✓','✓']],['Eigenes Logo und Themen-Buttons (selbst bearbeitbar)',['–','–','✓']],['Eigene Texte und Bilder',['–','–','✓']],['Mehrsprachig',['–','–','✓']],['Individuelle Sonderwünsche',['–','–','✓ (bis zu 2 Std. / Monat)']],['Einrichtung (einmalig)',['149 €','249 €','399 €']],['Preis pro Monat',['29,99 €','49,49 €','89,99 €']]];
+const ROWS=[['Dokumente (PDF)',['5','15','30']],['Nachrichten pro Monat (faire Nutzung)',['500','2.000','5.000']],['Termin-/Reservierungsanfragen',['–','✓','✓']],['Design: Button, Chatfenster, Farben',['✓','✓','✓']],['Anpassungsrunden pro Monat',['1','2','nach Absprache']],['Eigener Name und Begrüßung',['✓','✓','✓']],['Eigenes Logo und Themen-Buttons (selbst bearbeitbar)',['–','–','✓']],['Eigene Texte und Bilder',['–','–','✓']],['Mehrsprachig',['✓','✓','✓']],['Individuelle Sonderwünsche',['–','–','✓ (bis zu 2 Std. / Monat)']],['Einrichtung (einmalig)',['149 €','249 €','399 €']],['Preis pro Monat',['29,99 €','49,49 €','89,99 €']]];
 const KEYS=['basic','standard','premium'];
 const q=(new URLSearchParams(location.search).get('plan')||'standard').toLowerCase();const k=DATA[q]?q:'standard';const D=DATA[k];
 document.title=D.name+' — Paket-Details — CloudFlow';
@@ -139,6 +140,6 @@ const g=id=>document.getElementById(id).value.trim();
 const pm=document.getElementById('premMail');
 if(pm)pm.addEventListener('click',()=>{pm.href='mailto:kontakt@cloudflow.at?subject='+encodeURIComponent('Premium-Wünsche')+'&body='+encodeURIComponent('Name: '+g('fName')+'\nBegrüßung: '+g('fGreet')+'\nThemen:\n'+g('fTopics')+'\nLogo: '+g('fLogo')+'\nFarben: '+g('fColors')+'\nSonderwünsche: '+g('fWish'));});
 </script>
-<script src="widget.js?v=20261026" data-company="8995e595-bb45-4753-a4f6-ff74e80cf74e" data-name="CloudFlow Chatbot" data-greeting="Hallo und willkommen bei CloudFlow 👋 Gerne beraten wir dich zu unseren Chatbots, Preisen oder wie du startest." data-topics="Preise=Was kostet das?|Ablauf=Wie läuft der Ablauf ab?|Technik nötig?=Brauche ich technisches Wissen?" data-chat="c2" data-launcher="l1"></script>
+<script src="widget.js?v=20261028" data-company="8995e595-bb45-4753-a4f6-ff74e80cf74e" data-name="CloudFlow Chatbot" data-greeting="Hallo und willkommen bei CloudFlow 👋 Gerne beraten wir dich zu unseren Chatbots, Preisen oder wie du startest." data-topics="Preise=Was kostet das?|Ablauf=Wie läuft der Ablauf ab?|Technik nötig?=Brauche ich technisches Wissen?" data-greeting-en="Hi and welcome to CloudFlow 👋 Happy to help with our chatbots, pricing or how to get started." data-topics-en="Pricing=How much does it cost?|Process=How does the process work?|Tech skills needed?=Do I need technical knowledge?" data-chat="c2" data-launcher="l1"></script>
 </body>
 </html>
