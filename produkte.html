@@ -3,50 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Produkte — CloudFlow KI-Chatbot</title>
-<meta name="description" content="Der CloudFlow Chatbot im Detail: Antworten aus deinen PDFs, eigenes Design und Farben, Live-Demo zum Ausprobieren.">
+<title>Der Chatbot – CloudFlow</title>
+<meta name="description" content="Der CloudFlow Chatbot: antwortet aus deinen PDFs, in deinem Design, mit Statistik im Dashboard.">
 <meta name="theme-color" content="#09172E">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://cloudflow.at/produkte.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CloudFlow">
-<meta property="og:title" content="Produkte — CloudFlow KI-Chatbot">
-<meta property="og:description" content="Der CloudFlow Chatbot im Detail: Antworten aus deinen PDFs, eigenes Design und Farben, Live-Demo zum Ausprobieren.">
+<meta property="og:title" content="Der Chatbot – CloudFlow">
+<meta property="og:description" content="Der CloudFlow Chatbot: antwortet aus deinen PDFs, in deinem Design, mit Statistik im Dashboard.">
 <meta property="og:url" content="https://cloudflow.at/produkte.html">
 <meta name="twitter:card" content="summary">
-<link rel="preload" href="fonts/open-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="style.css?v=20261117">
-<script src="i18n.js?v=20261117"></script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/open-sans-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css?v=20261118">
+<link rel="stylesheet" href="redesign.css?v=1">
+<script src="i18n.js?v=20261118"></script>
 </head>
 <body>
 <a class="skip" href="#main">Zum Inhalt springen</a>
 <header>
   <div class="wrap head-in">
-    <a class="logo" href="index.html">
-      <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>
-      <span>Cloud<em>Flow</em></span>
-    </a>
-    <nav class="main">
+    <a class="logo" href="index.html"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></a>
+    <nav class="main" aria-label="Hauptmenü">
       <a href="index.html">Startseite</a>
-      <a class="active" href="produkte.html">Produkte</a>
+      <div class="nav-drop">
+        <a class="active" href="produkte.html">Produkte</a>
+        <button type="button" class="drop-tg" aria-expanded="false" aria-label="Unterseiten von Produkte"></button>
+        <div class="nav-menu">
+          <a href="produkte.html"><b>Der Chatbot</b><span>Funktionen, Werbespot, Beispiele</span></a>
+          <a href="design.html"><b>Design</b><span>Button, Fenster und Farben ausprobieren</span></a>
+        </div>
+      </div>
       <a href="preise.html">Preise</a>
       <a href="kontakt.html">Kontakt</a>
       <a href="dashboard.html">Login</a>
+      <a class="btn-try btn-try-m" href="index.html#try"><span class="dot"></span>Bot testen</a>
     </nav>
-    <div class="head-contact">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 7 9 6 9-6"/></svg>
-      <div><b>kontakt@cloudflow.at</b><span>Direkt schreiben</span></div>
-    </div>
-    <a class="cut-btn small" href="kontakt.html">Jetzt kontaktieren</a>
+    <a class="btn-try" href="index.html#try"><span class="dot"></span>Bot testen</a>
+    <button class="burger" type="button" aria-label="Menü öffnen" aria-expanded="false"><i></i><i></i><i></i></button>
   </div>
 </header>
-<section id="main" class="hero page">
-  <div class="blob" style="width:520px;height:420px;left:-140px;top:-120px;background:#9CCBFF;"></div>
-  <div class="blob" style="width:480px;height:400px;right:-120px;top:0;background:#4E9DFF;opacity:.7;animation-delay:-8s;"></div>
-  <div class="blob" style="width:700px;height:300px;left:25%;bottom:-170px;background:#EAF4FF;"></div>
+
+<section id="main" class="vx vhero small" data-velaris data-colors="#A8D8FF,#5AB4FF,#0A6BD8,#050D1C" data-bg="#050D1C" data-speed="1.4" data-grain="0.3">
   <div class="wrap">
-    <h1>Der CloudFlow Chatbot</h1>
-    <p class="lead">Ein persönlicher Chatbot für deine Website — er lernt aus deinen hochgeladenen PDFs und beantwortet Kundenfragen rund um die Uhr.</p>
+    <span class="pill hero-in"><span class="dot"></span>Der CloudFlow Chatbot</span>
+    <h1 class="display hero-in d2" style="margin:22px 0">Ein Chatbot, der dein Business kennt.</h1>
+    <p class="lead-x hero-in d3" style="color:rgba(255,255,255,.78);max-width:620px">Du lädst deine PDFs hoch, er beantwortet damit die Fragen deiner Website-Besucher. Rund um die Uhr, in deinem Design.</p>
+    <div class="hero-cta hero-in d4">
+      <a class="btn-light" href="index.html#try">Selbst testen →</a>
+      <a class="btn-glass" href="design.html">Design ansehen</a>
+    </div>
   </div>
 </section>
 
@@ -92,258 +98,68 @@
   </div>
 </section>
 
-<section class="block grey">
+<section class="hx" data-hx id="beispiele">
+  <div class="hx-stage">
+    <div class="hx-head">
+      <div><div class="eyebrow">Beispiele</div><h2>So antwortet dein Chatbot</h2></div>
+      <p>Erfundene Gespräche, damit du ein Gefühl bekommst. Dein Chatbot antwortet nur mit deinen eigenen Infos.</p>
+    </div>
+    <div class="hx-track"><article class="xcard"><div class="xhead"><span class="xicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg></span><div><b>Friseur</b><span>Salon mit Preisliste als PDF</span></div></div><div class="xbody"><div class="xq">Was kostet ein Herrenschnitt?</div><div class="xa">Laut unserer Preisliste kostet der Herrenschnitt 32 €, mit Waschen 38 €.</div><div class="xq">Muss ich vorher einen Termin machen?</div><div class="xa">Wir empfehlen einen Termin, spontane Besuche sind je nach Auslastung möglich.</div></div></article><article class="xcard"><div class="xhead"><span class="xicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v8a3 3 0 0 0 3 3v7M7 3v8M10 3v8M17 3c-2 2-3 5-3 8h3v10"/></svg></span><div><b>Restaurant</b><span>Speisekarte und Öffnungszeiten</span></div></div><div class="xbody"><div class="xq">Habt ihr heute einen Tisch für 4 um 19 Uhr?</div><div class="xa">Reservierungen nehmen wir unter der Telefonnummer auf unserer Kontaktseite entgegen. Die Küche ist täglich von 11:30 bis 22:00 Uhr geöffnet.</div><div class="xq">Gibt es vegetarische Gerichte?</div><div class="xa">Ja, auf unserer Speisekarte sind vegetarische Gerichte gekennzeichnet, zum Beispiel die Kürbis-Lasagne.</div></div></article><article class="xcard"><div class="xhead"><span class="xicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></span><div><b>Handwerk</b><span>Leistungen und Einsatzgebiet</span></div></div><div class="xbody"><div class="xq">Macht ihr auch Notdienste am Wochenende?</div><div class="xa">Ja, unser Notdienst ist am Wochenende unter der Nummer in unserem Infoblatt erreichbar. Dafür gilt ein Zuschlag.</div><div class="xq">In welchem Gebiet seid ihr tätig?</div><div class="xa">Wir arbeiten in Wien und im Umkreis von 30 km.</div></div></article><article class="xcard"><div class="xhead"><span class="xicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V7M3 13h18v5M21 13a3 3 0 0 0-3-3h-7v3"/><circle cx="7" cy="10.5" r="1.5"/></svg></span><div><b>Pension</b><span>Hausinfos für Gäste, mehrsprachig</span></div></div><div class="xbody"><div class="xq">What time is check-in?</div><div class="xa">Check-in is from 3 pm, check-out until 10 am. Late arrival is possible if you let us know.</div><div class="xq">Kann ich meinen Hund mitbringen?</div><div class="xa">Ja, Hunde sind gegen 10 € pro Nacht willkommen.</div></div></article><article class="xcard"><div class="xhead"><span class="xicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/><circle cx="7.5" cy="13" r="1"/><circle cx="16.5" cy="13" r="1"/></svg></span><div><b>Fahrschule</b><span>Kurse, Preise und Ablauf</span></div></div><div class="xbody"><div class="xq">Wann startet der nächste Theoriekurs?</div><div class="xa">Laut Kursplan startet der nächste Intensivkurs am ersten Montag im Monat.</div><div class="xq">Was brauche ich für die Anmeldung?</div><div class="xa">Einen Lichtbildausweis, ein Passfoto und den Sehtest. Die Unterlagen bekommst du bei uns im Büro.</div></div></article><article class="xcard"><div class="xhead"><span class="xicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z"/><path d="M8 12h2l1-2 2 4 1-2h2"/></svg></span><div><b>Physiotherapie</b><span>Praxisinfos und Kassen</span></div></div><div class="xbody"><div class="xq">Rechnet ihr mit der Kasse ab?</div><div class="xa">Wir sind eine Wahlpraxis. Du bekommst eine Honorarnote und kannst sie bei deiner Kasse einreichen.</div><div class="xq">Gibt es Parkplätze?</div><div class="xa">Ja, direkt vor der Praxis gibt es zwei Kundenparkplätze.</div></div></article><article class="xcard more"><h3>Und deine Branche?</h3><p>Frag unseren Chatbot direkt. So merkst du am schnellsten, wie sich das für deine Kunden anfühlt.</p><a class="btn-light" href="index.html#try">Jetzt testen →</a></article></div>
+    <div class="hx-foot"><span>Scrollen</span><div class="hx-bar"><i></i></div><span>6 Branchen</span></div>
+  </div>
+</section>
+
+<section class="sec">
   <div class="wrap">
-
-    <div class="show-card">
-      <div>
-        <h3>Automatisiere deinen Kundenservice</h3>
-        <p>Die meisten Anfragen sind wiederkehrend — Öffnungszeiten, Preise, Reservierungswünsche. Dein CloudFlow-Chatbot beantwortet sie automatisch, rund um die Uhr, während du dich um dein Business kümmerst.</p>
-        <div class="badges"><span>24/7 verfügbar</span><span>Ohne Wartezeit</span><span>In Tagen live</span></div>
-      </div>
-      <div class="mock">
-        <div class="mock-head"><i></i> CloudFlow Chatbot</div>
-        <div class="mock-body">
-          <div class="bubble bot">Hallo! Wie kann ich dir helfen?</div>
-          <div class="bubble user">Habt ihr am Sonntag offen?</div>
-          <div class="bubble bot">Ja, sonntags von 9:00 bis 15:00 Uhr 😊</div>
-        </div>
-      </div>
+    <div class="sec-head2 rv">
+      <div class="eyebrow">Funktionen</div>
+      <h2 class="h-sec">Alles drin, was du brauchst</h2>
     </div>
+    <div class="fgrid"><div class="fitem rv" data-delay="1"><span class="bicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg></span><h3>Wissen aus deinen PDFs</h3><p>Preisliste, Speisekarte, FAQ: Du lädst sie hoch, der Chatbot antwortet damit.</p></div><div class="fitem rv" data-delay="2"><span class="bicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1.2"/><circle cx="12" cy="7.5" r="1.2"/><circle cx="16" cy="10" r="1.2"/><path d="M12 21a3 3 0 0 1 0-6h2a3 3 0 0 0 3-3"/></svg></span><h3>Dein Design</h3><p>Button, Chatfenster und Farben passend zu deiner Marke.</p></div><div class="fitem rv" data-delay="3"><span class="bicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4M4 20h16"/><path d="M8 16v-4M12 16V8M16 16v-7"/></svg></span><h3>Dashboard mit Statistik</h3><p>Du siehst jeden Monat, wie viele Fragen dein Chatbot beantwortet hat.</p></div><div class="fitem rv" data-delay="1"><span class="bicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><h3>Terminanfragen</h3><p>Ab Standard leitet der Chatbot Terminwünsche per E-Mail an dich weiter.</p></div><div class="fitem rv" data-delay="2"><span class="bicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><h3>Mehrsprachig</h3><p>Gäste aus dem Ausland bekommen die Antwort in ihrer Sprache.</p></div><div class="fitem rv" data-delay="3"><span class="bicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>Datensparsam</h3><p>Wir speichern keine Chat-Inhalte, nur Zeit und Anzahl der Nachrichten.</p></div></div>
+  </div>
+</section>
 
-    <div class="show-card">
-      <div>
-        <h3>Kennt dein Unternehmen</h3>
-        <p>Lade PDFs hoch — FAQ, Preisliste, Speisekarte — und dein Chatbot antwortet auf Basis deiner Dokumente. Einfach im Preis enthalten.</p>
-        <div class="badges"><span>PDF-Upload</span><span>Sofort einsatzbereit</span><span>Sicher gespeichert</span></div>
-      </div>
-      <div class="pdf-mock">
-        <div class="pdf-row"><b>PDF</b> Garantiebedingungen.pdf</div>
-        <div class="pdf-ans"><strong>Frage:</strong> Wie lange gilt die Garantie?<br><strong>Antwort:</strong> Laut Dokument beträgt die Garantiezeit 24 Monate.</div>
-      </div>
+<section class="sec tint">
+  <div class="wrap dteaser">
+    <div class="rv">
+      <div class="eyebrow" style="margin-bottom:16px">Design</div>
+      <h2 class="h-sec">Sieht aus wie deine Website.</h2>
+      <p style="margin:20px 0 30px;color:var(--ink-soft);font-size:1.08rem">Such dir Button und Chatfenster aus und stell deine Farben ein. Du siehst das Ergebnis sofort in der Vorschau.</p>
+      <a class="cut-btn" href="design.html">Design ausprobieren →</a>
     </div>
-
-    <div class="kb-demo">
-      <div class="blob" style="width:420px;height:300px;left:-100px;top:-120px;background:#0A57C2;opacity:.8;"></div>
-      <div style="position:relative;z-index:1;">
-        <div class="lbl">LIVE-DEMO</div>
-        <h3>Probier's direkt aus</h3>
-        <p>Stell eine Frage — die Antwort kommt vom echten Chatbot.</p>
-        <div class="kb-row">
-          <input type="text" id="kbInput" placeholder="z. B. Wie sind eure Bürozeiten?">
-          <button id="kbAsk" onclick="askChatbot()">Fragen</button>
-        </div>
-        <div class="kb-answer" id="kbAnswer">
-          <div class="label">ANTWORT</div>
-          <div id="kbAnswerText"></div>
-        </div>
-      </div>
-    </div>
-
-    <div style="text-align:center;">
-      <a class="cut-btn" href="preise.html">Preise anschauen →</a> &nbsp; <a class="text-link" href="#design">Design wählen ↓</a>
+    <div class="swatches rv" data-delay="2" aria-hidden="true">
+      <span style="background:#09172E"></span><span style="background:#0071E3"></span><span style="background:#5AB4FF"></span><span style="background:#A8D8FF"></span>
+      <span style="background:#7A1F2B"></span><span style="background:#C2410C"></span><span style="background:#15803D"></span><span style="background:#334155"></span>
     </div>
   </div>
 </section>
 
-<section class="block" id="beispiele">
- <div class="wrap">
-  <div class="sec-head">
-   <div class="eyebrow">Beispiele</div>
-   <h2 class="mark"><span>So antwortet dein Chatbot</span></h2>
-   <p class="sub">Erfundene Beispiel-Gespräche, damit du ein Gefühl bekommst. Dein Chatbot antwortet immer nur mit dem, was in deinen eigenen PDFs steht.</p>
+<section class="vx cta-band" data-velaris data-colors="#A8D8FF,#5AB4FF,#0A6BD8,#050D1C" data-bg="#050D1C" data-speed="1.4" data-grain="0.3">
+  <div class="wrap">
+    <h2 class="rv">Überzeug dich selbst.</h2>
+    <p class="rv" data-delay="1">Stell unserem Chatbot eine Frage oder lass dich kostenlos beraten.</p>
+    <div class="hero-cta rv" data-delay="2">
+      <a class="btn-light" href="index.html#try">Bot testen →</a>
+      <a class="btn-glass" href="kontakt.html">Kostenlos beraten lassen</a>
+    </div>
   </div>
-  <div class="ex-grid">
-   <article class="ex"><h3>Restaurant</h3><p class="q">Habt ihr heute einen Tisch für 4 um 19 Uhr?</p><p class="a">Reservierungen nehmen wir unter der Telefonnummer auf unserer Kontaktseite entgegen. Unsere Küche ist täglich von 11:30 bis 22:00 Uhr geöffnet.</p><p class="q">Gibt es vegetarische Gerichte?</p><p class="a">Ja, auf unserer Speisekarte sind vegetarische Gerichte gekennzeichnet, zum Beispiel die Kürbis-Lasagne.</p></article>
-   <article class="ex"><h3>Friseur</h3><p class="q">Was kostet ein Herrenschnitt?</p><p class="a">Laut unserer Preisliste kostet der Herrenschnitt 32 €, mit Waschen 38 €.</p><p class="q">Muss ich vorher einen Termin machen?</p><p class="a">Wir empfehlen einen Termin, spontane Besuche sind je nach Auslastung möglich.</p></article>
-   <article class="ex"><h3>Handwerk</h3><p class="q">Macht ihr auch Notdienste am Wochenende?</p><p class="a">Ja, unser Notdienst ist am Wochenende unter der Nummer in unserem Infoblatt erreichbar. Dafür gilt ein Zuschlag.</p><p class="q">In welchem Gebiet seid ihr tätig?</p><p class="a">Wir arbeiten in Wien und im Umkreis von 30 km.</p></article>
-  </div>
-  <p class="ex-note">Die Gespräche sind frei erfunden und dienen nur als Beispiel.</p>
- </div>
 </section>
-
-<section class="block design-lab" id="design" style="background:linear-gradient(180deg,#EAF4FF 0%,#F7FBFF 100%);">
- <div class="wrap">
-  <div class="sec-head">
-    <div class="eyebrow">Individuell</div>
-    <h2 class="mark"><span>Wähle dein Design</span></h2>
-    <p class="sub">So kann dein Chatbot auf deiner Website aussehen. Such dir Button und Chatfenster aus und stell deine Farben ein — probier es gleich aus. Gespeichert wird dein Design später im Kunden-Dashboard, sobald du ein Paket gewählt hast. Name und Begrüßung gibt es in jedem Paket, Logo und Themen-Buttons mit Premium.</p>
-  </div>
-
-  <div class="pick-label"><span class="n">1</span> Button unten rechts</div>
-  <p class="pick-sub">Damit öffnen deine Besucher den Chat.</p>
-  <div class="opts"><button class="opt on" data-l="l1" type="button"><div class="opt-stage"><span class="cf-fab cf-l1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span></div><strong>Quadrat</strong><small>Navy, mit Logo</small></button><button class="opt" data-l="l2" type="button"><div class="opt-stage"><span class="cf-fab cf-l2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg><b>Frag uns!</b></span></div><strong>Rechteck mit Text</strong><small>Lädt zum Fragen ein</small></button><button class="opt" data-l="l3" type="button"><div class="opt-stage"><span class="cf-fab cf-l3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg></span></div><strong>Rund</strong><small>Der Klassiker</small></button><button class="opt" data-l="l4" type="button"><div class="opt-stage"><span class="cf-fab cf-l4"><i class="dot"></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg><b>Chat</b></span></div><strong>Weiße Karte</strong><small>Mit „Online“-Punkt</small></button><button class="opt" data-l="l5" type="button"><div class="opt-stage"><span class="cf-fab cf-l5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg><i class="dot"></i></span></div><strong>Himmel-Verlauf</strong><small>Passend zur Website</small></button></div>
-
-  <div class="pick-label"><span class="n">2</span> Chatfenster</div>
-  <p class="pick-sub">So sieht das Gespräch aus — mit Begrüßung, Themen-Buttons und Eingabefeld.</p>
-  <div class="opts"><button class="opt" data-c="c1" type="button"><div class="opt-stage chatstage"><div class="mini-wrap" data-mini="c1"></div></div><strong>Klassisch</strong><small>Farbige Kopfzeile</small></button><button class="opt on" data-c="c2" type="button"><div class="opt-stage chatstage"><div class="mini-wrap" data-mini="c2"></div></div><strong>Himmel</strong><small>Weicher Farbverlauf</small></button><button class="opt" data-c="c3" type="button"><div class="opt-stage chatstage"><div class="mini-wrap" data-mini="c3"></div></div><strong>Minimal</strong><small>Weiß mit feinen Linien</small></button><button class="opt" data-c="c4" type="button"><div class="opt-stage chatstage"><div class="mini-wrap" data-mini="c4"></div></div><strong>Dunkel</strong><small>Nachtmodus</small></button></div>
-
-  <div class="pick-label"><span class="n">3</span> Farben</div>
-  <p class="pick-sub">Passe alles an deine Marke an — die Auswahl oben und die Vorschau unten färben sich sofort um.</p>
-  <div class="colors">
-    <div class="crow">
-      <div class="cfield"><label>Hauptfarbe (Kopfzeile, Button)</label><div class="cpick"><input type="color" id="cp" value="#09172e"><input type="text" id="cpt" value="#09172E" maxlength="7"></div></div>
-      <div class="cfield"><label>Akzentfarbe (Nachrichten, Senden)</label><div class="cpick"><input type="color" id="ca" value="#0071e3"><input type="text" id="cat" value="#0071E3" maxlength="7"></div></div>
-    </div>
-    <div><div class="cfield"><label>Oder ein fertiges Farbschema</label></div><div class="presets" id="presets"></div></div>
-  </div>
-
-  <div class="pick-label"><span class="n">4</span> Dein persönliches Extra</div>
-  <p class="pick-sub">Probier es aus: Mit dem Premium-Paket gestalten wir den Chatbot ganz individuell für dich.</p>
-  <div class="premium" id="premium">
-    <h3>Individuelle Wünsche <span class="badge-pr">PREMIUM</span></h3>
-    <p class="lead2">Eigenes Logo und eigene Themen-Buttons bearbeitest du selbst im Dashboard, dazu setzen wir Texte, Bilder und alle Sonderwünsche für dich um. Name und Begrüßung gibt es in jedem Paket.</p>
-    <div class="pgrid">
-      <div class="pf"><label>Name deines Assistenten</label><input type="text" id="pName" placeholder="z. B. Lena von Café Wien" maxlength="30"></div>
-      <div class="pf"><label>Begrüßungstext</label><input type="text" id="pHello" placeholder="z. B. Servus! Wie kann ich dir helfen?" maxlength="80"></div>
-      <div class="pf"><label>Eigenes Logo (für Button und Kopfzeile)</label>
-        <label class="drop"><span class="ic" id="logoIc">+</span><span id="logoTxt">Logo hochladen (PNG, SVG, JPG)</span><input type="file" id="pLogo" accept="image/*"></label></div>
-      <div class="pf"><label>Bilder / Vorlagen für unsere Gestaltung</label>
-        <label class="drop"><span class="ic">+</span><span>Bilder auswählen (mehrere möglich)</span><input type="file" id="pImgs" accept="image/*" multiple></label><div class="thumbs" id="thumbs"></div></div>
-      <div class="pf full"><label>Deine Sonderwünsche</label><textarea id="pWish" rows="4" placeholder="Beschreib, was wir ändern sollen — z. B. andere Schriftart, Button links statt rechts, Antworten im Dialekt, eigene Schnellantwort-Buttons …"></textarea></div>
-    </div>
-    <div class="pactions"><a class="cut-btn" href="mailto:kontakt@cloudflow.at" id="sendWish">Wünsche per E-Mail senden</a><span style="color:var(--ink-soft);font-size:.88rem;">Logo und Bilder hängst du bitte in der E-Mail als Anhang an. Wir melden uns schnell bei dir.</span></div>
-  </div>
-
-  <div class="live">
-    <div class="pick-label" style="margin-top:0"><span class="n">✓</span> Live-Vorschau</div>
-    <p class="pick-sub">Klick auf den Button unten rechts, um den Chat zu öffnen und zu schließen.</p>
-    <div class="browser">
-      <div class="browser-bar"><i></i><i></i><i></i><span>www.deine-website.at</span></div>
-      <div class="site">
-        <div class="fake"><div class="f1"></div><div class="f2"></div><div class="f2 s"></div><div class="f2"></div><div class="f3"><div></div><div></div><div></div></div></div>
-        <div class="cstage open" id="widget"><div id="winSlot"></div><div id="slot" style="cursor:pointer" title="Chat öffnen/schließen"></div></div>
-      </div>
-    </div>
-    <div class="summary">
-      <p>Deine Auswahl: <strong id="selL">Quadrat</strong> + <strong id="selC">Klassisch</strong> + <strong id="selCol">Farben</strong></p>
-      <a class="cut-btn" href="mailto:kontakt@cloudflow.at" id="chooseDesign">Dieses Design anfragen</a>
-    </div>
-  </div>
- </div>
-</section>
-<script>
-// ===== Design-Auswahl =====
-(function(){
-const LAUNCHERS={"l1": {"name": "Quadrat", "html": "<span class=\"cf-fab cf-l1\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z\"/></svg></span>"}, "l2": {"name": "Rechteck mit Text", "html": "<span class=\"cf-fab cf-l2\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z\"/></svg><b>Frag uns!</b></span>"}, "l3": {"name": "Rund", "html": "<span class=\"cf-fab cf-l3\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z\"/></svg></span>"}, "l4": {"name": "Weiße Karte", "html": "<span class=\"cf-fab cf-l4\"><i class=\"dot\"></i><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z\"/></svg><b>Chat</b></span>"}, "l5": {"name": "Himmel-Verlauf", "html": "<span class=\"cf-fab cf-l5\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z\"/></svg><i class=\"dot\"></i></span>"}};
-const CHATS={"c1": "Klassisch", "c2": "Himmel", "c3": "Minimal", "c4": "Dunkel"};
-const SVG_LOGO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>', SVG_SEND='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-let curL='l1', curC='c2', logoUrl=null;
-const $=id=>document.getElementById(id);
-const lab=$('design'), slot=$('slot'), stage=$('widget'), winSlot=$('winSlot');
-const X='<svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
-const PRESETS=[['CloudFlow','#09172E','#0071E3'],['Wald','#0B3D2E','#16A34A'],['Beere','#4A0F2E','#DB2777'],['Violett','#2A1650','#7C3AED'],['Sonne','#3B1F0A','#EA580C'],['Grau','#111827','#475569']];
-const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function lum(hex){const c=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4));return .2126*c[0]+.7152*c[1]+.0722*c[2];}
-function onColor(hex){return lum(hex)>.5?'#09172E':'#FFFFFF';}
-function validHex(h){return /^#[0-9a-fA-F]{6}$/.test(h);}
-function colorName(){const p=$('cpt').value.toLowerCase(),a=$('cat').value.toLowerCase();const pr=PRESETS.find(x=>x[1].toLowerCase()===p&&x[2].toLowerCase()===a);return pr?pr[0]:'Eigene Farben';}
-function setColors(p,a){
-  const r=lab.style;
-  r.setProperty('--p',p); r.setProperty('--a',a); r.setProperty('--onp',onColor(p)); r.setProperty('--ona',onColor(a));
-  $('cp').value=p.toLowerCase(); $('cpt').value=p.toUpperCase(); $('ca').value=a.toLowerCase(); $('cat').value=a.toUpperCase();
-  $('selCol').textContent=colorName();
-}
-function winHTML(c,full){
-  const name=esc((full&&$('pName').value.trim())||'CloudFlow Chatbot');
-  const hello=esc((full&&$('pHello').value.trim())||'Hallo und willkommen! 👋 Wie kann ich dir helfen?');
-  const logo=(full&&logoUrl)?'<img src="'+logoUrl+'" alt="">':SVG_LOGO;
-  return '<div class="cf-win cf-'+c+'">'+
-   '<div class="cf-hero"><span class="cf-close">✕</span><span class="cf-logo">'+logo+'</span><b class="cf-name">'+name+'</b><span class="cf-status">Online · antwortet sofort</span></div>'+
-   '<div class="cf-log">'+
-     '<div class="cf-msg bot"><div class="t">'+hello+'</div><time>09:41</time></div>'+
-     '<div class="cf-topics"><p>Wähle ein Thema oder schreib uns direkt.</p><div class="cf-chips"><span class="cf-chip">Öffnungszeiten</span><span class="cf-chip">Preise</span><span class="cf-chip">Termin vereinbaren</span><span class="cf-chip">Eine Frage stellen …</span></div></div>'+
-     (full?'<div class="cf-msg user"><div class="t">Habt ihr am Sonntag offen?</div><time>09:42</time></div><div class="cf-msg bot"><div class="t">Ja, sonntags von 9:00 bis 15:00 Uhr.</div><time>09:42</time></div>':'')+
-   '</div>'+
-   '<div class="cf-bar"><span class="cf-menu">⋮</span><input type="text" placeholder="Nachricht schreiben …" tabindex="-1" readonly><span class="cf-send">'+SVG_SEND+'</span></div>'+
-   '<div class="cf-foot">KI-Assistent · Chatbot von <b>CloudFlow</b></div></div>';
-}
-function render(){
-  slot.innerHTML='';
-  let h=LAUNCHERS[curL].html.replace(/<\/span>$/, X+'</span>');
-  slot.innerHTML=h;
-  const fab=slot.firstChild;
-  if(logoUrl){ const sv=fab.querySelector(':scope > svg:not(.x)'); if(sv){const im=document.createElement('img'); im.src=logoUrl; im.alt=''; sv.replaceWith(im);} }
-  fab.classList.toggle('open',stage.classList.contains('open'));
-  winSlot.innerHTML=winHTML(curC,true);
-  lab.querySelectorAll('[data-mini]').forEach(el=>{el.innerHTML=winHTML(el.dataset.mini,false);});
-  $('selL').textContent=LAUNCHERS[curL].name; $('selC').textContent=CHATS[curC];
-}
-lab.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{curL=b.dataset.l; lab.querySelectorAll('[data-l]').forEach(x=>x.classList.toggle('on',x===b)); stage.classList.add('open'); render();});
-lab.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{curC=b.dataset.c; lab.querySelectorAll('[data-c]').forEach(x=>x.classList.toggle('on',x===b)); stage.classList.add('open'); render();});
-slot.onclick=()=>{stage.classList.toggle('open'); render();};
-PRESETS.forEach(([n,p,a])=>{const b=document.createElement('button'); b.type='button'; b.className='preset'; b.innerHTML='<i><b style="background:'+p+'"></b><b style="background:'+a+'"></b></i>'+n; b.onclick=()=>{setColors(p,a);}; $('presets').appendChild(b);});
-$('cp').oninput=e=>setColors(e.target.value,$('ca').value);
-$('ca').oninput=e=>setColors($('cp').value,e.target.value);
-$('cpt').oninput=e=>{let v=e.target.value.trim(); if(v[0]!=='#')v='#'+v; if(validHex(v)) setColors(v,$('ca').value);};
-$('cat').oninput=e=>{let v=e.target.value.trim(); if(v[0]!=='#')v='#'+v; if(validHex(v)) setColors($('cp').value,v);};
-['pName','pHello'].forEach(id=>$(id).oninput=render);
-$('pLogo').onchange=e=>{const f=e.target.files[0]; if(!f)return; logoUrl=URL.createObjectURL(f); $('logoIc').innerHTML='<img class="pv" src="'+logoUrl+'" alt="" style="width:40px;height:40px;object-fit:contain;background:#fff">'; $('logoTxt').textContent=f.name; render();};
-$('pImgs').onchange=e=>{$('thumbs').innerHTML=''; [...e.target.files].forEach(f=>{const im=document.createElement('img'); im.src=URL.createObjectURL(f); im.alt=''; $('thumbs').appendChild(im);});};
-function mail(subject,extra){
-  const lines=['Hallo CloudFlow-Team,','','ich interessiere mich für folgendes Chatbot-Design:','',
-    '• Button: '+LAUNCHERS[curL].name,'• Chatfenster: '+CHATS[curC],
-    '• Hauptfarbe: '+$('cpt').value+' / Akzentfarbe: '+$('cat').value];
-  if($('pName').value.trim()) lines.push('• Name des Assistenten: '+$('pName').value.trim());
-  if($('pHello').value.trim()) lines.push('• Begrüßung: '+$('pHello').value.trim());
-  if(extra && $('pWish').value.trim()) lines.push('','Meine Sonderwünsche:',$('pWish').value.trim());
-  lines.push('','(Logo und Bilder hänge ich als Anhang an.)','','Viele Grüße');
-  return 'mailto:kontakt@cloudflow.at?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(lines.join('\n'));
-}
-$('sendWish').addEventListener('click',()=>{$('sendWish').href=mail('Premium-Anfrage: individuelles Chatbot-Design',true);});
-$('chooseDesign').addEventListener('click',()=>{$('chooseDesign').href=mail('Anfrage: Chatbot-Design',false);});
-setColors('#09172E','#0071E3'); render();
-})();
-</script>
-
 <footer>
   <div class="wrap">
     <div class="foot-grid">
       <div>
         <div class="logo"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></div>
-        <p>Mehr Zeit für dein Business.<br>KI-Chatbots für lokale Unternehmen.</p>
+        <p>KI-Chatbots für lokale Unternehmen.</p>
       </div>
-      <div><h4>Unternehmen</h4><ul>
-        <li><a href="kontakt.html">Über uns</a></li><li><a href="kontakt.html">Kontakt</a></li><li><a href="impressum.html">Impressum</a></li><li><a href="datenschutz.html">Datenschutz</a></li></ul></div>
-      <div><h4>Produkte</h4><ul>
-        <li><a href="produkte.html">KI-Chatbot</a></li><li><a href="preise.html">Preise</a></li></ul></div>
-      <div><h4>Mehr erfahren</h4><ul>
-        <li><a href="index.html#ablauf">So funktioniert's</a></li><li><a href="index.html#faq">Häufige Fragen</a></li><li><a href="dashboard.html">Kunden-Login</a></li></ul></div>
+      <div><h4>Produkte</h4><ul><li><a href="produkte.html">Der Chatbot</a></li><li><a href="design.html">Design</a></li><li><a href="preise.html">Preise</a></li></ul></div>
+      <div><h4>Kontakt</h4><ul><li><a href="kontakt.html">Kontakt</a></li><li><a href="dashboard.html">Kunden-Login</a></li></ul></div>
+      <div><h4>Rechtliches</h4><ul><li><a href="impressum.html">Impressum</a></li><li><a href="datenschutz.html">Datenschutz</a></li></ul></div>
     </div>
-    <div class="foot-bottom"><span>© 2026 CloudFlow. Alle Rechte vorbehalten.</span><span>kontakt@cloudflow.at</span></div>
+    <div class="foot-bottom"><span>© 2026 CloudFlow</span><span>kontakt@cloudflow.at</span></div>
   </div>
 </footer>
-
-<script>
-// Live-Demo (nutzt dieselbe Edge Function wie der Chatbot, ohne Chatverlauf)
-const KB_FUNCTION_URL = 'https://rkbockdrhxmpvxugkmrt.supabase.co/functions/v1/chat';
-const KB_COMPANY_ID = '8995e595-bb45-4753-a4f6-ff74e80cf74e';
-const KB_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrYm9ja2RyaHhtcHZ4dWdrbXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxOTgzNjIsImV4cCI6MjEwMjc3NDM2Mn0.0AEyPvayW8NKlriAGz3zvDVsz2itHeVLQUO3ea6MDOE';
-
-async function askChatbot(){
-  const input = document.getElementById('kbInput');
-  const btn = document.getElementById('kbAsk');
-  const answerBox = document.getElementById('kbAnswer');
-  const answerText = document.getElementById('kbAnswerText');
-  const question = input.value.trim();
-  if(!question) return;
-  btn.disabled = true; btn.textContent = 'Sucht …';
-  try{
-    const res = await fetch(KB_FUNCTION_URL, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json','Authorization':'Bearer '+KB_ANON_KEY,'apikey':KB_ANON_KEY},
-      body: JSON.stringify({ company_id: KB_COMPANY_ID, message: question, history: [] })
-    });
-    const data = await res.json();
-    answerText.textContent = data.reply || 'Dazu konnte ich leider nichts finden.';
-  } catch(e){
-    answerText.textContent = 'Die Demo ist gerade nicht erreichbar. Versuch es gleich nochmal.';
-  }
-  answerBox.classList.add('visible');
-  btn.disabled = false; btn.textContent = 'Fragen';
-}
-document.getElementById('kbInput')?.addEventListener('keydown', e => { if(e.key === 'Enter') askChatbot(); });
-</script>
+<script src="velaris.js?v=1"></script>
+<script src="motion.js?v=1"></script>
 <script>
 // Werbespot mit Scroll-Vergrößerung: wächst mit dem normalen Scrollen, blockiert es nicht
 (function(){

@@ -15,35 +15,35 @@
 <meta property="og:url" content="https://cloudflow.at/preise.html">
 <meta name="twitter:card" content="summary">
 <link rel="preload" href="fonts/open-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="style.css?v=20261117">
-<script src="i18n.js?v=20261117"></script>
+<link rel="stylesheet" href="style.css?v=20261118">
+<link rel="stylesheet" href="redesign.css?v=1">
+<script src="i18n.js?v=20261118"></script>
 </head>
 <body>
 <a class="skip" href="#main">Zum Inhalt springen</a>
 <header>
   <div class="wrap head-in">
-    <a class="logo" href="index.html">
-      <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>
-      <span>Cloud<em>Flow</em></span>
-    </a>
-    <nav class="main">
+    <a class="logo" href="index.html"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></a>
+    <nav class="main" aria-label="Hauptmenü">
       <a href="index.html">Startseite</a>
-      <a href="produkte.html">Produkte</a>
+      <div class="nav-drop">
+        <a href="produkte.html">Produkte</a>
+        <button type="button" class="drop-tg" aria-expanded="false" aria-label="Unterseiten von Produkte"></button>
+        <div class="nav-menu">
+          <a href="produkte.html"><b>Der Chatbot</b><span>Funktionen, Werbespot, Beispiele</span></a>
+          <a href="design.html"><b>Design</b><span>Button, Fenster und Farben ausprobieren</span></a>
+        </div>
+      </div>
       <a class="active" href="preise.html">Preise</a>
       <a href="kontakt.html">Kontakt</a>
       <a href="dashboard.html">Login</a>
+      <a class="btn-try btn-try-m" href="index.html#try"><span class="dot"></span>Bot testen</a>
     </nav>
-    <div class="head-contact">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 7 9 6 9-6"/></svg>
-      <div><b>kontakt@cloudflow.at</b><span>Direkt schreiben</span></div>
-    </div>
-    <a class="cut-btn small" href="kontakt.html">Jetzt kontaktieren</a>
+    <a class="btn-try" href="index.html#try"><span class="dot"></span>Bot testen</a>
+    <button class="burger" type="button" aria-label="Menü öffnen" aria-expanded="false"><i></i><i></i><i></i></button>
   </div>
 </header>
-<section id="main" class="hero page">
-  <div class="blob" style="width:520px;height:420px;left:-140px;top:-120px;background:#9CCBFF;"></div>
-  <div class="blob" style="width:480px;height:400px;right:-120px;top:0;background:#4E9DFF;opacity:.7;animation-delay:-8s;"></div>
-  <div class="blob" style="width:700px;height:300px;left:25%;bottom:-170px;background:#EAF4FF;"></div>
+<section id="main" class="vx pagehero" data-velaris data-colors="#A8D8FF,#5AB4FF,#0A6BD8,#050D1C" data-bg="#050D1C" data-speed="1.4" data-grain="0.3">
   <div class="wrap">
     <h1>Transparent &amp; fair</h1>
     <p class="lead">Ein Chatbot, klare Preise — dazu einmalig eine Einrichtungsgebühr (bei Jahreszahlung gratis), jederzeit kündbar.</p>
@@ -97,16 +97,13 @@
     <div class="foot-grid">
       <div>
         <div class="logo"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></div>
-        <p>Mehr Zeit für dein Business.<br>KI-Chatbots für lokale Unternehmen.</p>
+        <p>KI-Chatbots für lokale Unternehmen.</p>
       </div>
-      <div><h4>Unternehmen</h4><ul>
-        <li><a href="kontakt.html">Über uns</a></li><li><a href="kontakt.html">Kontakt</a></li><li><a href="impressum.html">Impressum</a></li><li><a href="datenschutz.html">Datenschutz</a></li></ul></div>
-      <div><h4>Produkte</h4><ul>
-        <li><a href="produkte.html">KI-Chatbot</a></li><li><a href="preise.html">Preise</a></li></ul></div>
-      <div><h4>Mehr erfahren</h4><ul>
-        <li><a href="index.html#ablauf">So funktioniert's</a></li><li><a href="index.html#faq">Häufige Fragen</a></li><li><a href="dashboard.html">Kunden-Login</a></li></ul></div>
+      <div><h4>Produkte</h4><ul><li><a href="produkte.html">Der Chatbot</a></li><li><a href="design.html">Design</a></li><li><a href="preise.html">Preise</a></li></ul></div>
+      <div><h4>Kontakt</h4><ul><li><a href="kontakt.html">Kontakt</a></li><li><a href="dashboard.html">Kunden-Login</a></li></ul></div>
+      <div><h4>Rechtliches</h4><ul><li><a href="impressum.html">Impressum</a></li><li><a href="datenschutz.html">Datenschutz</a></li></ul></div>
     </div>
-    <div class="foot-bottom"><span>© 2026 CloudFlow. Alle Rechte vorbehalten.</span><span>kontakt@cloudflow.at</span></div>
+    <div class="foot-bottom"><span>© 2026 CloudFlow</span><span>kontakt@cloudflow.at</span></div>
   </div>
 </footer>
 
@@ -132,6 +129,8 @@ function setBilling(isYearly){
   });
 }
 </script>
+<script src="velaris.js?v=1"></script>
+<script src="motion.js?v=1"></script>
 <script src="widget.js?v=20261028" data-company="8995e595-bb45-4753-a4f6-ff74e80cf74e" data-name="CloudFlow Chatbot" data-greeting="Hallo und willkommen bei CloudFlow 👋 Gerne beraten wir dich zu unseren Chatbots, Preisen oder wie du startest." data-topics="Preise=Was kostet das?|Ablauf=Wie läuft der Ablauf ab?|Technik nötig?=Brauche ich technisches Wissen?" data-greeting-en="Hi and welcome to CloudFlow 👋 Happy to help with our chatbots, pricing or how to get started." data-topics-en="Pricing=How much does it cost?|Process=How does the process work?|Tech skills needed?=Do I need technical knowledge?" data-chat="c2" data-launcher="l1"></script>
 </body>
 </html>

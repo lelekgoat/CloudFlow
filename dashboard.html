@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <title>Login & Dashboard — CloudFlow</title>
-<link rel="stylesheet" href="style.css?v=20261117">
+<link rel="stylesheet" href="style.css?v=20261118">
 <style>
   /* Dashboard-spezifisch – Farben, Schrift, Logo und Buttons kommen aus style.css */
   :root{ --green:#1A9F5C; --red:#C8102E; }
@@ -24,7 +24,9 @@
     background:linear-gradient(180deg,#7DB9FF 0%,#B4D8FF 45%,#E6F2FF 80%,#F6FAFF 100%);
     color:var(--navy);
   }
-  .auth-left > *:not(.blob){position:relative; z-index:1;}
+  .auth-left > *:not(.blob):not(.velaris-canvas){position:relative; z-index:1;}
+  .auth-left > .velaris-canvas{position:absolute; inset:0; width:100%; height:100%; opacity:0; transition:opacity 1.2s ease;}
+  .auth-left.velaris-ready > .velaris-canvas{opacity:1;}
   .auth-left .logo{font-size:1.55rem;}
   .auth-tagline{font-size:clamp(2rem,3.6vw,3rem); font-weight:700; line-height:1.15; letter-spacing:-0.015em; max-width:460px;}
   .auth-tagline span{background:linear-gradient(transparent 62%, rgba(255,255,255,0.7) 62%); padding:0 4px;}
@@ -186,15 +188,22 @@
   .inv-grid label{font-size:.85rem; font-weight:700; color:var(--navy); display:flex; flex-direction:column; gap:6px;}
   .inv-grid input,.inv-grid select{padding:10px 12px; border:1px solid var(--line); font:inherit; font-weight:400; background:#fff;}
   .dz-note.err{color:var(--red); font-weight:600;} .dz-note.ok{color:var(--green); font-weight:600;}
+  /* Login: dunkle Live-Fläche wie auf der Website */
+  .auth-left{background:radial-gradient(90% 70% at 30% 30%, #2B7FE0 0%, #0B3E86 38%, #050D1C 75%); color:#fff;}
+  .auth-left .logo{color:#fff;} .auth-left .logo-mark{background:#fff;} .auth-left .logo-mark svg{color:#09172E;} .auth-left .logo em{color:#A8D8FF;}
+  .auth-tagline{font-weight:800; letter-spacing:-0.03em;}
+  .auth-tagline span{background:none; padding:0; color:#A8D8FF;}
+  .auth-points{color:rgba(255,255,255,.88);}
+  .auth-points li::before{background:rgba(255,255,255,.16);}
+  .back-link{color:#fff; border-bottom-color:rgba(255,255,255,.45);}
+  .back-link:hover{border-bottom-color:#fff;}
 </style>
 </head>
 <body>
 
 <!-- signinScreen -->
 <div class="auth-screen active" id="signinScreen">
-  <div class="auth-left">
-    <div class="blob" style="width:520px;height:400px;left:-140px;top:-120px;background:#3E98FF;opacity:.55;"></div>
-    <div class="blob" style="width:480px;height:380px;right:-160px;bottom:-120px;background:#fff;opacity:.9;"></div>
+  <div class="auth-left" data-velaris data-colors="#A8D8FF,#5AB4FF,#0A6BD8,#050D1C" data-bg="#050D1C" data-speed="1.2" data-grain="0.3">
     <a class="logo" href="index.html"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></a>
     <div class="auth-tagline">Dein Chatbot <span>wartet</span> auf dich.</div>
     <div style="display:grid;gap:22px;">
@@ -228,9 +237,7 @@
 
 <!-- signupScreen -->
 <div class="auth-screen" id="signupScreen">
-  <div class="auth-left">
-    <div class="blob" style="width:520px;height:400px;left:-140px;top:-120px;background:#3E98FF;opacity:.55;"></div>
-    <div class="blob" style="width:480px;height:380px;right:-160px;bottom:-120px;background:#fff;opacity:.9;"></div>
+  <div class="auth-left" data-velaris data-colors="#A8D8FF,#5AB4FF,#0A6BD8,#050D1C" data-bg="#050D1C" data-speed="1.2" data-grain="0.3">
     <a class="logo" href="index.html"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></a>
     <div class="auth-tagline">Willkommen bei <span>CloudFlow</span>.</div>
     <div style="display:grid;gap:22px;">
@@ -415,6 +422,7 @@
 <div class="toast" id="toast">Gespeichert</div>
 
 <!-- Bibliotheken selbst gehostet (feste Version, keine Daten an fremde CDNs) -->
+<script src="velaris.js?v=1"></script>
 <script src="vendor/supabase-2.118.0.js"></script>
 <script src="vendor/pdf-3.11.174.min.js"></script>
 <script>
