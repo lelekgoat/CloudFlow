@@ -1,7 +1,8 @@
 /* CloudFlow Scroll-Animationen
  * .rv              → blendet beim Hineinscrollen weich ein (data-delay="1..4" für Staffelung)
  * [data-hx]        → Beispiele laufen beim Scrollen von links nach rechts durch
- * [data-progress]  → Linie füllt sich beim Scrollen (Ablauf)
+ * [data-progress]  → Linie füllt sich beim Scrollen (Ablauf); erreichte .tl-step bekommen .on (Live-Szene startet)
+ * .xp              → Karte wächst beim Drüberfahren und zeigt mehr Text; am Handy per Antippen
  * Bei "weniger Bewegung" ist alles sofort sichtbar und die Beispiele lassen sich wischen.
  */
 (function(){
@@ -27,7 +28,7 @@
       return;
     }
     var io = new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+      es.forEach(function(e){ if(e.isIntersecting){ var t = e.target; t.classList.add('in'); io.unobserve(t); setTimeout(function(){ t.classList.add('settled'); }, 1300); } });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
     Array.prototype.forEach.call(els, function(e){ io.observe(e); });
   }
@@ -67,6 +68,11 @@
       var r = el.getBoundingClientRect(), vh = innerHeight;
       var p = calm ? 1 : clamp((vh * 0.75 - r.top) / (r.height || 1), 0, 1);
       el.style.setProperty('--p', p.toFixed(3));
+      var steps = el.querySelectorAll('.tl-step'), n = steps.length;
+      Array.prototype.forEach.call(steps, function(st, i){
+        var need = n > 1 ? Math.max(0.03, i / (n - 1) * 0.95) : 0.03;
+        st.classList.toggle('on', p >= need);
+      });
     });
   }
 
@@ -95,8 +101,31 @@
     });
   }
 
+  // 5) Live-Karten: am Handy (ohne Maus) per Antippen auf- und zuklappen, mit Tastatur per Enter
+  function cards(){
+    var touch = window.matchMedia && window.matchMedia('(hover: none)').matches;
+    Array.prototype.forEach.call(document.querySelectorAll('.xp'), function(c){
+      c.setAttribute('aria-expanded', 'false');
+      function flip(){
+        var open = c.classList.toggle('open');
+        c.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if(open) Array.prototype.forEach.call(document.querySelectorAll('.xp.open'), function(o){
+          if(o !== c && o.parentNode === c.parentNode){ o.classList.remove('open'); o.setAttribute('aria-expanded', 'false'); }
+        });
+      }
+      c.addEventListener('click', function(e){
+        if(e.target.closest('a,button,input,textarea,select')) return;
+        if(touch) flip();
+      });
+      c.addEventListener('keydown', function(e){
+        if((e.key === 'Enter' || e.key === ' ') && e.target === c){ e.preventDefault(); flip(); }
+      });
+      c.addEventListener('blur', function(){ if(!touch){ c.classList.remove('open'); c.setAttribute('aria-expanded', 'false'); } });
+    });
+  }
+
   function boot(){
-    headerH(); reveal(); setupHx(); menus(); tick();
+    headerH(); reveal(); setupHx(); menus(); cards(); tick();
     addEventListener('scroll', request, { passive: true });
     addEventListener('resize', function(){ headerH(); sizeHx(); request(); });
     addEventListener('load', function(){ sizeHx(); request(); });
