@@ -124,8 +124,34 @@
     });
   }
 
+  // 6) Runde Buttons aus flüssigem Metall (.lm-fab), Bibliothek wird nur bei Bedarf geladen
+  function liquid(){
+    var btns = document.querySelectorAll('.lm-fab');
+    if(!btns.length) return;
+    function go(){
+      Array.prototype.forEach.call(btns, function(btn){
+        var m = window.CFLiquid ? window.CFLiquid.mount(btn.querySelector('.lm-ring'), { speed: calm ? 0 : 0.6 }) : null, hover = false;
+        function speed(v){ if(m && m.setSpeed) m.setSpeed(calm ? 0 : v); }
+        btn.addEventListener('mouseenter', function(){ hover = true; speed(1); });
+        btn.addEventListener('mouseleave', function(){ hover = false; speed(0.6); });
+        btn.addEventListener('click', function(e){
+          speed(2.4); setTimeout(function(){ speed(hover ? 1 : 0.6); }, 300);
+          var r = btn.getBoundingClientRect(), rip = document.createElement('span');
+          rip.className = 'lm-rip';
+          rip.style.left = ((e.clientX || r.left + r.width / 2) - r.left) + 'px';
+          rip.style.top = ((e.clientY || r.top + r.height / 2) - r.top) + 'px';
+          btn.appendChild(rip); setTimeout(function(){ rip.remove(); }, 650);
+        });
+      });
+    }
+    if(window.CFLiquid) return go();
+    var s = document.createElement('script');
+    s.src = 'liquid-metal.js?v=1'; s.async = true; s.onload = go;
+    document.head.appendChild(s);
+  }
+
   function boot(){
-    headerH(); reveal(); setupHx(); menus(); cards(); tick();
+    headerH(); reveal(); setupHx(); menus(); cards(); liquid(); tick();
     addEventListener('scroll', request, { passive: true });
     addEventListener('resize', function(){ headerH(); sizeHx(); request(); });
     addEventListener('load', function(){ sizeHx(); request(); });

@@ -10,7 +10,7 @@
  *   data-primary     Hauptfarbe  (z. B. #09172E)
  *   data-accent      Akzentfarbe (z. B. #0071E3)
  *   data-chat        Chatfenster: c1 Klassisch | c2 Himmel | c3 Minimal | c4 Dunkel   (Standard: c2)
- *   data-launcher    Button: l1 Quadrat | l2 Rechteck+Text | l3 Rund | l4 Weiße Karte | l5 Verlauf (Standard: l1)
+ *   data-launcher    Button: l1 Quadrat | l2 Rechteck+Text | l3 Rund | l4 Weiße Karte | l5 Verlauf | l6 Flüssiges Metall (Standard: l1)
  *   data-launcher-text  Text im Button bei l2/l4
  *   data-logo        URL zu einem eigenen Logo (PNG/SVG)
  *   data-brand       Text in der Fußzeile ("Chatbot von ...", Standard: CloudFlow)
@@ -77,7 +77,7 @@
   var GREETING   = attrL('greeting', TXT.greeting);
   var BRAND      = attr('brand', 'CloudFlow');
   var CHAT       = /^c[1-4]$/.test(attr('chat','')) ? attr('chat') : 'c2';
-  var LAUNCHER   = /^l[1-5]$/.test(attr('launcher','')) ? attr('launcher') : 'l1';
+  var LAUNCHER   = /^l[1-6]$/.test(attr('launcher','')) ? attr('launcher') : 'l1';
   var LOGO_URL   = attr('logo', '');
   var PRIMARY    = /^#[0-9a-fA-F]{6}$/.test(attr('primary','')) ? attr('primary') : '#09172E';
   var ACCENT     = /^#[0-9a-fA-F]{6}$/.test(attr('accent','')) ? attr('accent') : '#0071E3';
@@ -213,12 +213,28 @@
 .cf-send{border-radius:0 14px 14px 0;}
 .cf-pop{border-radius:12px; overflow:hidden;}
 .cf-l1{border-radius:18px;} .cf-l2{border-radius:16px;} .cf-l4{border-radius:16px;} .cf-l5{border-radius:20px;}
+
+  /* ---------- l6: Flüssiges Metall ---------- */
+.cf-l6{width:60px; height:60px; border-radius:50%; background:transparent; color:#A3ABB6; transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .15s;
+  box-shadow:0 0 0 1px rgba(0,0,0,.3),0 36px 14px rgba(0,0,0,.02),0 20px 12px rgba(0,0,0,.08),0 9px 9px rgba(0,0,0,.12),0 2px 5px rgba(0,0,0,.15);}
+.cf-l6:hover{transform:scale(1.06); box-shadow:0 0 0 1px rgba(0,0,0,.4),0 12px 6px rgba(0,0,0,.05),0 8px 5px rgba(0,0,0,.1),0 4px 4px rgba(0,0,0,.15),0 1px 2px rgba(0,0,0,.2);}
+.cf-l6:active{transform:scale(.97);}
+.cf-l6 .lm-ring{position:absolute; inset:0; border-radius:50%; overflow:hidden; background:conic-gradient(from 210deg,#f4f6f8,#8d96a3,#ffffff,#5d6672,#e9edf1,#9aa3ae,#f4f6f8);}
+.cf-l6 .lm-ring.lm-on{background:#C9CED6;}
+.cf-l6 .lm-ring canvas{position:absolute; inset:0; width:100%; height:100%; display:block; border-radius:50%;}
+.cf-l6 .lm-core{position:absolute; inset:3px; border-radius:50%; background:linear-gradient(180deg,#202020 0%,#000 100%); transition:box-shadow .15s;}
+.cf-l6:active .lm-core{box-shadow:inset 0 2px 4px rgba(0,0,0,.4),inset 0 1px 2px rgba(0,0,0,.3);}
+.cf-l6 > svg{position:relative; z-index:2; width:22px; height:22px; filter:drop-shadow(0 1px 2px rgba(0,0,0,.5)); transition:transform .8s cubic-bezier(.34,1.56,.64,1), color .3s;}
+.cf-l6:hover > svg{transform:rotate(-12deg) scale(1.1); color:#D9DEE5;}
+.cf-l6 .lm-rip{position:absolute; z-index:3; width:20px; height:20px; border-radius:50%; pointer-events:none; background:radial-gradient(circle,rgba(255,255,255,.4) 0%,rgba(255,255,255,0) 70%); animation:cfRip .6s ease-out forwards;}
+@keyframes cfRip{0%{transform:translate(-50%,-50%) scale(0); opacity:.6;} 100%{transform:translate(-50%,-50%) scale(4); opacity:0;}}
 `;
   shadow.appendChild(styleEl);
 
   var SVG_LOGO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>';
   var SVG_CHAT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg>';
   var SVG_SEND = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  var SVG_SPARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/><path d="M20 3v4M22 5h-4M4 17v2M5 18H3"/></svg>';
   var SVG_X = '<svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 
   function logoHTML(svg){ return LOGO_URL ? '<img src="" alt="" data-logo>' : svg; }
@@ -234,7 +250,8 @@
     l2: SVG_CHAT + '<b data-launch-text></b>',
     l3: SVG_CHAT,
     l4: '<i class="dot"></i>' + logoHTML(SVG_LOGO) + '<b data-launch-text></b>',
-    l5: SVG_CHAT + '<i class="dot"></i>'
+    l5: SVG_CHAT + '<i class="dot"></i>',
+    l6: '<span class="lm-ring"></span><span class="lm-core"></span>' + SVG_SPARK
   }[LAUNCHER];
 
   wrapper.innerHTML =
@@ -263,6 +280,32 @@
   wrapper.querySelectorAll('[data-launch-text]').forEach(function(el){ el.textContent = LAUNCH_TXT; });
   wrapper.querySelectorAll('img[data-logo]').forEach(function(el){ el.src = LOGO_URL; });
 
+  // ---------- l6: Flüssiges Metall (WebGL, wird nur bei l6 nachgeladen) ----------
+  function liquidMetal(btn){
+    var ring = btn.querySelector('.lm-ring'), m = null;
+    var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function speed(v){ if(m && m.setSpeed) m.setSpeed(calm ? 0 : v); }
+    function go(){ if(window.CFLiquid) m = window.CFLiquid.mount(ring, { speed: calm ? 0 : 0.6 }); }
+    if(window.CFLiquid) go();
+    else {
+      var base = (currentScript.src || '').replace(/[^\/?#]*([?#].*)?$/, '');
+      var s = document.createElement('script');
+      s.src = base + 'liquid-metal.js?v=1'; s.async = true; s.onload = go;
+      document.head.appendChild(s);
+    }
+    var hover = false;
+    btn.addEventListener('mouseenter', function(){ hover = true; speed(1); });
+    btn.addEventListener('mouseleave', function(){ hover = false; speed(0.6); });
+    btn.addEventListener('click', function(e){
+      speed(2.4); setTimeout(function(){ speed(hover ? 1 : 0.6); }, 300);
+      var r = btn.getBoundingClientRect(), rip = document.createElement('span');
+      rip.className = 'lm-rip';
+      rip.style.left = ((e.clientX || r.left + r.width / 2) - r.left) + 'px';
+      rip.style.top = ((e.clientY || r.top + r.height / 2) - r.top) + 'px';
+      btn.appendChild(rip); setTimeout(function(){ rip.remove(); }, 650);
+    });
+  }
+
   // ---------- Verhalten ----------
   var panel = shadow.getElementById('cfPanel');
   var fab = shadow.getElementById('cfFab');
@@ -283,6 +326,7 @@
   }
   fab.setAttribute('aria-expanded', 'false');
   fab.addEventListener('click', toggle);
+  if(LAUNCHER === 'l6') liquidMetal(fab);
   shadow.addEventListener('keydown', function(e){ if(e.key === 'Escape' && panel.classList.contains('open')) toggle(); });
   closeBtn.addEventListener('click', toggle);
 

@@ -374,3 +374,19 @@ h2.mark span{background:none; padding:0; margin:0;}
 @keyframes bubIn{0%,34%{opacity:0; transform:translateY(10px) scale(.9); transform-origin:right bottom;} 42%,88%{opacity:1; transform:none;} 94%,100%{opacity:0;}}
 @media (max-width:900px){ .tl-scene{height:150px;} .tl-step .xp-plus{display:none;} }
 @media (prefers-reduced-motion:reduce){ .tl-step.on .tl-num{animation:none;} .xp, .xp *, .pcard, .xcard, .plan{transition:none !important;} }
+
+/* ================= "Bot testen": runder Button aus flüssigem Metall ================= */
+.lm-fab.try-float{width:60px; height:60px; padding:0; border-radius:50%; background:transparent; color:#A3ABB6; justify-content:center; gap:0;
+  box-shadow:0 0 0 1px rgba(0,0,0,.3),0 36px 14px rgba(0,0,0,.02),0 20px 12px rgba(0,0,0,.08),0 9px 9px rgba(0,0,0,.12),0 2px 5px rgba(0,0,0,.15);
+  transition:transform .45s cubic-bezier(.34,1.56,.64,1), opacity .35s ease, box-shadow .15s;}
+.lm-fab.try-float.show:hover{transform:scale(1.06); box-shadow:0 0 0 1px rgba(0,0,0,.4),0 12px 6px rgba(0,0,0,.05),0 8px 5px rgba(0,0,0,.1),0 4px 4px rgba(0,0,0,.15),0 1px 2px rgba(0,0,0,.2);}
+.lm-fab.try-float.show:active{transform:scale(.97);}
+.lm-fab .lm-ring{position:absolute; inset:0; border-radius:50%; overflow:hidden; background:conic-gradient(from 210deg,#f4f6f8,#8d96a3,#ffffff,#5d6672,#e9edf1,#9aa3ae,#f4f6f8);}
+.lm-fab .lm-ring.lm-on{background:#C9CED6;}
+.lm-fab .lm-ring canvas{position:absolute; inset:0; width:100%; height:100%; display:block; border-radius:50%;}
+.lm-fab .lm-core{position:absolute; inset:3px; border-radius:50%; background:linear-gradient(180deg,#202020 0%,#000 100%); transition:box-shadow .15s;}
+.lm-fab:active .lm-core{box-shadow:inset 0 2px 4px rgba(0,0,0,.4),inset 0 1px 2px rgba(0,0,0,.3);}
+.lm-fab > svg{position:relative; z-index:2; width:22px; height:22px; filter:drop-shadow(0 1px 2px rgba(0,0,0,.5)); transition:transform .8s cubic-bezier(.34,1.56,.64,1), color .3s;}
+.lm-fab:hover > svg{transform:rotate(-12deg) scale(1.1); color:#D9DEE5;}
+.lm-rip{position:absolute; z-index:3; width:20px; height:20px; border-radius:50%; pointer-events:none; background:radial-gradient(circle,rgba(255,255,255,.4) 0%,rgba(255,255,255,0) 70%); animation:lmRip .6s ease-out forwards;}
+@keyframes lmRip{0%{transform:translate(-50%,-50%) scale(0); opacity:.6;} 100%{transform:translate(-50%,-50%) scale(4); opacity:0;}}
