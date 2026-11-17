@@ -1,2 +1,6 @@
 .idea/
 graphify-out/
+
+# Kopien aus dem Claude-Chat
+Claude outputs/
+*-1.html
