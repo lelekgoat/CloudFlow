@@ -16,8 +16,8 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="fonts/open-sans-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css?v=20261118">
-<link rel="stylesheet" href="redesign.css?v=20261117c">
-<script src="i18n.js?v=20261117b"></script>
+<link rel="stylesheet" href="redesign.css?v=20261117d">
+<script src="i18n.js?v=20261117d"></script>
 </head>
 <body>
 <a class="skip" href="#main">Zum Inhalt springen</a>
@@ -117,14 +117,46 @@
   </div>
 </section>
 
-<section class="sec" id="preise">
+<section class="px-sec" id="preise">
   <div class="wrap">
-    <div class="sec-head2 rv">
-      <div class="eyebrow">Preise</div>
-      <h2 class="h-sec">Klare Preise. Monatlich kündbar.</h2>
+    <div class="px-head rv">
+      <h2 class="px-title">Faire Preise. Keine <span class="px-strike">versteckten Kosten</span></h2>
+      <button type="button" class="px-switch" role="switch" aria-checked="false" data-px-toggle><i></i><span>Jährliche Zahlung</span> · <em>spare 20 %</em></button>
     </div>
-    <div class="pgrid3"><div class="pcard lift rv" data-delay="1"><h3>Basic</h3><div class="price">29,99 €<small> / Monat</small></div><ul><li>5 PDF-Dokumente</li><li>500 Nachrichten im Monat</li><li>Design frei wählbar</li><li>Einrichtung einmalig 149 €</li></ul><a class="go" href="paket.html?plan=basic">Details ansehen</a></div><div class="pcard lift hot rv" data-delay="2"><span class="tag">Beliebt</span><h3>Standard</h3><div class="price">49,49 €<small> / Monat</small></div><ul><li>15 PDF-Dokumente</li><li>2.000 Nachrichten im Monat</li><li>Terminanfragen per E-Mail</li><li>Einrichtung einmalig 249 €</li></ul><a class="go" href="paket.html?plan=standard">Details ansehen</a></div><div class="pcard lift rv" data-delay="3"><h3>Premium</h3><div class="price">89,99 €<small> / Monat</small></div><ul><li>30 PDF-Dokumente</li><li>5.000 Nachrichten im Monat</li><li>Eigenes Logo und Themen-Buttons</li><li>Sonderwünsche bis 2 Std. im Monat</li><li>Einrichtung einmalig 399 €</li></ul><a class="go" href="paket.html?plan=premium">Details ansehen</a></div></div>
-    <p class="pnote rv">Bei jährlicher Zahlung sparst du 20 % und die Einrichtung ist gratis. <a href="preise.html">Alle Details</a></p>
+    <div class="px-grid" data-px>
+      <article class="px-card rv" data-delay="1">
+        <div class="px-name"><h3>Basic</h3></div>
+        <p class="px-desc">Für den Einstieg</p>
+        <div class="px-price"><b class="pm">29,99 €</b><b class="py">287 €</b><span class="pm">pro Monat<br>monatlich kündbar</span><span class="py">pro Jahr<br>jährlich bezahlt</span></div>
+        <p class="px-fee"><span class="pm">+ einmalig 149 € Einrichtung</span><span class="py"><s>149 €</s> Einrichtung gratis</span></p>
+        <a class="px-go" href="paket.html?plan=basic">Basic wählen</a>
+        <div class="px-meter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span>Nachrichten / Monat</span><em>500</em></div>
+        <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><div><span>Bis zu 5 Dokumente</span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M10 13l-2 2 2 2M14 13l2 2-2 2"/></svg><div><span>Einbindung auf einer Seite</span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg><div><span>1 Anpassungsrunde / Monat</span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A5.6 5.6 0 0 0 22 10c0-4.4-4.5-8-10-8z"/></svg><div><span>Design &amp; Farben frei wählbar</span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/><path d="M9 11h.01M12 11h.01M15 11h.01"/></svg><div><span>Eigener Name &amp; Begrüßung</span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg><div><span>Antwortet in jeder Sprache</span></div></li></ul>
+        <a class="px-more" href="paket.html?plan=basic">Details und Vorteile</a>
+      </article>
+      <article class="px-card hot rv" data-delay="2">
+        <div class="px-name"><h3>Standard</h3><span class="px-pill">Beliebt</span></div>
+        <p class="px-desc">Der Alltagsbegleiter</p>
+        <div class="px-price"><b class="pm">49,49 €</b><b class="py">475 €</b><span class="pm">pro Monat<br>monatlich kündbar</span><span class="py">pro Jahr<br>jährlich bezahlt</span></div>
+        <p class="px-fee"><span class="pm">+ einmalig 249 € Einrichtung</span><span class="py"><s>249 €</s> Einrichtung gratis</span></p>
+        <a class="px-go" href="paket.html?plan=standard">Standard wählen</a>
+        <div class="px-meter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span>Nachrichten / Monat</span><em>2.000</em></div>
+        <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><div><span>Bis zu 15 Dokumente</span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 15l2 2 4-4"/></svg><div><span>Termin-/Reservierungsanfragen</span><small>Der Chatbot nimmt Name und Wunschtermin auf und schickt sie dir per E-Mail.</small></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg><div><span>2 Anpassungsrunden / Monat</span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><span>Alles aus Basic</span></div></li></ul>
+        <a class="px-more" href="paket.html?plan=standard">Details und Vorteile</a>
+      </article>
+      <article class="px-card rv" data-delay="3">
+        <div class="px-name"><h3>Premium</h3></div>
+        <p class="px-desc">Für mehrere Standorte</p>
+        <div class="px-price"><b class="pm">89,99 €</b><b class="py">863 €</b><span class="pm">pro Monat<br>monatlich kündbar</span><span class="py">pro Jahr<br>jährlich bezahlt</span></div>
+        <p class="px-fee"><span class="pm">+ einmalig 399 € Einrichtung</span><span class="py"><s>399 €</s> Einrichtung gratis</span></p>
+        <a class="px-go" href="paket.html?plan=premium">Premium wählen</a>
+        <div class="px-meter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span>Nachrichten / Monat</span><em>5.000</em></div>
+        <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><div><span>Bis zu 30 Dokumente</span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.4 7.2 16.9l.9-5.4-3.9-3.8 5.4-.8z"/><path d="M8 21h8"/></svg><div><span>Eigenes Logo &amp; Themen-Buttons selbst bearbeiten</span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg><div><span>Eigene Texte &amp; Bilder</span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/></svg><div><span>Individuelle Sonderwünsche</span><small>Bis zu 2 Stunden pro Monat, die wir für dich umsetzen.</small></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><span>Alles aus Standard</span></div></li></ul>
+        <a class="px-more" href="paket.html?plan=premium">Details und Vorteile</a>
+      </article>
+      
+    </div>
+    <p class="px-foot rv">Jederzeit kündbar. Bei Jahreszahlung ist die Einrichtung gratis. <a href="preise.html">Alle Details</a></p>
   </div>
 </section>
 
@@ -148,24 +180,45 @@
     </div>
   </div>
 </section>
-<footer>
+<footer class="fx">
   <div class="wrap">
-    <div class="foot-grid">
+    <div class="fx-cta rv">
       <div>
-        <div class="logo"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></div>
+        <h2>Bereit für deinen eigenen Chatbot?</h2>
+        <p>Teste ihn jetzt selbst oder schau dir die Pakete an.</p>
+      </div>
+      <div class="fx-btns">
+        <a class="fx-pill solid" href="index.html#try"><span class="dot"></span>Bot testen</a>
+        <a class="fx-pill" href="preise.html">Preise ansehen</a>
+      </div>
+    </div>
+    <div class="foot-grid">
+      <div class="fx-brand">
+        <a class="logo" href="index.html"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span>Cloud<em>Flow</em></span></a>
         <p>KI-Chatbots für lokale Unternehmen.</p>
+        <a class="fx-mail" href="mailto:kontakt@cloudflow.at"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>kontakt@cloudflow.at</a>
       </div>
       <div><h4>Produkte</h4><ul><li><a href="produkte.html">Der Chatbot</a></li><li><a href="design.html">Design</a></li><li><a href="preise.html">Preise</a></li></ul></div>
       <div><h4>Kontakt</h4><ul><li><a href="kontakt.html">Kontakt</a></li><li><a href="dashboard.html">Kunden-Login</a></li></ul></div>
       <div><h4>Rechtliches</h4><ul><li><a href="impressum.html">Impressum</a></li><li><a href="datenschutz.html">Datenschutz</a></li></ul></div>
     </div>
-    <div class="foot-bottom"><span>© 2026 CloudFlow</span><span>kontakt@cloudflow.at</span></div>
+    <div class="foot-bottom"><span>© 2026 CloudFlow</span><span>KI-Chatbots aus Österreich</span></div>
+    <div class="fx-mark" aria-hidden="true">CloudFlow</div>
   </div>
 </footer>
 
 <button type="button" class="lm-fab try-float" id="tryFloat" data-focus-try aria-label="Bot testen" title="Bot testen"><span class="lm-ring"></span><span class="lm-core"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/><path d="M20 3v4M22 5h-4M4 17v2M5 18H3"/></svg></button>
 <script src="velaris.js?v=1"></script>
-<script src="motion.js?v=20261117c"></script>
+<script src="motion.js?v=20261117d"></script>
+<script>
+// Preise: Monat / Jahr umschalten
+document.querySelectorAll('[data-px-toggle]').forEach(function(sw){
+  var sec = sw.closest('.px-sec');
+  function set(y){ sec.classList.toggle('yearly', y); sw.setAttribute('aria-checked', y ? 'true' : 'false'); }
+  sw.addEventListener('click', function(){ set(!sec.classList.contains('yearly')); });
+  if(/[?&]billing=year/.test(location.search)) set(true);
+});
+</script>
 <script>
 // Bot-Test im Hero (echter CloudFlow-Chatbot)
 (function(){

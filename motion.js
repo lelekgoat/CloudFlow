@@ -76,8 +76,15 @@
     });
   }
 
+  // Kopfzeile: über dem dunklen Bereich durchsichtig, danach hell
+  function solidHeader(){
+    var h = document.querySelector('header'), hero = h && h.nextElementSibling;
+    if(!h || !hero || !hero.classList.contains('vx')) return;
+    h.classList.toggle('solid', hero.getBoundingClientRect().bottom <= h.offsetHeight * 0.75);
+  }
+
   var queued = false;
-  function tick(){ queued = false; renderHx(); renderProgress(); }
+  function tick(){ queued = false; renderHx(); renderProgress(); solidHeader(); }
   function request(){ if(!queued){ queued = true; requestAnimationFrame(tick); } }
 
   // 4) Menü "Produkte" (Klick für Handy und Tastatur)
