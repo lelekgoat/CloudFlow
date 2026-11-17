@@ -165,6 +165,8 @@
     'Ein persönlicher Chatbot für deine Website — er lernt aus deinen hochgeladenen PDFs und beantwortet Kundenfragen rund um die Uhr.': 'A personal chatbot for your website — it learns from the PDFs you upload and answers customer questions around the clock.',
     'Kurz erklärt': 'In short',
     'CloudFlow in 15 Sekunden': 'CloudFlow in 15 seconds',
+    'in 15 Sekunden': 'in 15 seconds',
+    'Scrollen zum Vergrößern ↓': 'Scroll to enlarge ↓',
     'Deine Kunden stellen immer wieder dieselben Fragen: Öffnungszeiten, Preise, Anfahrt. Der CloudFlow-Chatbot beantwortet sie direkt auf deiner Website, mit den Infos aus deinen eigenen PDFs.': 'Your customers keep asking the same questions: opening hours, prices, directions. The CloudFlow chatbot answers them right on your website, using the info from your own PDFs.',
     'Antwortet rund um die Uhr': 'Answers around the clock',
     'Nur mit den Infos aus deinen Unterlagen': 'Only with the info from your documents',
